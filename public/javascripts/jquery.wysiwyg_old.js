@@ -1,5 +1,5 @@
 /**
- * WYSIWYG - jQuery plugin 0.6
+ * WYSIWYG - jQuery plugin 0.5
  *
  * Copyright (c) 2008-2009 Juan M Martinez
  * http://plugins.jquery.com/project/jWYSIWYG
@@ -14,23 +14,22 @@
 {
     $.fn.document = function()
     {
-        var element = this.get(0);
+        var element = this[0];
 
         if ( element.nodeName.toLowerCase() == 'iframe' )
-        {
             return element.contentWindow.document;
             /*
             return ( $.browser.msie )
                 ? document.frames[element.id].document
                 : element.contentWindow.document // contentDocument;
              */
-        }
-        return this;
+        else
+            return $(this);
     };
 
     $.fn.documentSelection = function()
     {
-        var element = this.get(0);
+        var element = this[0];
 
         if ( element.contentWindow.document.selection )
             return element.contentWindow.document.selection.createRange().text;
@@ -73,8 +72,8 @@
             delete options.controls;
         }
 
-        options = $.extend({
-            html : '<'+'?xml version="1.0" encoding="UTF-8"?'+'><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">STYLE_SHEET</head><body style="margin: 0px;">INITIAL_CONTENT</body></html>',
+        var options = $.extend({
+            html : '<'+'?xml version="1.0" encoding="UTF-8"?'+'><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">STYLE_SHEET</head><body style="font-family: Arial, Helvetica, sans-serif !important; font-size: 13px; height: 100%; line-height: 1.5em !important;">INITIAL_CONTENT</body></html>',
             css  : {},
 
             debug        : false,
@@ -119,7 +118,6 @@
 
             if ( self.constructor == Wysiwyg && szURL && szURL.length > 0 )
             {
-                if ($.browser.msie) self.focus();
                 if ( attributes )
                 {
                     self.editorDoc.execCommand('insertImage', false, '#jwysiwyg#');
@@ -152,35 +150,11 @@
 
                 if ( selection.length > 0 )
                 {
-                    if ($.browser.msie) self.focus();
                     self.editorDoc.execCommand('unlink', false, []);
                     self.editorDoc.execCommand('createLink', false, szURL);
                 }
                 else if ( self.options.messages.nonSelection )
                     alert(self.options.messages.nonSelection);
-            }
-        },
-
-        insertHtml : function( szHTML )
-        {
-            var self = $.data(this, 'wysiwyg');
-
-            if ( self.constructor == Wysiwyg && szHTML && szHTML.length > 0 )
-            {
-                if ($.browser.msie)
-                {
-                    self.focus();
-                    self.editorDoc.execCommand('insertImage', false, '#jwysiwyg#');
-                    var img = self.getElementByAttributeValue('img', 'src', '#jwysiwyg#');
-                    if (img)
-                    {
-                        $(img).replaceWith(szHTML);
-                    }
-                }
-                else
-                {
-                    self.editorDoc.execCommand('insertHTML', false, szHTML);
-                }
             }
         },
 
@@ -203,38 +177,38 @@
         },
 
         TOOLBAR : {
-            bold          : { visible : true, tags : ['b', 'strong'], css : { fontWeight : 'bold' }, tooltip : "Bold" },
-            italic        : { visible : true, tags : ['i', 'em'], css : { fontStyle : 'italic' }, tooltip : "Italic" },
-            strikeThrough : { visible : true, tags : ['s', 'strike'], css : { textDecoration : 'line-through' }, tooltip : "Strike-through" },
-            underline     : { visible : true, tags : ['u'], css : { textDecoration : 'underline' }, tooltip : "Underline" },
+            bold          : { visible : true, tags : ['b', 'strong'], css : { fontWeight : 'bold' } },
+            italic        : { visible : true, tags : ['i', 'em'], css : { fontStyle : 'italic' } },
+            strikeThrough : { visible : false, tags : ['s', 'strike'], css : { textDecoration : 'line-through' } },
+            underline     : { visible : false, tags : ['u'], css : { textDecoration : 'underline' } },
 
-            separator00 : { visible : true, separator : true },
+            separator00 : { visible : false, separator : true },
 
-            justifyLeft   : { visible : true, css : { textAlign : 'left' }, tooltip : "Justify Left" },
-            justifyCenter : { visible : true, tags : ['center'], css : { textAlign : 'center' }, tooltip : "Justify Center" },
-            justifyRight  : { visible : true, css : { textAlign : 'right' }, tooltip : "Justify Right" },
-            justifyFull   : { visible : true, css : { textAlign : 'justify' }, tooltip : "Justify Full" },
+            justifyLeft   : { visible : false, css : { textAlign : 'left' } },
+            justifyCenter : { visible : false, tags : ['center'], css : { textAlign : 'center' } },
+            justifyRight  : { visible : false, css : { textAlign : 'right' } },
+            justifyFull   : { visible : false, css : { textAlign : 'justify' } },
 
-            separator01 : { visible : true, separator : true },
+            separator01 : { visible : false, separator : true },
 
-            indent  : { visible : true, tooltip : "Indent" },
-            outdent : { visible : true, tooltip : "Outdent" },
+            indent  : { visible : false },
+            outdent : { visible : false },
 
             separator02 : { visible : false, separator : true },
 
-            subscript   : { visible : true, tags : ['sub'], tooltip : "Subscript" },
-            superscript : { visible : true, tags : ['sup'], tooltip : "Superscript" },
+            subscript   : { visible : false, tags : ['sub'] },
+            superscript : { visible : false, tags : ['sup'] },
 
-            separator03 : { visible : true, separator : true },
+            separator03 : { visible : false, separator : true },
 
-            undo : { visible : true, tooltip : "Undo" },
-            redo : { visible : true, tooltip : "Redo" },
+            undo : { visible : false },
+            redo : { visible : false },
 
-            separator04 : { visible : true, separator : true },
+            separator04 : { visible : false, separator : true },
 
-            insertOrderedList    : { visible : true, tags : ['ol'], tooltip : "Insert Ordered List" },
-            insertUnorderedList  : { visible : true, tags : ['ul'], tooltip : "Insert Unordered List" },
-            insertHorizontalRule : { visible : true, tags : ['hr'], tooltip : "Insert Horizontal Rule" },
+            insertOrderedList    : { visible : false, tags : ['ol'] },
+            insertUnorderedList  : { visible : false, tags : ['ul'] },
+            insertHorizontalRule : { visible : false, tags : ['hr'] },
 
             separator05 : { separator : true },
 
@@ -247,10 +221,7 @@
                     if ( selection.length > 0 )
                     {
                         if ( $.browser.msie )
-                        {
-                            this.focus();
                             this.editorDoc.execCommand('createLink', true, null);
-                        }
                         else
                         {
                             var szURL = prompt('URL', 'http://');
@@ -266,8 +237,7 @@
                         alert(this.options.messages.nonSelection);
                 },
 
-                tags : ['a'],
-                tooltip : "Create link"
+                tags : ['a']
             },
 
             insertImage : {
@@ -275,10 +245,7 @@
                 exec    : function()
                 {
                     if ( $.browser.msie )
-                    {
-                        this.focus();
                         this.editorDoc.execCommand('insertImage', true, null);
-                    }
                     else
                     {
                         var szURL = prompt('URL', 'http://');
@@ -288,30 +255,29 @@
                     }
                 },
 
-                tags : ['img'],
-                tooltip : "Insert image"
+                tags : ['img']
             },
 
             separator06 : { separator : true },
 
-            h1mozilla : { visible : true && $.browser.mozilla, className : 'h1', command : 'heading', arguments : ['h1'], tags : ['h1'], tooltip : "Header 1" },
-            h2mozilla : { visible : true && $.browser.mozilla, className : 'h2', command : 'heading', arguments : ['h2'], tags : ['h2'], tooltip : "Header 2" },
-            h3mozilla : { visible : true && $.browser.mozilla, className : 'h3', command : 'heading', arguments : ['h3'], tags : ['h3'], tooltip : "Header 3" },
+            h1mozilla : { visible : true && $.browser.mozilla, className : 'h1', command : 'heading', arguments : ['h1'], tags : ['h1'] },
+            h2mozilla : { visible : true && $.browser.mozilla, className : 'h2', command : 'heading', arguments : ['h2'], tags : ['h2'] },
+            h3mozilla : { visible : true && $.browser.mozilla, className : 'h3', command : 'heading', arguments : ['h3'], tags : ['h3'] },
 
-            h1 : { visible : true && !( $.browser.mozilla ), className : 'h1', command : 'formatBlock', arguments : ['<H1>'], tags : ['h1'], tooltip : "Header 1" },
-            h2 : { visible : true && !( $.browser.mozilla ), className : 'h2', command : 'formatBlock', arguments : ['<H2>'], tags : ['h2'], tooltip : "Header 2" },
-            h3 : { visible : true && !( $.browser.mozilla ), className : 'h3', command : 'formatBlock', arguments : ['<H3>'], tags : ['h3'], tooltip : "Header 3" },
+            h1 : { visible : true && !( $.browser.mozilla ), className : 'h1', command : 'formatBlock', arguments : ['Heading 1'], tags : ['h1'] },
+            h2 : { visible : true && !( $.browser.mozilla ), className : 'h2', command : 'formatBlock', arguments : ['Heading 2'], tags : ['h2'] },
+            h3 : { visible : true && !( $.browser.mozilla ), className : 'h3', command : 'formatBlock', arguments : ['Heading 3'], tags : ['h3'] },
 
             separator07 : { visible : false, separator : true },
 
-            cut   : { visible : false, tooltip : "Cut" },
-            copy  : { visible : false, tooltip : "Copy" },
-            paste : { visible : false, tooltip : "Paste" },
+            cut   : { visible : false },
+            copy  : { visible : false },
+            paste : { visible : false },
 
-            separator08 : { separator : false && !( $.browser.msie ) },
+            separator08 : { separator : true && !( $.browser.msie ) },
 
-            increaseFontSize : { visible : false && !( $.browser.msie ), tags : ['big'], tooltip : "Increase font size" },
-            decreaseFontSize : { visible : false && !( $.browser.msie ), tags : ['small'], tooltip : "Decrease font size" },
+            increaseFontSize : { visible : true && !( $.browser.msie ), tags : ['big'] },
+            decreaseFontSize : { visible : true && !( $.browser.msie ), tags : ['small'] },
 
             separator09 : { separator : true },
 
@@ -331,19 +297,16 @@
                     }
 
                     this.viewHTML = !( this.viewHTML );
-                },
-                tooltip : "View source code"
+                }
             },
 
             removeFormat : {
                 visible : true,
                 exec    : function()
                 {
-                    if ($.browser.msie) this.focus();
                     this.editorDoc.execCommand('removeFormat', false, []);
                     this.editorDoc.execCommand('unlink', false, []);
-                },
-                tooltip : "Remove formatting"
+                }
             }
         }
     });
@@ -355,11 +318,6 @@
 
         element  : null,
         editor   : null,
-
-        focus : function()
-        {
-            $(this.editorDoc.body).focus();
-        },
 
         init : function( element, options )
         {
@@ -383,16 +341,10 @@
                 if ( newY == 0 && element.rows )
                     newY = ( element.rows * 16 ) + 16;
 
-                var editor = this.editor = $('<iframe src="javascript:false;"></iframe>').css({
+                var editor = this.editor = $('<iframe></iframe>').css({
                     minHeight : ( newY - 6 ).toString() + 'px',
                     width     : ( newX - 8 ).toString() + 'px'
-                }).attr('id', $(element).attr('id') + 'IFrame')
-                .attr('frameborder', '0');
-
-                /**
-                 * http://code.google.com/p/jwysiwyg/issues/detail?id=96
-                 */
-                this.editor.attr('tabindex', $(element).attr('tabindex'));
+                }).attr('id', $(element).attr('id') + 'IFrame');
 
                 if ( $.browser.msie )
                 {
@@ -410,45 +362,39 @@
                 }
             }
 
-            var panel = this.panel = $('<ul role="menu" class="panel"></ul>');
+            var panel = this.panel = $('<ul></ul>').addClass('panel');
 
             this.appendControls();
             this.element = $('<div></div>').css({
                 width : ( newX > 0 ) ? ( newX ).toString() + 'px' : '100%'
             }).addClass('wysiwyg')
-                .append(panel)
-                .append( $('<div><!-- --></div>').css({ clear : 'both' }) )
-                .append(editor)
-		;
+              .append(panel)
+              .append( $('<div><!-- --></div>').css({ clear : 'both' }) )
+              .append(editor);
 
             $(element)
-                .hide()
-                .before(this.element)
-		;
+            // .css('display', 'none')
+            .hide()
+            .before(this.element);
 
             this.viewHTML = false;
+
             this.initialHeight = newY - 8;
 
             /**
              * @link http://code.google.com/p/jwysiwyg/issues/detail?id=52
              */
             this.initialContent = $(element).val();
+
             this.initFrame();
 
             if ( this.initialContent.length == 0 )
                 this.setContent('');
 
-            /**
-             * http://code.google.com/p/jwysiwyg/issues/detail?id=100
-             */
-            var form = $(element).closest('form');
-
             if ( this.options.autoSave )
-	    {
-                form.submit(function() { self.saveContent(); });
-	    }
+                $('form').submit(function() { self.saveContent(); });
 
-            form.bind('reset', function()
+            $('form').bind('reset', function()
             {
                 self.setContent( self.initialContent );
                 self.saveContent();
@@ -464,9 +410,7 @@
              * @link http://code.google.com/p/jwysiwyg/issues/detail?id=14
              */
             if ( this.options.css && this.options.css.constructor == String )
-	    {
                 style = '<link rel="stylesheet" type="text/css" media="screen" href="' + this.options.css + '" />';
-	    }
 
             this.editorDoc = $(this.editor).document();
             this.editorDoc_designMode = false;
@@ -487,14 +431,10 @@
             this.editorDoc.open();
             this.editorDoc.write(
                 this.options.html
-                    /**
-                     * @link http://code.google.com/p/jwysiwyg/issues/detail?id=144
-                     */
-                    .replace(/INITIAL_CONTENT/, function() { return self.initialContent; })
-                    .replace(/STYLE_SHEET/, function() { return style; })
+                    .replace(/INITIAL_CONTENT/, this.initialContent)
+                    .replace(/STYLE_SHEET/, style)
             );
             this.editorDoc.close();
-
             this.editorDoc.contentEditable = 'true';
 
             if ( $.browser.msie )
@@ -515,10 +455,7 @@
              */
             $(this.original).focus(function()
             {
-                if (!$.browser.msie)
-                {
-                    self.focus();
-                }
+                $(self.editorDoc.body).focus();
             });
 
             if ( this.options.autoSave )
@@ -556,12 +493,12 @@
                 if ( $.browser.msie && self.options.brIE && event.keyCode == 13 )
                 {
                     var rng = self.getRange();
-                    rng.pasteHTML('<br />');
-                    rng.collapse(false);
-                    rng.select();
-                    return false;
+                        rng.pasteHTML('<br />');
+                        rng.collapse(false);
+                        rng.select();
+
+    				return false;
                 }
-                return true;
             });
         },
 
@@ -608,57 +545,28 @@
                 var content = this.getContent();
 
                 if ( this.options.rmUnwantedBr )
-		{
                     content = ( content.substr(-4) == '<br>' ) ? content.substr(0, content.length - 4) : content;
-		}
 
                 $(this.original).val(content);
             }
         },
 
-        withoutCss: function()
-        {
-            if ($.browser.mozilla)
-            {
-                try
-                {
-                    this.editorDoc.execCommand('styleWithCSS', false, false);
-                }
-                catch (e)
-                {
-                    try
-                    {
-                        this.editorDoc.execCommand('useCSS', false, true);
-                    }
-                    catch (e)
-                    {
-                    }
-                }
-            }
-        },
-
-        appendMenu : function( cmd, args, className, fn, tooltip )
+        appendMenu : function( cmd, args, className, fn )
         {
             var self = this;
-            args = args || [];
+            var args = args || [];
 
             $('<li></li>').append(
-                $('<a role="menuitem" tabindex="-1" href="javascript:;">' + (className || cmd) + '</a>')
-                    .addClass(className || cmd)
-                    .attr('title', tooltip)
-            ).click(function() {
-                if ( fn ) fn.apply(self); else
-                {
-                    self.withoutCss();
-                    self.editorDoc.execCommand(cmd, false, args);
-                }
+                $('<a><!-- --></a>').addClass(className || cmd)
+            ).mousedown(function() {
+                if ( fn ) fn.apply(self); else self.editorDoc.execCommand(cmd, false, args);
                 if ( self.options.autoSave ) self.saveContent();
             }).appendTo( this.panel );
         },
 
         appendMenuSeparator : function()
         {
-            $('<li role="separator" class="separator"></li>').appendTo( this.panel );
+            $('<li class="separator"></li>').appendTo( this.panel );
         },
 
         appendControls : function()
@@ -676,8 +584,7 @@
                 {
                     this.appendMenu(
                         control.command || name, control.arguments || [],
-                        control.className || control.command || name || 'empty', control.exec,
-                        control.tooltip || control.command || name || ''
+                        control.className || control.command || name || 'empty', control.exec
                     );
                 }
             }
@@ -702,7 +609,7 @@
 
                         if ( $.inArray(elm.tagName.toLowerCase(), control.tags) != -1 )
                             $('.' + className, this.panel).addClass('active');
-                    } while ((elm = elm.parentNode));
+                    } while ( elm = elm.parentNode );
                 }
 
                 if ( control.css )
@@ -716,7 +623,7 @@
                         for ( var cssProperty in control.css )
                             if ( elm.css(cssProperty).toString().toLowerCase() == control.css[cssProperty] )
                                 $('.' + className, this.panel).addClass('active');
-                    } while ((elm = elm.parent()));
+                    } while ( elm = elm.parent() );
                 }
             }
         },

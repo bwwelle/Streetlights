@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/', routes);
+app.use('/anything', anything);
 
 
 if (app.get('env') === 'development') {
