@@ -4,9 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var anything = require('./routes/anything');
+
 var Parse = require('parse').Parse;
 
 var app = express();
@@ -17,12 +15,22 @@ app.set('view engine', 'jade');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+var routes = require('./routes/index');
+var users = require('./routes/users');
+var mediaitem = require('./routes/mediaitem');
+var mediagroup = require('./routes/mediagroup');
+var mediagroupitem = require('./routes/mediagroupitem');
+var credit = require('./routes/credit');
 app.use(cookieParser());
 
 app.use('/', routes);
-app.use('/anything', anything);
+app.use('/mediaitem', mediaitem);
+app.use('/mediagroup', mediagroup);
+app.use('/mediagroupitem', mediagroupitem);
+app.use('/credit', credit);
 
 
 if (app.get('env') === 'development') {

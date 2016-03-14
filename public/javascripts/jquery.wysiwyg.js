@@ -246,13 +246,6 @@
 
                     if ( selection.length > 0 )
                     {
-                        if ( $.browser.msie )
-                        {
-                            this.focus();
-                            this.editorDoc.execCommand('createLink', true, null);
-                        }
-                        else
-                        {
                             var szURL = prompt('URL', 'http://');
 
                             if ( szURL && szURL.length > 0 )
@@ -260,7 +253,6 @@
                                 this.editorDoc.execCommand('unlink', false, []);
                                 this.editorDoc.execCommand('createLink', false, szURL);
                             }
-                        }
                     }
                     else if ( this.options.messages.nonSelection )
                         alert(this.options.messages.nonSelection);
@@ -274,18 +266,10 @@
                 visible : true,
                 exec    : function()
                 {
-                    if ( $.browser.msie )
-                    {
-                        this.focus();
-                        this.editorDoc.execCommand('insertImage', true, null);
-                    }
-                    else
-                    {
-                        var szURL = prompt('URL', 'http://');
+                    var szURL = prompt('URL', 'http://');
 
                         if ( szURL && szURL.length > 0 )
                             this.editorDoc.execCommand('insertImage', false, szURL);
-                    }
                 },
 
                 tags : ['img'],
@@ -294,13 +278,13 @@
 
             separator06 : { separator : true },
 
-            h1mozilla : { visible : true && $.browser.mozilla, className : 'h1', command : 'heading', arguments : ['h1'], tags : ['h1'], tooltip : "Header 1" },
-            h2mozilla : { visible : true && $.browser.mozilla, className : 'h2', command : 'heading', arguments : ['h2'], tags : ['h2'], tooltip : "Header 2" },
-            h3mozilla : { visible : true && $.browser.mozilla, className : 'h3', command : 'heading', arguments : ['h3'], tags : ['h3'], tooltip : "Header 3" },
+            h1mozilla : { visible : true, className : 'h1', command : 'heading', arguments : ['h1'], tags : ['h1'], tooltip : "Header 1" },
+            h2mozilla : { visible : true, className : 'h2', command : 'heading', arguments : ['h2'], tags : ['h2'], tooltip : "Header 2" },
+            h3mozilla : { visible : true, className : 'h3', command : 'heading', arguments : ['h3'], tags : ['h3'], tooltip : "Header 3" },
 
-            h1 : { visible : true && !( $.browser.mozilla ), className : 'h1', command : 'formatBlock', arguments : ['<H1>'], tags : ['h1'], tooltip : "Header 1" },
-            h2 : { visible : true && !( $.browser.mozilla ), className : 'h2', command : 'formatBlock', arguments : ['<H2>'], tags : ['h2'], tooltip : "Header 2" },
-            h3 : { visible : true && !( $.browser.mozilla ), className : 'h3', command : 'formatBlock', arguments : ['<H3>'], tags : ['h3'], tooltip : "Header 3" },
+            h1 : { visible : true, className : 'h1', command : 'formatBlock', arguments : ['<H1>'], tags : ['h1'], tooltip : "Header 1" },
+            h2 : { visible : true, className : 'h2', command : 'formatBlock', arguments : ['<H2>'], tags : ['h2'], tooltip : "Header 2" },
+            h3 : { visible : true, className : 'h3', command : 'formatBlock', arguments : ['<H3>'], tags : ['h3'], tooltip : "Header 3" },
 
             separator07 : { visible : false, separator : true },
 
@@ -308,10 +292,10 @@
             copy  : { visible : false, tooltip : "Copy" },
             paste : { visible : false, tooltip : "Paste" },
 
-            separator08 : { separator : false && !( $.browser.msie ) },
+            separator08 : { separator : false},
 
-            increaseFontSize : { visible : false && !( $.browser.msie ), tags : ['big'], tooltip : "Increase font size" },
-            decreaseFontSize : { visible : false && !( $.browser.msie ), tags : ['small'], tooltip : "Decrease font size" },
+            increaseFontSize : { visible : false, tags : ['big'], tooltip : "Increase font size" },
+            decreaseFontSize : { visible : false, tags : ['small'], tooltip : "Decrease font size" },
 
             separator09 : { separator : true },
 
@@ -394,20 +378,7 @@
                  */
                 this.editor.attr('tabindex', $(element).attr('tabindex'));
 
-                if ( $.browser.msie )
-                {
-                    this.editor
-                        .css('height', ( newY ).toString() + 'px');
-
-                    /**
-                    var editor = $('<span></span>').css({
-                        width     : ( newX - 6 ).toString() + 'px',
-                        height    : ( newY - 8 ).toString() + 'px'
-                    }).attr('id', $(element).attr('id') + 'IFrame');
-
-                    editor.outerHTML = this.editor.outerHTML;
-                     */
-                }
+                
             }
 
             var panel = this.panel = $('<ul role="menu" class="panel"></ul>');
@@ -497,13 +468,7 @@
 
             this.editorDoc.contentEditable = 'true';
 
-            if ( $.browser.msie )
-            {
-                /**
-                 * Remove the horrible border it has on IE.
-                 */
-                setTimeout(function() { $(self.editorDoc.body).css('border', 'none'); }, 0);
-            }
+           
 
             $(this.editorDoc).click(function( event )
             {
@@ -553,14 +518,7 @@
 
             $(this.editorDoc).keydown(function( event )
             {
-                if ( $.browser.msie && self.options.brIE && event.keyCode == 13 )
-                {
-                    var rng = self.getRange();
-                    rng.pasteHTML('<br />');
-                    rng.collapse(false);
-                    rng.select();
-                    return false;
-                }
+               
                 return true;
             });
         },
@@ -729,11 +687,7 @@
             {
                 var value = elements[i].getAttribute(attributeName);
 
-                if ( $.browser.msie )
-                {
-                    /** IE add full path, so I check by the last chars. */
-                    value = value.substr(value.length - attributeValue.length);
-                }
+               
 
                 if ( value == attributeValue )
                     return elements[i];

@@ -1,8 +1,9 @@
 /*
- * File:        jquery.dataTables.editable.js
+ * File:        jquery.dataTables.editable_custom.js
  * Version:     2.3.3.
  * Author:      Jovan Popovic
- *
+ * Edited by: Bradley Weller
+ * 
  * Copyright 2010-2012 Jovan Popovic, all rights reserved.
  *
  * This source file is free software, under either the GPL v2 license or a

@@ -7,8 +7,22 @@ $(document).ready(function(){
 		
 		$("#main-nav li a.nav-top-item").click( // When a top menu item is clicked...
 			function () {
+				$(this).parent().siblings().find('.nav-top-item').removeClass("current"); // Slide up all sub menus except the one clicked
+				$(this).addClass("current"); // Slide up all sub menus except the one clicked
 				$(this).parent().siblings().find("ul").slideUp("normal"); // Slide up all sub menus except the one clicked
 				$(this).next().slideToggle("normal"); // Slide down the clicked sub menu
+				return false;
+			}
+		);
+		
+		$("#main-nav li ul li a").click( // When a sub menu item is clicked...
+			function () {
+				$(this).parent().parent().parent().siblings().find('.current').removeClass("current"); // Slide up all sub menus except the one clicked
+				$(this).parent().siblings().find('a').removeClass('current');
+				$(this).addClass("current"); // Slide up all sub menus except the one clicked
+                var currentSubMenu = $(this).attr('href'); // Set variable "currentSubMenu" to the value of href of clicked sub menu
+                $(currentSubMenu).siblings().hide(); // Hide all content divs
+				$(currentSubMenu).show(); // Show the content div with the id equal to the id of clicked sub menu
 				return false;
 			}
 		);
@@ -40,7 +54,7 @@ $(document).ready(function(){
 		$(".content-box-header h3").click( // When the h3 is clicked...
 			function () {
 			  $(this).parent().next().toggle(); // Toggle the Content Box
-			  $(this).parent().parent().toggleClass("closed-box"); // Toggle the class "closed-box" on the content box
+			  $(this).parent().parent().toggleClass("closed-box"); // Give the Content Box Header a special class for styling and hiding
 			  $(this).parent().find(".content-box-tabs").toggle(); // Toggle the tabs
 			}
 		);
@@ -67,7 +81,7 @@ $(document).ready(function(){
 		$(".close").click(
 			function () {
 				$(this).parent().fadeTo(400, 0, function () { // Links with the class "close" will close parent
-					$(this).slideUp(400);
+					$(this).slideUp(600);
 				});
 				return false;
 			}

@@ -1,0 +1,413 @@
+doctype html
+html
+  head
+    meta(http-equiv='Content-type', content='text/html; charset=UTF-8')
+    title DataTables (table plug-in for jQuery) Data Manager Add-on
+    link(rel='shortcut icon', type='image/ico', href='http://www.datatables.net/media/images/favicon.ico')
+    link(rel='alternate', type='application/rss+xml', title='RSS 2.0', href='http://www.datatables.net/rss.xml')
+    link(rel='stylesheet', href='stylesheets/demo_page.css')
+    link(rel='stylesheet', href='stylesheets/demo_table.css', type='text/css', media='screen')
+    link(rel='stylesheet', type='text/css', href='stylesheets/jquery-ui-1.8.14.custom.css')
+    link(rel='stylesheet', href='stylesheets/demo_table_jui.css', type='text/css', media='screen')
+    link(rel='stylesheet', href='stylesheets/jquery-ui.css', type='text/css', media='screen')
+    link(rel='stylesheet', href='stylesheets/jquery-ui-1.7.2.custom.css', type='text/css', media='screen')
+    script(type='text/javascript', src='javascripts/complete.js')
+    script(src='javascripts/jquery.min.js', type='text/javascript')
+    script(src='javascripts/jquery.dataTables.min.js', type='text/javascript')
+    script(type='text/javascript', src='javascripts/jquery.dataTables.editable.js')
+    script(src='javascripts/jquery.jeditable.js', type='text/javascript')
+    script(src='javascripts/jquery-ui.js', type='text/javascript')
+    script(src='javascripts/jquery.validate.js', type='text/javascript')
+    script(src='javascripts/StreetLightsDataTable.js', type='text/javascript')
+  body#index.grid_2_3
+    #fw_container
+      #fw_content
+        .full_width
+          form#formAddNewRow(action='#', title='Add a new browser', style='width:600px;min-width:600px')
+            label(for='engine') Rendering engine
+            br
+            input#name.required(type='text', name='engine', rel='0')
+            br
+            label(for='browser') Browser
+            br
+            input#browser(type='text', name='browser', rel='1')
+            input(type='hidden', name='platform', rel='2')
+            br
+            label(for='version') Engine version
+            br
+            select#version(name='version', rel='3')
+              option 1.5
+              option 1.7
+              option 1.8
+            br
+            label(for='grade') CSS grade
+            br
+            input(type='radio', name='grade', value='A', rel='4')
+            |  First
+            br
+            input(type='radio', name='grade', value='B', rel='4')
+            |  Second
+            br
+            input(type='radio', name='grade', value='C', checked='', rel='4')
+            |  Third
+            br
+          table#example.display(cellpadding='0', cellspacing='0', border='0')
+            thead
+              tr
+                th Rendering engine
+                th Browser
+                th Platform(s)
+                th Engine version
+                th CSS grade
+            tfoot
+              tr
+                th Rendering engine
+                th Browser
+                th Platform(s)
+                th Engine version
+                th CSS grade
+            tbody
+              tr#2.odd_gradeX
+                td.read_only  A Trident(read only cell)
+                td Internet Explorer 4.0
+                td Win 95+
+                td.center 4
+                td.center X
+              tr#4.even_gradeC
+                td Trident
+                td Internet Explorer 5.0
+                td Win 95+
+                td.center 5
+                td.center C
+              tr#5.odd_gradeA
+                td Trident
+                td Internet Explorer 5.5
+                td Win 95+
+                td.center 5.5
+                td.center A
+              tr#1.even_gradeA
+                td Trident
+                td.read_only Internet Explorer 6(read only cell)
+                td Win 98+
+                td.center 6
+                td.center A
+              tr#5.odd_gradeA
+                td Trident
+                td Internet Explorer 7
+                td.read_only Win XP SP2+(read only cell)
+                td.center 7
+                td.center A
+              tr#1.even_gradeA
+                td Trident
+                td AOL browser (AOL desktop)
+                td Win XP
+                td.center 6
+                td.center.read_only A(read only cell)
+              tr#5.odd_gradeA
+                td Gecko (UTF-8: $¢€)
+                td Firefox 1.0
+                td Win 98+ / OSX.2+
+                td.center 1.7
+                td.center A
+              tr#1.even_gradeA
+                td Gecko
+                td Firefox 1.5
+                td Win 98+ / OSX.2+
+                td.center 1.8
+                td.center A
+              tr#5.odd_gradeA
+                td Gecko
+                td Firefox 2.0
+                td Win 98+ / OSX.2+
+                td.center 1.8
+                td.center A
+              tr#1.even_gradeA
+                td Gecko
+                td Firefox 3.0
+                td Win 2k+ / OSX.3+
+                td.center 1.9
+                td.center A
+              tr#5.odd_gradeA
+                td Gecko
+                td Camino 1.0
+                td OSX.2+
+                td.center 1.8
+                td.center A
+              tr#1.even_gradeA
+                td Gecko
+                td Camino 1.5
+                td OSX.3+
+                td.center 1.8
+                td.center A
+              tr#5.odd_gradeA
+                td Gecko
+                td Netscape 7.2
+                td Win 95+ / Mac OS 8.6-9.2
+                td.center 1.7
+                td.center A
+              tr#1.even_gradeA
+                td Gecko
+                td Netscape Browser 8
+                td Win 98SE+
+                td.center 1.7
+                td.center A
+              tr#5.odd_gradeA
+                td Gecko
+                td Netscape Navigator 9
+                td Win 98+ / OSX.2+
+                td.center 1.8
+                td.center A
+              tr#1.even_gradeA
+                td Gecko
+                td Mozilla 1.0
+                td Win 95+ / OSX.1+
+                td.center 1
+                td.center A
+              tr#5.odd_gradeA
+                td Gecko
+                td Mozilla 1.1
+                td Win 95+ / OSX.1+
+                td.center 1.1
+                td.center A
+              tr#1.even_gradeA
+                td Gecko
+                td Mozilla 1.2
+                td Win 95+ / OSX.1+
+                td.center 1.2
+                td.center A
+              tr#5.odd_gradeA
+                td Gecko
+                td Mozilla 1.3
+                td Win 95+ / OSX.1+
+                td.center 1.3
+                td.center A
+              tr#1.even_gradeA
+                td Gecko
+                td Mozilla 1.4
+                td Win 95+ / OSX.1+
+                td.center 1.4
+                td.center A
+              tr#5.odd_gradeA
+                td Gecko
+                td Mozilla 1.5
+                td Win 95+ / OSX.1+
+                td.center 1.5
+                td.center A
+              tr#1.even_gradeA
+                td Gecko
+                td Mozilla 1.6
+                td Win 95+ / OSX.1+
+                td.center 1.6
+                td.center A
+              tr#5.odd_gradeA
+                td Gecko
+                td Mozilla 1.7
+                td Win 98+ / OSX.1+
+                td.center 1.7
+                td.center A
+              tr#1.even_gradeA
+                td Gecko
+                td Mozilla 1.8
+                td Win 98+ / OSX.1+
+                td.center 1.8
+                td.center A
+              tr#5.odd_gradeA
+                td Gecko
+                td Seamonkey 1.1
+                td Win 98+ / OSX.2+
+                td.center 1.8
+                td.center A
+              tr#1.even_gradeA
+                td Gecko
+                td Epiphany 2.20
+                td Gnome
+                td.center 1.8
+                td.center A
+              tr#5.odd_gradeA
+                td Webkit
+                td Safari 1.2
+                td OSX.3
+                td.center 125.5
+                td.center A
+              tr#1.even_gradeA
+                td Webkit
+                td Safari 1.3
+                td OSX.3
+                td.center 312.8
+                td.center A
+              tr#5.odd_gradeA
+                td Webkit
+                td Safari 2.0
+                td OSX.4+
+                td.center 419.3
+                td.center A
+              tr#1.even_gradeA
+                td Webkit
+                td Safari 3.0
+                td OSX.4+
+                td.center 522.1
+                td.center A
+              tr#5.odd_gradeA
+                td Webkit
+                td OmniWeb 5.5
+                td OSX.4+
+                td.center 420
+                td.center A
+              tr#1.even_gradeA
+                td Webkit
+                td iPod Touch / iPhone
+                td iPod
+                td.center 420.1
+                td.center A
+              tr#5.odd_gradeA
+                td Webkit
+                td S60
+                td S60
+                td.center 413
+                td.center A
+              tr#1.even_gradeA
+                td Presto
+                td Opera 7.0
+                td Win 95+ / OSX.1+
+                td.center -
+                td.center A
+              tr#5.odd_gradeA
+                td Presto
+                td Opera 7.5
+                td Win 95+ / OSX.2+
+                td.center -
+                td.center A
+              tr#1.even_gradeA
+                td Presto
+                td Opera 8.0
+                td Win 95+ / OSX.2+
+                td.center -
+                td.center A
+              tr#5.odd_gradeA
+                td Presto
+                td Opera 8.5
+                td Win 95+ / OSX.2+
+                td.center -
+                td.center A
+              tr#1.even_gradeA
+                td Presto
+                td Opera 9.0
+                td Win 95+ / OSX.3+
+                td.center -
+                td.center A
+              tr#5.odd_gradeA
+                td Presto
+                td Opera 9.2
+                td Win 88+ / OSX.3+
+                td.center -
+                td.center A
+              tr#1.even_gradeA
+                td Presto
+                td Opera 9.5
+                td Win 88+ / OSX.3+
+                td.center -
+                td.center A
+              tr#5.odd_gradeA
+                td Presto
+                td Opera for Wii
+                td Wii
+                td.center -
+                td.center A
+              tr#1.even_gradeA
+                td Presto
+                td Nokia N800
+                td N800
+                td.center -
+                td.center A
+              tr#5.odd_gradeA
+                td Presto
+                td Nintendo DS browser
+                td Nintendo DS
+                td.center 8.5
+                td.center
+                  | C/A
+                  sup 1
+              tr#4.even_gradeC
+                td KHTML
+                td Konqureror 3.1
+                td KDE 3.1
+                td.center 3.1
+                td.center C
+              tr#5.odd_gradeA
+                td KHTML
+                td Konqureror 3.3
+                td KDE 3.3
+                td.center 3.3
+                td.center A
+              tr#1.even_gradeA
+                td KHTML
+                td Konqureror 3.5
+                td KDE 3.5
+                td.center 3.5
+                td.center A
+              tr#2.odd_gradeX
+                td Tasman
+                td Internet Explorer 4.5
+                td Mac OS 8-9
+                td.center -
+                td.center X
+              tr#4.even_gradeC
+                td Tasman
+                td Internet Explorer 5.1
+                td Mac OS 7.6-9
+                td.center 1
+                td.center C
+              tr#3.odd_gradeC
+                td Tasman
+                td Internet Explorer 5.2
+                td Mac OS 8-X
+                td.center 1
+                td.center C
+              tr#1.even_gradeA
+                td Misc
+                td NetFront 3.1
+                td Embedded devices
+                td.center -
+                td.center C
+              tr#5.odd_gradeA
+                td Misc
+                td NetFront 3.4
+                td Embedded devices
+                td.center -
+                td.center A
+              tr#11.even_gradeX
+                td Misc
+                td Dillo 0.8
+                td Embedded devices
+                td.center -
+                td.center X
+              tr#2.odd_gradeX
+                td Misc
+                td Links
+                td Text only
+                td.center -
+                td.center X
+              tr#11.even_gradeX
+                td Misc
+                td Lynx
+                td Text only
+                td.center -
+                td.center X
+              tr#3.odd_gradeC
+                td Misc
+                td IE Mobile
+                td Windows Mobile 6
+                td.center -
+                td.center C
+              tr#4.even_gradeC
+                td Misc
+                td PSP browser
+                td PSP
+                td.center -
+                td.center C
+              tr#10.odd_gradeU
+                td Other browsers
+                td All others
+                td -
+                td.center -
+                td.center U
