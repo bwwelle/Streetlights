@@ -15,20 +15,16 @@ $(document).ready(function () {
 					$('#contentURLEdit').val(contentURL);
 					//$('#artistEdit').val(contentURL);
 
-					var oTable = $('#credit').dataTable();                   
-                    					
-                    $(".chosen-select").chosen();
-                    
-                    $.each(oTable.fnGetNodes(), function(index, value) {
-                        var credit = $('td:eq(0)', value).text();
-                        var beginningText = "<option value='";
-                        var endingText = "'>" + credit + "</option>";
-                        var wholeString = beginningText.concat(credit,endingText)
-                        
-                        $('#artistEdit').append(wholeString);
-                    });
-                    
-                    $('#artistEdit').trigger("liszt:updated");                    
+					var oTable = $('#credit').dataTable();
+
+					$.each(oTable.fnGetNodes(), function (index, value) {
+						var credit = $('td:eq(0)', value).text();
+						var beginningText = "<option value='";
+						var endingText = "'>" + credit + "</option>";
+						var wholeString = beginningText.concat(credit, endingText)
+
+							$('#artistEdit').append(wholeString);
+					});
 				});
 			},
 			"bJQueryUI" : true,
@@ -110,6 +106,15 @@ $(document).ready(function () {
 		});
 
 	var oCredit = $('#credit').dataTable({
+			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				$(nRow).on('click', function () {
+					var objectId = $(nRow).attr("id");
+					var name = $('td:eq(0)', nRow).text();
+
+					$('#creditEditId').val(objectId);
+					$('#creditNameEdit').val(name);
+				});
+			},
 			"bJQueryUI" : true,
 			"bProcessing" : true,
 			"bServerSide" : true,
@@ -126,29 +131,30 @@ $(document).ready(function () {
 			"iDisplayStart" : 0,
 			"bFilter" : false
 		}).makeEditable({
-			sUpdateURL : "/credit/update",
+            sEditURL : "/credit/edit",
 			sAddURL : "/credit/add",
-			sUpdateHttpMethod : "POST",
+			sEditHttpMethod : "GET",
 			sAddHttpMethod : "POST",
 			sDeleteHttpMethod : "POST",
 			sDeleteURL : "/credit/delete",
 			sAddNewRowFormId : "formAddCredit",
 			sAddNewRowButtonId : "btnAddCredit",
 			sAddNewRowOkButtonId : "btnAddCreditOk",
-			sAddNewRowCancelButtonId : "btnAddCreditCancel",
+			sEditRowFormId : "formEditCredit",
+			sEditRowButtonId : "btnEditCredit",
+			sEditOkButtonId : "btnEditCreditOk",
+			sEditRowCancelButtonId : "btnEditCreditCancel",
 			sDeleteRowButtonId : "btnDeleteCredit",
-			"aoColumns" : [{
-					indicator : 'Saving name...',
-					tooltip : 'Click to edit name',
-					type : 'textarea',
-					submit : 'Save changes',
-					sUpdateURL : '/client/update'
-				}
-			],
 			oAddNewRowButtonOptions : {
-				label : "Add...",
+				label : "Add",
 				icons : {
 					primary : 'ui-icon-plus'
+				}
+			},
+            oEditRowButtonOptions : {
+				label : "Edit",
+				icons : {
+					primary : 'ui-icon-pencil'
 				}
 			},
 			oDeleteRowButtonOptions : {
@@ -159,6 +165,12 @@ $(document).ready(function () {
 			},
 			oAddNewRowFormOptions : {
 				title : 'Add a new credit',
+				show : "blind",
+				hide : "explode",
+				modal : true
+			},
+			oEditRowFormOptions : {
+				title : 'Edit a credit',
 				show : "blind",
 				hide : "explode",
 				modal : true

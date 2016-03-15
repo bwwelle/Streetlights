@@ -37,9 +37,13 @@ var urlencodedParser = bodyParser.urlencoded({
                         
 						for (var i = 0; i < credits.length; i++) {
 							var credit = credits[i];
-
-							data[i] = {
-								name : credit.get("name"),
+                            var creditName = "";
+                            
+                            if(credit.get("name") !== null && credit.get("name") !== undefined)
+                                creditName = credit.get("name");
+                                    
+							data[i] = {                            
+								name : creditName,
 								DT_RowId : credit.id
 							};
 						}
@@ -59,24 +63,20 @@ var urlencodedParser = bodyParser.urlencoded({
 		});
 	});
 
-router.post('/update', urlencodedParser, function (req, res) {
+router.get('/edit', urlencodedParser, function (req, res) {
 	Parse.initialize("***REMOVED***", "***REMOVED***");
-
-	var Credit = Parse.Object.extend("Credit");
+    var Credit = Parse.Object.extend("Credit");
 	var credit = new Credit();
-    credit.id = req.body.id;   
     
-    if(req.body.columnName == 'duration')
-    	credit.set(req.body.columnName, parseInt(req.body.value));
-    else
-        credit.set(req.body.columnName, req.body.value);
-        
+    credit.id = req.query["creditEditId"];
+    credit.set("name", req.query["creditNameEdit"]);
+    
 	credit.save(null, {
 		success : function (credit) {
-			res.json("Successful Save!");
+			res.json("Credit Saved!");
 		},
 		error : function (credit, error) {
-			res.json("Save Error!");
+			res.json("Credit Save Error!");
 		}
 	});
 });
@@ -87,14 +87,14 @@ router.post('/add', urlencodedParser, function (req, res) {
 	var Credit = Parse.Object.extend("Credit");
 	var credit = new Credit();
 
-	credit.set("name", req.body.name);
+	credit.set("name", req.body.creditNameAdd);
 
 	credit.save(null, {
 		success : function (credit) {
-			res.json("Successful Save!");
+			res.json("Credit Saved!");
 		},
 		error : function (credit, error) {
-			res.json("Save Error!");
+			res.json("Credit Save Error!");
 		}
 	});
 });
@@ -109,12 +109,12 @@ router.post('/delete', urlencodedParser, function (req, res) {
 
 	query.get(creditID, {
 		success : function (myObj) {
-			// The object was retrieved successfully.
 			myObj.destroy({});
+            
 			res.end();
 		},
 		error : function (object, error) {
-			res.json("Deletion Error: " + error);
+			res.json("Credit Deletion Error: " + error);
 		}
 	});
 });

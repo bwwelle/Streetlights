@@ -37,11 +37,23 @@ var urlencodedParser = bodyParser.urlencoded({
                         
 						for (var i = 0; i < mediaGroups.length; i++) {
 							var mediaGroup = mediaGroups[i];
-
+                            var mediaGroupTitle = "";
+                            var mediaGroupDetail = "";
+                            var mediaGroupImageURL = "";
+                            
+                            if(mediaGroup.get("title") !== null && mediaGroup.get("title") !== undefined)
+                                mediaGroupTitle = mediaGroup.get("title");
+                                
+                            if(mediaGroup.get("detail") !== null && mediaGroup.get("detail") !== undefined)
+                                mediaGroupDetail = mediaGroup.get("detail");
+                            
+                            if(mediaGroup.get("imageURL") !== null && mediaGroup.get("imageURL") !== undefined)
+                                mediaGroupImageURL = mediaGroup.get("imageURL");
+                                
 							data[i] = {
-								title : mediaGroup.get("title"),
-								detail : mediaGroup.get("detail"),
-								imageURL : mediaGroup.get("imageURL"),
+								title : mediaGroupTitle,
+								detail : mediaGroupDetail,
+								imageURL : mediaGroupImageURL,
 								DT_RowId : mediaGroup.id
 							};
 						}

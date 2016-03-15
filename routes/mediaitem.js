@@ -49,17 +49,28 @@ router.get('/', function (req, res) {
 					for (var
 						i = 0; i < mediaItems.length; i++) {
 						var mediaItem = mediaItems[i];
-						var creditList = mediaItem.get("artists");
-						var artistValue = '';
-
-						if (creditList !== null && creditList !== undefined)
-							artistValue = creditList[0].get("name");
+                        var mediaItemCredit = '';
+                        var mediaItemName = '';
+                        var mediaItemDuration = '';
+                        var mediaItemContentURL = '';
+                        
+						if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined)
+							mediaItemCredit = mediaItem.get("artists")[0].get("name");
+                            
+                        if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
+							mediaItemName = mediaItem.get("name");
+                        
+                        if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
+							mediaItemDuration = mediaItem.get("duration");
+                        
+                        if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
+							mediaItemContentURL = mediaItem.get("contentURL");
 
 						data[i] = {
-							name : mediaItem.get("name"),
-							duration : mediaItem.get("duration"),
-							contentURL : mediaItem.get("contentURL"),
-							artist : artistValue,
+							name : mediaItemName,
+							duration : mediaItemDuration,
+							contentURL : mediaItemContentURL,
+							artist : mediaItemCredit,
 							DT_RowId : mediaItem.id
 						};
 					}
@@ -132,8 +143,8 @@ router.post('/delete', urlencodedParser, function (req, res) {
 
 	query.get(mediaItemID, {
 		success : function (myObj) {
-			// The object was retrieved successfully.
 			myObj.destroy({});
+            
 			res.end();
 		},
 		error : function (object, error) {

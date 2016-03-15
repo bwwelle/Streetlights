@@ -208,32 +208,17 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                   #fw_container
                       #fw_content
                         .full_width
-                          form#formAddCredit(title='Add a new browser', style='width:600px;min-width:600px')
-                            label(for='engine') Rendering engine
+                          form#formAddCredit(style='width:600px;min-width:600px')
+                            label(for='creditNameAdd') Name
                             br
-                            input#name.required(type='text', name='engine', rel='0')
+                            input#creditNameAdd.required(type='text', name='creditNameAdd', rel='0')
+                          form#formEditCredit(style='width:600px;min-width:600px')
+                            label(for='creditNameEdit') Name
                             br
-                            label(for='browser') Browser
-                            br
-                            input#browser(type='text', name='browser', rel='1')
-                            input(type='hidden', name='platform', rel='2')
-                            br
-                            label(for='version') Engine version
-                            br
-                            select#version(name='version', rel='3')
-                            br
-                            label(for='grade') CSS grade
-                            br
-                            input(type='radio', name='grade', value='A', rel='4')
-                            |  First
-                            br
-                            input(type='radio', name='grade', value='B', rel='4')
-                            |  Second
-                            br
-                            input(type='radio', name='grade', value='C', checked='', rel='4')
-                            |  Third
-                            br
-                          <button id="btnAddCredit"></button>
+                            input#creditNameEdit.required(type='text', name='creditNameEdit', rel='0')
+                          input#creditEditId(type='hidden', name='mediaItemEditId') 
+                          <button id="btnAddCredit"></button>                          
+                          <button id="btnEditCredit"></button>   
                           <button id="btnDeleteCredit"></button>
                           table#credit.display(cellpadding='0', cellspacing='0', border='0')
                             thead
