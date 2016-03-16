@@ -823,6 +823,7 @@ button.ui-button::-moz-focus-inner {
 	-webkit-box-shadow: 0 0 5px #aaa;
 	box-shadow: 0 0 5px #aaa;
 }
+
 body .ui-tooltip {
 	border-width: 2px;
 }
@@ -840,6 +841,7 @@ body .ui-tooltip {
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
+  margin-bottom:10px;
 	font-family: Arial,Helvetica,sans-serif;
 	font-size: 1em;
 }

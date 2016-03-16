@@ -11,72 +11,71 @@ var urlencodedParser = bodyParser.urlencoded({
 	})
 
 	router.get('/', urlencodedParser, function (req, res) {
-        //req.query["fecFin"]
-		Parse.initialize("***REMOVED***", "***REMOVED***");
-        var MediaGroup = Parse.Object.extend("MediaGroup");
-        var mediaGroup = new MediaGroup();
-        mediaGroup.id = req.body.id;
-		var searchText = req.query.sSearch;
-        displayStart = req.query.iDisplayStart;
         echo = req.query.sEcho;
-		if (searchText != null && searchText != "") {}
+		var id = req.query["mediaGroupEditId"];
+		Parse.initialize("***REMOVED***", "***REMOVED***");
 
 		var MediaGroup = Parse.Object.extend("MediaGroup");
-		var countQuery = new Parse.Query(MediaGroup);
-        mediaGroup.id = req.body.id;
+		var mediaGroupQuery = new Parse.Query(MediaGroup);
+		mediaGroupQuery.include("items");
 
-		countQuery.count({
-			success : function (count){                
-                var tableDataQuery = new Parse.Query(MediaGroup);
-				
-                tableDataQuery.descending("name");
-				tableDataQuery.limit(10);
-                
-                if(parseInt(displayStart) != 0)
-                    tableDataQuery.skip(parseInt(displayStart));
-                    
-				tableDataQuery.find({
-					success : function (mediaGroups) {
-						var data = [];
+		if (id !== undefined && id !== null && id !== "") {
+			mediaGroupQuery.get(id, {
+				success : function (mediaGroup) {
+					var data = [];
+					for (var i = 0; i < mediaGroup.get("items").length; i++) {
+						var mediaItem = mediaGroup.get("items")[i];
+						var mediaItemCredit = '';
+						var mediaItemName = '';
+						var mediaItemDuration = '';
+						var mediaItemContentURL = '';
+
+						if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined)
+							mediaItemCredit = mediaItem.get("artists")[0].get("name");
+
+						if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
+							mediaItemName = mediaItem.get("name");
+
+						if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
+							mediaItemDuration = mediaItem.get("duration");
+
+						if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
+							mediaItemContentURL = mediaItem.get("contentURL");
                         
-						for (var i = 0; i < mediaGroups.length; i++) {
-							var mediaGroup = mediaGroups[i];
-
-							data[i] = {
-								title : mediaGroup.get("title"),
-								detail : mediaGroup.get("detail"),
-								imageURL : mediaGroup.get("imageURL"),
-								DT_RowId : mediaGroup.id
-							};
-						}
-
-						res.json({
-							aaData : data,
-							iTotalRecords : count,
-                            iTotalDisplayRecords : count,
-                            sEcho : echo
-						});
+						data[i] = {
+							name : mediaItemName,
+                            duration : mediaItemDuration,
+							contentURL : mediaItemContentURL,
+							artist : "",
+							DT_RowId : mediaItem.id
+						};
 					}
-				});
-			},
-			error : function (error) {
-				// The request failed
-			}
-		});
-	});
 
+					res.json({
+						aaData : data,
+						iTotalRecords : mediaGroup.get("items").length,
+						iTotalDisplayRecords : mediaGroup.get("items").length,
+						sEcho : echo
+					});
+				},
+				error : function (error) {
+					// The request failed
+				}
+			});
+		};
+	});
 router.post('/update', urlencodedParser, function (req, res) {
 	Parse.initialize("***REMOVED***", "***REMOVED***");
 
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var mediaGroup = new MediaGroup();
-    mediaGroup.id = req.body.id;   
-    
-    if(req.body.columnName == 'duration')
-    	mediaGroup.set(req.body.columnName, parseInt(req.body.value));
-    else
-        mediaGroup.set(req.body.columnName, req.body.value);
-        
+	mediaGroup.id = req.body.id;
+
+	if (req.body.columnName == 'duration')
+		mediaGroup.set(req.body.columnName, parseInt(req.body.value));
+	else
+		mediaGroup.set(req.body.columnName, req.body.value);
+
 	mediaGroup.save(null, {
 		success : function (mediaGroup) {
 			res.json("Successful Save!");

@@ -73,9 +73,7 @@ router.get('/', function (req, res) {
 							artist : mediaItemCredit,
 							DT_RowId : mediaItem.id
 						};
-					}
-                    
-                    
+					}           
 
 					res.json({
 						aaData : data,

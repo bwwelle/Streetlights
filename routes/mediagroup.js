@@ -14,41 +14,41 @@ var urlencodedParser = bodyParser.urlencoded({
 		Parse.initialize("***REMOVED***", "***REMOVED***");
 
 		var searchText = req.query.sSearch;
-        displayStart = req.query.iDisplayStart;
-        echo = req.query.sEcho;
+		displayStart = req.query.iDisplayStart;
+		echo = req.query.sEcho;
 		if (searchText != null && searchText != "") {}
 
 		var MediaGroup = Parse.Object.extend("MediaGroup");
 		var countQuery = new Parse.Query(MediaGroup);
 
 		countQuery.count({
-			success : function (count){                
-                var tableDataQuery = new Parse.Query(MediaGroup);
-				
-                tableDataQuery.descending("name");
+			success : function (count) {
+				var tableDataQuery = new Parse.Query(MediaGroup);
+
+				tableDataQuery.descending("name");
 				tableDataQuery.limit(10);
-                
-                if(parseInt(displayStart) != 0)
-                    tableDataQuery.skip(parseInt(displayStart));
-                    
+
+				if (parseInt(displayStart) != 0)
+					tableDataQuery.skip(parseInt(displayStart));
+
 				tableDataQuery.find({
 					success : function (mediaGroups) {
 						var data = [];
-                        
+
 						for (var i = 0; i < mediaGroups.length; i++) {
 							var mediaGroup = mediaGroups[i];
-                            var mediaGroupTitle = "";
-                            var mediaGroupDetail = "";
-                            var mediaGroupImageURL = "";
-                            
-                            if(mediaGroup.get("title") !== null && mediaGroup.get("title") !== undefined)
-                                mediaGroupTitle = mediaGroup.get("title");
-                                
-                            if(mediaGroup.get("detail") !== null && mediaGroup.get("detail") !== undefined)
-                                mediaGroupDetail = mediaGroup.get("detail");
-                            
-                            if(mediaGroup.get("imageURL") !== null && mediaGroup.get("imageURL") !== undefined)
-                                mediaGroupImageURL = mediaGroup.get("imageURL");
+							var mediaGroupTitle = "";
+							var mediaGroupDetail = "";
+							var mediaGroupImageURL = "";
+
+							if (mediaGroup.get("title") !== null && mediaGroup.get("title") !== undefined)
+								mediaGroupTitle = mediaGroup.get("title");
+
+							if (mediaGroup.get("detail") !== null && mediaGroup.get("detail") !== undefined)
+								mediaGroupDetail = mediaGroup.get("detail");
+
+							if (mediaGroup.get("imageURL") !== null && mediaGroup.get("imageURL") !== undefined)
+								mediaGroupImageURL = mediaGroup.get("imageURL");
                                 
 							data[i] = {
 								title : mediaGroupTitle,
@@ -61,8 +61,8 @@ var urlencodedParser = bodyParser.urlencoded({
 						res.json({
 							aaData : data,
 							iTotalRecords : count,
-                            iTotalDisplayRecords : count,
-                            sEcho : echo
+							iTotalDisplayRecords : count,
+							sEcho : echo
 						});
 					}
 				});
@@ -78,13 +78,13 @@ router.post('/update', urlencodedParser, function (req, res) {
 
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var mediaGroup = new MediaGroup();
-    mediaGroup.id = req.body.id;   
-    
-    if(req.body.columnName == 'duration')
-    	mediaGroup.set(req.body.columnName, parseInt(req.body.value));
-    else
-        mediaGroup.set(req.body.columnName, req.body.value);
-        
+	mediaGroup.id = req.body.id;
+
+	if (req.body.columnName == 'duration')
+		mediaGroup.set(req.body.columnName, parseInt(req.body.value));
+	else
+		mediaGroup.set(req.body.columnName, req.body.value);
+
 	mediaGroup.save(null, {
 		success : function (mediaGroup) {
 			res.json("Successful Save!");

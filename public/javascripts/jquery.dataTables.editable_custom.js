@@ -1441,9 +1441,14 @@ returns true if plugin should continue with sending AJAX request, false will abo
 				//Prevent Submit handler
 				if (oEditRowForm[0].nodeName.toLowerCase() == "form") {
 					oEditRowForm.unbind('submit');
-					oEditRowForm.submit(function (event) {
-						fnOnEditing(event);
-						return false;
+					oEditRowForm.submit(function (event) {						
+                        if (typeof(fnOnEditing) == 'undefined')
+                            return false;
+                        else
+                        {
+                            fnOnEditing(event);
+                            return false;
+						}
 					});
 				} else {
 					$("form", oEditRowForm[0]).unbind('submit');
