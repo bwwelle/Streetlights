@@ -49,21 +49,21 @@ router.get('/', function (req, res) {
 					for (var
 						i = 0; i < mediaItems.length; i++) {
 						var mediaItem = mediaItems[i];
-                        var mediaItemCredit = '';
-                        var mediaItemName = '';
-                        var mediaItemDuration = '';
-                        var mediaItemContentURL = '';
-                        
+						var mediaItemCredit = '';
+						var mediaItemName = '';
+						var mediaItemDuration = '';
+						var mediaItemContentURL = '';
+
 						if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined)
 							mediaItemCredit = mediaItem.get("artists")[0].get("name");
-                            
-                        if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
+
+						if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
 							mediaItemName = mediaItem.get("name");
-                        
-                        if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
+
+						if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
 							mediaItemDuration = mediaItem.get("duration");
-                        
-                        if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
+
+						if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
 							mediaItemContentURL = mediaItem.get("contentURL");
 
 						data[i] = {
@@ -73,7 +73,7 @@ router.get('/', function (req, res) {
 							artist : mediaItemCredit,
 							DT_RowId : mediaItem.id
 						};
-					}           
+					}
 
 					res.json({
 						aaData : data,
@@ -82,7 +82,7 @@ router.get('/', function (req, res) {
 						sEcho : echo
 					});
 				}
-			});            
+			});
 		},
 		error : function (error) {
 			// The request failed
@@ -92,20 +92,26 @@ router.get('/', function (req, res) {
 
 router.get('/edit', urlencodedParser, function (req, res) {
 	Parse.initialize("***REMOVED***", "***REMOVED***");
-    var MediaItem = Parse.Object.extend("MediaItem");
+	var MediaItem = Parse.Object.extend("MediaItem");
 	var mediaItem = new MediaItem();
-    
-    mediaItem.id = req.query["mediaItemEditId"];
-    mediaItem.set("name", req.query["nameEdit"]);
-    mediaItem.set("duration", parseInt(req.query["durationEdit"]));
-    mediaItem.set("contentURL", req.query["contentURLEdit"]);
-    //mediaItem.set("name", req.query["artistEdit"]);
+
+	mediaItem.id = req.query["mediaItemEditId"];
+	mediaItem.set("name", req.query["nameEdit"]);
+	mediaItem.set("duration", parseInt(req.query["durationEdit"]));
+	mediaItem.set("contentURL", req.query["contentURLEdit"]);
+
+    var creditId = req.query["artistEdit"];
+    var Credit = Parse.Object.extend("Credit");
+    var credit = new Credit();
+    credit.id = creditId;	
+    mediaItem.unset("artists");
+	mediaItem.addUnique("artists", credit);
     
 	mediaItem.save(null, {
-		success : function (mediaItem) {
+		success : function (results) {
 			res.json("Media Item Saved!");
 		},
-		error : function (mediaItem, error) {
+		error : function (results, error) {
 			res.json("Media Item Save Error!");
 		}
 	});
@@ -142,7 +148,7 @@ router.post('/delete', urlencodedParser, function (req, res) {
 	query.get(mediaItemID, {
 		success : function (myObj) {
 			myObj.destroy({});
-            
+
 			res.end();
 		},
 		error : function (object, error) {

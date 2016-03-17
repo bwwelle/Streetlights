@@ -20,14 +20,15 @@ $(document).ready(function () {
                     
 					$.each(oTable.fnGetNodes(), function (index, value) {
 						var credit = $('td:eq(0)', value).text();
-						var beginningText = "<option value='";
+                        var creditId = $(value).attr("id");
+						var beginningText = "<option value='" + creditId + "'";
                         
                         if(credit == artist)
-                            endingText = "' selected>" + credit + "</option>";
+                            endingText = " selected>" + credit + "</option>";
                         else
-                            endingText = "'>" + credit + "</option>";
+                            endingText = ">" + credit + "</option>";
                             
-						var wholeString = beginningText.concat(credit, endingText); 
+						var wholeString = beginningText.concat(endingText);
                             
 						$('#artistEdit').append(wholeString);
 					});
