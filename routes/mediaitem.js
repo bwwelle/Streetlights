@@ -127,6 +127,12 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaItem.set("name", req.body.name);
 	mediaItem.set("duration", parseInt(req.body.duration));
 	mediaItem.set("contentURL", req.body.contentURL);
+    mediaItem.unset("artists");
+    
+    var Credit = Parse.Object.extend("Credit");
+    var credit = new Credit();
+    credit.id = req.body.mediaitemartist;
+	mediaItem.addUnique("artists", credit);    
 
 	mediaItem.save(null, {
 		success : function (mediaItem) {

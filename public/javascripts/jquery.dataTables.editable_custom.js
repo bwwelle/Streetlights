@@ -1298,9 +1298,14 @@ returns true if plugin should continue with sending AJAX request, false will abo
 			oAddNewRowButton = $("#" + properties.sAddNewRowButtonId);
 			if (oAddNewRowButton.length != 0) {
 				if (oAddNewRowButton.data("add-event-attached") != "true") {
-					oAddNewRowButton.click(function () {
-						oAddNewRowForm.dialog('open');
-					});
+                    //Setup form to open in dialog
+                    oAddNewRowForm = $("#" + properties.sAddNewRowFormId);
+                    if(oAddNewRowForm.length != 0)
+                    {
+                        oAddNewRowButton.click(function () {
+                            oAddNewRowForm.dialog('open');
+                        });
+                    }
 					oAddNewRowButton.data("add-event-attached", "true");
 				}
 

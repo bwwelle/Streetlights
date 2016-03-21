@@ -3,7 +3,7 @@ $(document).ready(function () {
 	var oMediaItemTable = $('#mediaitem').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				$(nRow).on('click', function () {
-                    var objectId = $(nRow).attr("id");
+					var objectId = $(nRow).attr("id");
 					var name = $('td:eq(0)', nRow).text();
 					var duration = $('td:eq(1)', nRow).text();
 					var contentURL = $('td:eq(2)', nRow).text();
@@ -57,11 +57,15 @@ $(document).ready(function () {
 			"sPaginationType" : "full_numbers",
 			"bFilter" : false
 		}).makeEditable({
-			fnOnAdded : function (value, settings) {
-				//return (value);
-			},
 			fnOnDeleted : function (value, settings) {
-				//oMediaItemTable.fnDraw();
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
+			fnOnEdited : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
 			},
 			sAddURL : "/mediaitem/add",
 			sAddHttpMethod : "POST",
@@ -137,6 +141,19 @@ $(document).ready(function () {
 			"iDisplayStart" : 0,
 			"bFilter" : false
 		}).makeEditable({
+			fnOnAdded : function (value, settings) {
+				//return (value);
+			},
+			fnOnDeleted : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
+			fnOnEdited : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
 			sEditURL : "/credit/edit",
 			sAddURL : "/credit/add",
 			sEditHttpMethod : "GET",
@@ -192,7 +209,7 @@ $(document).ready(function () {
 					var title = $('td:eq(0)', nRow).text();
 					var detail = $('td:eq(1)', nRow).text();
 					var imageURL = $('td:eq(2)', nRow).text();
-                    var artist = $('td:eq(3)', nRow).text();
+					var artist = $('td:eq(3)', nRow).text();
 
 					$('#mediaGroupEditId').val(objectId);
 					$('#mediaGroupTitleEdit').val(title);
@@ -268,6 +285,16 @@ $(document).ready(function () {
 			"iDisplayStart" : 0,
 			"bFilter" : false
 		}).makeEditable({
+			fnOnDeleted : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
+			fnOnEdited : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
 			sDeleteHttpMethod : "POST",
 			sDeleteURL : "/mediagroup/delete",
 			sAddNewRowButtonId : "btnAddMediaGroup",
@@ -312,7 +339,7 @@ $(document).ready(function () {
 				}, {
 					"mDataProp" : "artist"
 				}
-                
+
 			],
 			"fnServerParams" : function (aoData) {
 				aoData.push({
@@ -325,6 +352,16 @@ $(document).ready(function () {
 			"iDisplayStart" : 0,
 			"bFilter" : false
 		}).makeEditable({
+			fnOnDeleted : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
+			fnOnEdited : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
 			sAddURL : "/mediagroupitem/add",
 			sAddHttpMethod : "POST",
 			sDeleteHttpMethod : "POST",
@@ -366,10 +403,10 @@ $(document).ready(function () {
 	});
 
 	$("#btnAddMediaGroup").on("click", function (e) {
-		var oTable = $('#credit').dataTable();
+		var oCreditTable = $('#credit').dataTable();
 		var endingText = "";
 
-		$.each(oTable.fnGetNodes(), function (index, value) {
+		$.each(oCreditTable.fnGetNodes(), function (index, value) {
 			var credit = $('td:eq(0)', value).text();
 			var creditId = $(value).attr("id");
 			var beginningText = "<option value='" + creditId + "'";
@@ -381,13 +418,40 @@ $(document).ready(function () {
 			$('#mediaGroupArtistAdd').append(wholeString);
 		});
 
+		var oMediaItemTable = $('#mediaitem').dataTable();
+		var endingText = "";
+
+		$.each(oMediaItemTable.fnGetNodes(), function (index, value) {
+			var objectId = $(value).attr("id");
+			var name = $('td:eq(0)', value).text();
+			var duration = $('td:eq(1)', value).text();
+			var contentURL = $('td:eq(2)', value).text();
+			var artist = $('td:eq(3)', value).text();
+			var beginningText = "<option value='" + objectId + "'";
+
+			if (index == 0) {
+				endingText = " selected>" + name + "</option>";
+
+				$('#mediaGroupItemId').val(objectId);
+				$('#mediaGroupItemDurationAdd').val(duration);
+				$('#mediaGroupItemContentURLAdd').val(contentURL);
+				$('#mediaGroupItemArtistAdd').val(artist);
+			} else
+				endingText = ">" + name + "</option>";
+
+			var wholeString = beginningText.concat(endingText);
+
+			$('#mediaGroupItemNameAdd').append(wholeString);
+		});
+
 		$("#mediagroupdiv").hide();
 		$("#mediagroupeditadddiv").show();
-		$("#formAddMediaGroup").hide();
-		$("#formEditMediaGroup").show();
+
+		$("#formEditMediaGroup").hide();
+		$("#formAddMediaGroup").show();
 	});
-    
-    $("#btnAddMediaItem").on("click", function (e) {
+
+	$("#btnAddMediaItem").on("click", function (e) {
 		var oTable = $('#credit').dataTable();
 		var endingText = "";
 
@@ -429,5 +493,5 @@ $(document).ready(function () {
 			}
 		});
 	};
-    
+
 });
