@@ -3,7 +3,7 @@ $(document).ready(function () {
 	var oMediaItemTable = $('#mediaitem').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				$(nRow).on('click', function () {
-					var objectId = $(nRow).attr("id");
+                    var objectId = $(nRow).attr("id");
 					var name = $('td:eq(0)', nRow).text();
 					var duration = $('td:eq(1)', nRow).text();
 					var contentURL = $('td:eq(2)', nRow).text();
@@ -16,20 +16,20 @@ $(document).ready(function () {
 					$('#mediaitemartist').val(artist);
 
 					var oTable = $('#credit').dataTable();
-                    var endingText = "";
-                    
+					var endingText = "";
+
 					$.each(oTable.fnGetNodes(), function (index, value) {
 						var credit = $('td:eq(0)', value).text();
-                        var creditId = $(value).attr("id");
+						var creditId = $(value).attr("id");
 						var beginningText = "<option value='" + creditId + "'";
-                        
-                        if(credit == artist)
-                            endingText = " selected>" + credit + "</option>";
-                        else
-                            endingText = ">" + credit + "</option>";
-                            
+
+						if (credit == artist)
+							endingText = " selected>" + credit + "</option>";
+						else
+							endingText = ">" + credit + "</option>";
+
 						var wholeString = beginningText.concat(endingText);
-                            
+
 						$('#artistEdit').append(wholeString);
 					});
 				});
@@ -51,7 +51,6 @@ $(document).ready(function () {
 				}, {
 					"mDataProp" : "artist"
 				}
-
 			],
 			"iDisplayLength" : 10,
 			"iDisplayStart" : 0,
@@ -193,38 +192,56 @@ $(document).ready(function () {
 					var title = $('td:eq(0)', nRow).text();
 					var detail = $('td:eq(1)', nRow).text();
 					var imageURL = $('td:eq(2)', nRow).text();
+                    var artist = $('td:eq(3)', nRow).text();
 
 					$('#mediaGroupEditId').val(objectId);
 					$('#mediaGroupTitleEdit').val(title);
 					$('#mediaGroupDetailEdit').val(detail);
 					$('#mediaGroupImageURLEdit').val(imageURL);
 
-					oMediaGroupItemTable.fnDraw(false);
-                    
-                    var oTable = $('#mediaitem').dataTable();
-                    var endingText = "";
-                    
+					var oTable = $('#credit').dataTable();
+					var endingText = "";
+
 					$.each(oTable.fnGetNodes(), function (index, value) {
-                        var objectId = $(nRow).attr("id");
+						var credit = $('td:eq(0)', value).text();
+						var creditId = $(value).attr("id");
+						var beginningText = "<option value='" + creditId + "'";
+
+						if (credit == artist)
+							endingText = " selected>" + credit + "</option>";
+						else
+							endingText = ">" + credit + "</option>";
+
+						var wholeString = beginningText.concat(endingText);
+
+						$('#mediaGroupArtistEdit').append(wholeString);
+					});
+
+					oMediaGroupItemTable.fnDraw(false);
+
+					var oTable = $('#mediaitem').dataTable();
+					var endingText = "";
+
+					$.each(oTable.fnGetNodes(), function (index, value) {
+						var objectId = $(value).attr("id");
 						var name = $('td:eq(0)', value).text();
-                        var duration = $('td:eq(1)', nRow).text();
-                        var contentURL = $('td:eq(2)', nRow).text();
-                        var artist = $('td:eq(3)', nRow).text(); 
-						var beginningText = "<option value='";
-                        
-                        if(index == 0)
-                        {
-                            endingText = "' selected>" + name + "</option>";
-                            $('#mediaGroupItemId').val(objectId);
-                            $('#mediaGroupItemDurationAdd').val(duration);
-                            $('#mediaGroupItemContentURLAdd').val(contentURL);
-                            $('#mediaGroupItemArtistAdd').val(artist);
-                        }
-                        else
-                            endingText = "'>" + name + "</option>";
-                            
-						var wholeString = beginningText.concat(name, endingText); 
-                            
+						var duration = $('td:eq(1)', nRow).text();
+						var contentURL = $('td:eq(2)', nRow).text();
+						var artist = $('td:eq(3)', nRow).text();
+						var beginningText = "<option value='" + objectId + "'";
+
+						if (index == 0) {
+							endingText = " selected>" + name + "</option>";
+
+							$('#mediaGroupItemId').val(objectId);
+							$('#mediaGroupItemDurationAdd').val(duration);
+							$('#mediaGroupItemContentURLAdd').val(contentURL);
+							$('#mediaGroupItemArtistAdd').val(artist);
+						} else
+							endingText = ">" + name + "</option>";
+
+						var wholeString = beginningText.concat(endingText);
+
 						$('#mediaGroupItemNameAdd').append(wholeString);
 					});
 				});
@@ -242,6 +259,8 @@ $(document).ready(function () {
 					"mDataProp" : "detail"
 				}, {
 					"mDataProp" : "imageURL"
+				}, {
+					"mDataProp" : "artist"
 				}
 			],
 			"sPaginationType" : "full_numbers",
@@ -249,19 +268,10 @@ $(document).ready(function () {
 			"iDisplayStart" : 0,
 			"bFilter" : false
 		}).makeEditable({
-			sEditURL : "/mediagroup/edit",
-			sAddURL : "/mediagroup/add",
-			sEditHttpMethod : "GET",
-			sAddHttpMethod : "POST",
 			sDeleteHttpMethod : "POST",
 			sDeleteURL : "/mediagroup/delete",
-			sAddNewRowFormId : "formAddMediaGroup",
 			sAddNewRowButtonId : "btnAddMediaGroup",
-			sAddNewRowOkButtonId : "btnAddMediaGroupOk",
-			sEditRowFormId : "formEditMediaGroup",
 			sEditRowButtonId : "btnEditMediaGroup",
-			sEditOkButtonId : "btnEditMediaGroupOk",
-			sEditRowCancelButtonId : "btnEditMediaGroupCancel",
 			sDeleteRowButtonId : "btnDeleteMediaGroup",
 			oAddNewRowButtonOptions : {
 				label : "Add",
@@ -280,18 +290,6 @@ $(document).ready(function () {
 				icons : {
 					primary : 'ui-icon-trash'
 				}
-			},
-			oAddNewRowFormOptions : {
-				title : 'Add a new credit',
-				show : "blind",
-				hide : "explode",
-				modal : true
-			},
-			oEditRowFormOptions : {
-				title : 'Edit a media group',
-				show : "blind",
-				hide : "explode",
-				modal : true
 			},
 			sAddDeleteEditToolbarSelector : ".dataTables_length"
 		});
@@ -314,6 +312,7 @@ $(document).ready(function () {
 				}, {
 					"mDataProp" : "artist"
 				}
+                
 			],
 			"fnServerParams" : function (aoData) {
 				aoData.push({
@@ -348,15 +347,87 @@ $(document).ready(function () {
 			},
 			oAddNewRowFormOptions : {
 				title : 'Add a new media group item',
-				show : "blind",
 				hide : "explode",
 				modal : true
 			},
 			sAddDeleteEditToolbarSelector : ".dataTables_length"
 		});
 
-	$("#formAddMediaGroup").dialog({
-		width : '650px'
+	$("#btnEditMediaGroup").on("click", function (e) {
+		/* 		var links = $("#main-nav li ul li a");
+		links.parent().siblings().find('a').removeClass('current');
+		$('#main-nav li ul li a').eq(2).addClass("current")
+		$("#mediagroupitemdiv").siblings().hide(); */
+
+		$("#mediagroupdiv").hide();
+		$("#mediagroupeditadddiv").show();
+		$("#formAddMediaGroup").hide();
+		$("#formEditMediaGroup").show();
 	});
-	//$("#mediagroupitem").css("width","100%")
+
+	$("#btnAddMediaGroup").on("click", function (e) {
+		var oTable = $('#credit').dataTable();
+		var endingText = "";
+
+		$.each(oTable.fnGetNodes(), function (index, value) {
+			var credit = $('td:eq(0)', value).text();
+			var creditId = $(value).attr("id");
+			var beginningText = "<option value='" + creditId + "'";
+
+			endingText = ">" + credit + "</option>";
+
+			var wholeString = beginningText.concat(endingText);
+
+			$('#mediaGroupArtistAdd').append(wholeString);
+		});
+
+		$("#mediagroupdiv").hide();
+		$("#mediagroupeditadddiv").show();
+		$("#formAddMediaGroup").hide();
+		$("#formEditMediaGroup").show();
+	});
+    
+    $("#btnAddMediaItem").on("click", function (e) {
+		var oTable = $('#credit').dataTable();
+		var endingText = "";
+
+		$.each(oTable.fnGetNodes(), function (index, value) {
+			var credit = $('td:eq(0)', value).text();
+			var creditId = $(value).attr("id");
+			var beginningText = "<option value='" + creditId + "'";
+
+			endingText = ">" + credit + "</option>";
+
+			var wholeString = beginningText.concat(endingText);
+
+			$('#mediaitemartist').append(wholeString);
+		});
+	});
+
+	$("#mediaGroupItemNameAdd").on("change", function () {
+		var selected = $(this).val();
+		makeAjaxRequest(selected);
+	});
+
+	function makeAjaxRequest(opts) {
+		$.ajax({
+			type : "GET",
+			data : {
+				"mediaItemId" : opts
+			},
+			url : "/mediagroupitem",
+			success : function (res) {
+				var objectId = res.mediaGroupItemId;
+				var duration = res.mediaGroupItemDurationAdd;
+				var contentURL = res.mediaGroupItemContentURLAdd;
+				var artist = res.mediaGroupItemArtistAdd;
+
+				$('#mediaGroupItemId').val(objectId);
+				$('#mediaGroupItemDurationAdd').val(duration);
+				$('#mediaGroupItemContentURLAdd').val(contentURL);
+				$('#mediaGroupItemArtistAdd').val(artist);
+			}
+		});
+	};
+    
 });

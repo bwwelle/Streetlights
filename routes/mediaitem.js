@@ -50,12 +50,13 @@ router.get('/', function (req, res) {
 						i = 0; i < mediaItems.length; i++) {
 						var mediaItem = mediaItems[i];
 						var mediaItemCredit = '';
+                        var mediaItemCreditId = '';
 						var mediaItemName = '';
 						var mediaItemDuration = '';
 						var mediaItemContentURL = '';
 
 						if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined)
-							mediaItemCredit = mediaItem.get("artists")[0].get("name");
+                            mediaItemCredit = mediaItem.get("artists")[0].get("name");
 
 						if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
 							mediaItemName = mediaItem.get("name");

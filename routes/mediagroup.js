@@ -24,6 +24,7 @@ var urlencodedParser = bodyParser.urlencoded({
 		countQuery.count({
 			success : function (count) {
 				var tableDataQuery = new Parse.Query(MediaGroup);
+                tableDataQuery.include("artists");
 
 				tableDataQuery.descending("name");
 				tableDataQuery.limit(10);
@@ -40,6 +41,7 @@ var urlencodedParser = bodyParser.urlencoded({
 							var mediaGroupTitle = "";
 							var mediaGroupDetail = "";
 							var mediaGroupImageURL = "";
+                            var mediaGroupArtist = "";
 
 							if (mediaGroup.get("title") !== null && mediaGroup.get("title") !== undefined)
 								mediaGroupTitle = mediaGroup.get("title");
@@ -50,10 +52,14 @@ var urlencodedParser = bodyParser.urlencoded({
 							if (mediaGroup.get("imageURL") !== null && mediaGroup.get("imageURL") !== undefined)
 								mediaGroupImageURL = mediaGroup.get("imageURL");
                                 
+                            if (mediaGroup.get("artists") !== null && mediaGroup.get("artists") !== undefined)
+                                mediaGroupArtist = mediaGroup.get("artists")[0].get("name");
+                                
 							data[i] = {
 								title : mediaGroupTitle,
 								detail : mediaGroupDetail,
 								imageURL : mediaGroupImageURL,
+                                artist : mediaGroupArtist,
 								DT_RowId : mediaGroup.id
 							};
 						}

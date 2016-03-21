@@ -3,7 +3,7 @@
  * Version:     2.3.3.
  * Author:      Jovan Popovic
  * Edited by: Bradley Weller
- * 
+ *
  * Copyright 2010-2012 Jovan Popovic, all rights reserved.
  *
  * This source file is free software, under either the GPL v2 license or a
@@ -21,7 +21,7 @@
  * @sAddNewRowFormId                 String      Id of the form for adding new row. Default id is "formAddNewRow".
  * @oAddNewRowFormOptions            Object        Options that will be set to the "Add new row" dialog
  * @sAddNewRowButtonId               String      Id of the button for adding new row. Default id is "btnAddNewRow".
-  * @oAddNewRowButtonOptions            Object        Options that will be set to the "Add new" button 
+ * @oAddNewRowButtonOptions            Object        Options that will be set to the "Add new" button
  * @sAddNewRowOkButtonId             String      Id of the OK button placed in add new row dialog. Default value is "btnAddNewRowOk".
  * @oAddNewRowOkButtonOptions        Object        Options that will be set to the Ok button in the "Add new row" form
  * @sAddNewRowCancelButtonId         String      Id of the Cancel button placed in add new row dialog. Default value is "btnAddNewRowCancel".
@@ -30,7 +30,7 @@
  * @oEditRowButtonOptions            Object        Options that will be set to the "Edit" button
  * @sEditRowOkButtonId             String      Id of the OK button placed in edit row dialog. Default value is "btnEditRowOk".
  * @oEditRowOkButtonOptions        Object        Options that will be set to the Ok button in the "Edit row" form
-* @sEditRowCancelButtonId         String      Id of the Cancel button placed in edit row dialog. Default value is "btnAddNewRowCancel".
+ * @sEditRowCancelButtonId         String      Id of the Cancel button placed in edit row dialog. Default value is "btnAddNewRowCancel".
  * @oEditRowCancelButtonOptions    Object        Options that will be set to the Cancel button in the "Edit row" form
  * @sEditRowFormId                 String      Id of the form for editing a row. Default id is "formEditRow".
  * @oEditRowFormOptions            Object        Options that will be set to the "Edit row" dialog
@@ -161,10 +161,12 @@ returns true if plugin should continue with sending AJAX request, false will abo
 		oDeleteRowButton,
 		oConfirmRowAddingButton,
 		oCancelRowAddingButton,
-        oEditRowButton,oConfirmRowEditingButton,oCancelRowEditingButton;
+		oEditRowButton,
+		oConfirmRowEditingButton,
+		oCancelRowEditingButton;
 		//Reference to the form used for adding new data
 		var oAddNewRowForm;
-        var oEditRowForm;
+		var oEditRowForm;
 
 		//Plugin options
 		var properties;
@@ -408,8 +410,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
 				cells.editable(properties.sUpdateURL, $.extend({}, oDefaultEditableSettings, properties.oEditableSettings));
 			}
 		}
-        
-        function fnOnRowEditing(event) {
+
+		function fnOnRowEditing(event) {
 			///<summary>
 			///Event handler called when a user click on the submit button in the "Edit row" form.
 			///</summary>
@@ -485,25 +487,25 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
 				var oSettings = oTable.fnSettings();
 				/* if (!oSettings.oFeatures.bServerSide) {
-					jQuery.data(oEditRowForm, 'DT_RowId', data);
-					var values = fnTakeRowDataFromFormElements(oEditRowForm);
+				jQuery.data(oEditRowForm, 'DT_RowId', data);
+				var values = fnTakeRowDataFromFormElements(oEditRowForm);
 
-					var rtn;
-					//Edit values from the form into the table
-					if (oSettings.aoColumns != null && isNaN(parseInt(oSettings.aoColumns[0].mDataProp))) {
-						rtn = oTable.fnEditData(rowData);
-					} else {
-						rtn = oTable.fnEditData(values);
-					}
+				var rtn;
+				//Edit values from the form into the table
+				if (oSettings.aoColumns != null && isNaN(parseInt(oSettings.aoColumns[0].mDataProp))) {
+				rtn = oTable.fnEditData(rowData);
+				} else {
+				rtn = oTable.fnEditData(values);
+				}
 
-					var oTRAdded = oTable.fnGetNodes(rtn);
-					//add id returned by server page as an TR id attribute
-					properties.fnSetRowID($(oTRAdded), data, true);
-					//Apply editable plugin on the cells of the table
-					fnApplyEditable(oTRAdded);
+				var oTRAdded = oTable.fnGetNodes(rtn);
+				//add id returned by server page as an TR id attribute
+				properties.fnSetRowID($(oTRAdded), data, true);
+				//Apply editable plugin on the cells of the table
+				fnApplyEditable(oTRAdded);
 
-					$("tr.last-added-row", oTable).removeClass("last-added-row");
-					$(oTRAdded).addClass("last-added-row");
+				$("tr.last-added-row", oTable).removeClass("last-added-row");
+				$(oTRAdded).addClass("last-added-row");
 				} */
 				/*else {*/
 				oTable.fnDraw(false);
@@ -526,8 +528,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
 				}
 			}
 		}
-        
-        function _fnOnEditedRowPosted(data) {
+
+		function _fnOnEditedRowPosted(data) {
 			///<summary>Callback function called BEFORE a new record is posted to the server</summary>
 			///TODO: Check this
 
@@ -555,10 +557,6 @@ returns true if plugin should continue with sending AJAX request, false will abo
 			if (event.preventDefault)
 				event.preventDefault();
 		}
-        
-        
-        
-        
 
 		function fnOnRowAdding(event) {
 			///<summary>
@@ -729,7 +727,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 			}
 		}
 
-        function fnDisableEditButton() {
+		function fnDisableEditButton() {
 			///<summary>
 			///Function that disables edit button
 			///</summary>
@@ -749,15 +747,15 @@ returns true if plugin should continue with sending AJAX request, false will abo
 			///<summary>
 			///Function that enables edit button
 			///</summary>
-            
-           	if (properties.oEditRowButtonOptions != null) {
+
+			if (properties.oEditRowButtonOptions != null) {
 				//oDeleteRowButton.enable();
 				oEditRowButton.button("option", "disabled", false);
 			} else {
 				oEditRowButton.removeAttr("disabled");
 			}
 		}
-        
+
 		var nSelectedRow,
 		nSelectedCell;
 		var oKeyTablePosition;
@@ -1188,26 +1186,26 @@ returns true if plugin should continue with sending AJAX request, false will abo
 			},
 			sAddNewRowFormId : "formAddNewMediaItemRow",
 			sAddNewRowButtonId : "btnAddNewMediaItemRow",
-            sEditRowFormId : "formEditMediaItemRow",
-            sEditRowButtonId : "btnEditMediaItemRow",
+			sEditRowFormId : "formEditMediaItemRow",
+			sEditRowButtonId : "btnEditMediaItemRow",
 			oAddNewRowButtonOptions : null,
-            oEditRowButtonOptions : null,
+			oEditRowButtonOptions : null,
 			sAddNewRowOkButtonId : "btnAddNewMediaItemRowOk",
-            sEditRowOkButtonId : "btnAddNewMediaItemRowOk",
+			sEditRowOkButtonId : "btnAddNewMediaItemRowOk",
 			sAddNewRowCancelButtonId : "btnAddNewMediaItemRowCancel",
-            sEditRowCancelButtonId : "btnAddNewMediaItemRowCancel",	
+			sEditRowCancelButtonId : "btnAddNewMediaItemRowCancel",
 			oAddNewRowOkButtonOptions : {
 				label : "Ok"
 			},
-            oEditRowOkButtonOptions : {
+			oEditRowOkButtonOptions : {
 				label : "Ok"
 			},
 			oAddNewRowCancelButtonOptions : {
 				label : "Cancel"
-			},		
+			},
 			oEditRowCancelButtonOptions : {
 				label : "Cancel"
-			},	
+			},
 			sDeleteRowButtonId : "btnDeleteMediaItemRow",
 			oDeleteRowButtonOptions : null,
 			sSelectedRowClass : "row_selected",
@@ -1224,7 +1222,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 			fnOnAdded : _fnOnAdded,
 			fnOnEditing : _fnOnEditing,
 			fnOnEdited : _fnOnEdited,
-            fnOnEditedRowPosted : _fnOnEditedRowPosted,
+			fnOnEditedRowPosted : _fnOnEditedRowPosted,
 			sAddHttpMethod : 'POST',
 			sAddDataType : "text",
 			sDeleteHttpMethod : 'POST',
@@ -1296,6 +1294,24 @@ returns true if plugin should continue with sending AJAX request, false will abo
 				fnApplyEditable(oTable.fnGetNodes());
 			}
 
+			//Add button click handler on the "Add new row" button
+			oAddNewRowButton = $("#" + properties.sAddNewRowButtonId);
+			if (oAddNewRowButton.length != 0) {
+				if (oAddNewRowButton.data("add-event-attached") != "true") {
+					oAddNewRowButton.click(function () {
+						oAddNewRowForm.dialog('open');
+					});
+					oAddNewRowButton.data("add-event-attached", "true");
+				}
+
+			} else {
+				if ($(properties.sAddDeleteToolbarSelector).length == 0) {
+					throw "Cannot find a button with an id '" + properties.sAddNewRowButtonId + "', or placeholder with an id '" + properties.sAddDeleteToolbarSelector + "' that should be used for adding new row although form for adding new record is specified";
+				} else {
+					oAddNewRowButton = null; //It will be auto-generated later
+				}
+			}
+
 			//Setup form to open in dialog
 			oAddNewRowForm = $("#" + properties.sAddNewRowFormId);
 			if (oAddNewRowForm.length != 0) {
@@ -1316,24 +1332,6 @@ returns true if plugin should continue with sending AJAX request, false will abo
 					};
 				}
 				oAddNewRowForm.dialog(properties.oAddNewRowFormOptions);
-
-				//Add button click handler on the "Add new row" button
-				oAddNewRowButton = $("#" + properties.sAddNewRowButtonId);
-				if (oAddNewRowButton.length != 0) {
-					if (oAddNewRowButton.data("add-event-attached") != "true") {
-						oAddNewRowButton.click(function () {
-							oAddNewRowForm.dialog('open');
-						});
-						oAddNewRowButton.data("add-event-attached", "true");
-					}
-
-				} else {
-					if ($(properties.sAddDeleteToolbarSelector).length == 0) {
-						throw "Cannot find a button with an id '" + properties.sAddNewRowButtonId + "', or placeholder with an id '" + properties.sAddDeleteToolbarSelector + "' that should be used for adding new row although form for adding new record is specified";
-					} else {
-						oAddNewRowButton = null; //It will be auto-generated later
-					}
-				}
 
 				//Prevent Submit handler
 				if (oAddNewRowForm[0].nodeName.toLowerCase() == "form") {
@@ -1398,8 +1396,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
 			} else {
 				oAddNewRowForm = null;
 			}
-            
-            //Setup edit form to open in dialog
+
+			//Setup edit form to open in dialog
 			oEditRowForm = $("#" + properties.sEditRowFormId);
 			if (oEditRowForm.length != 0) {
 
@@ -1420,34 +1418,15 @@ returns true if plugin should continue with sending AJAX request, false will abo
 				}
 				oEditRowForm.dialog(properties.oEditRowFormOptions);
 
-				//Edit button click handler on the "Edit row" button
-				oEditRowButton = $("#" + properties.sEditRowButtonId);
-				if (oEditRowButton.length != 0) {
-					if (oEditRowButton.data("edit-event-attached") != "true") {
-						oEditRowButton.click(function () {
-							oEditRowForm.dialog('open');
-						});
-						oEditRowButton.data("edit-event-attached", "true");
-					}
-
-				} else {
-					if ($(properties.sAddDeleteToolbarSelector).length == 0) {
-						throw "Cannot find a button with an id '" + properties.sEditRowButtonId + "', or placeholder with an id '" + properties.sAddDeleteToolbarSelector + "' that should be used for editing a row although form for editing record is specified";
-					} else {
-						oEditRowButton = null; //It will be auto-generated later
-					}
-				}
-
 				//Prevent Submit handler
 				if (oEditRowForm[0].nodeName.toLowerCase() == "form") {
 					oEditRowForm.unbind('submit');
-					oEditRowForm.submit(function (event) {						
-                        if (typeof(fnOnEditing) == 'undefined')
-                            return false;
-                        else
-                        {
-                            fnOnEditing(event);
-                            return false;
+					oEditRowForm.submit(function (event) {
+						if (typeof(fnOnEditing) == 'undefined')
+							return false;
+						else {
+							fnOnEditing(event);
+							return false;
 						}
 					});
 				} else {
@@ -1505,6 +1484,9 @@ returns true if plugin should continue with sending AJAX request, false will abo
 				}
 			} else {
 				oEditRowForm = null;
+
+				oEditRowButton = $("#" + properties.sEditRowButtonId);
+				if (oEditRowButton.length != 0) {}
 			}
 
 			//Set the click handler on the "Delete selected row" button
@@ -1530,17 +1512,17 @@ returns true if plugin should continue with sending AJAX request, false will abo
 						oAddNewRowForm.dialog('open');
 					});
 				}
-                
-                if (oEditRowButton == null && properties.sEditRowButtonId != ""
+
+				if (oEditRowButton == null && properties.sEditRowButtonId != ""
 					 && oEditRowForm != null) {
-					oAddDeleteEditToolbar.append("<button id='" + properties.sEditRowButtonId + "' class='edit_row'>Edit</button>");
+/* 					oAddDeleteEditToolbar.append("<button id='" + properties.sEditRowButtonId + "' class='edit_row'>Edit</button>"); */
 					oEditRowButton = $("#" + properties.sEditRowButtonId);
-                    
+
 					oEditRowButton.click(function () {
 						oEditRowForm.dialog('open');
 					});
 				}
-                
+
 				if (oDeleteRowButton == null && properties.sDeleteRowButtonId != "") {
 					oAddDeleteEditToolbar.append("<button id='" + properties.sDeleteRowButtonId + "' class='delete_row'>Delete</button>");
 					oDeleteRowButton = $("#" + properties.sDeleteRowButtonId);
@@ -1548,17 +1530,18 @@ returns true if plugin should continue with sending AJAX request, false will abo
 				}
 			}
 
-            //If delete button exists disable it until some row is selected
+			//If delete button exists disable it until some row is selected
 			if (oEditRowButton != null) {
 				if (properties.oEditRowButtonOptions != null) {
 					oEditRowButton.button(properties.oEditRowButtonOptions);
 				}
 				fnDisableEditButton();
-			}            
-            
+			}
+
 			//If delete button exists disable it until some row is selected
 			if (oDeleteRowButton != null) {
 				if (properties.oDeleteRowButtonOptions != null) {
+					//adds all the classes to the delete button, specifically in jquery-ui.js line 531
 					oDeleteRowButton.button(properties.oDeleteRowButtonOptions);
 				}
 				fnDisableDeleteButton();
@@ -1570,8 +1553,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
 					oAddNewRowButton.button(properties.oAddNewRowButtonOptions);
 				}
 			}
-            
-            //If edit button exists convert it to the JQuery-ui button
+
+			//If edit button exists convert it to the JQuery-ui button
 			if (oEditRowButton != null) {
 				if (properties.oEditRowButtonOptions != null) {
 					oEditRowButton.button(properties.oEditRowButtonOptions);
@@ -1591,8 +1574,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
 					oCancelRowAddingButton.button(properties.oAddNewRowCancelButtonOptions);
 				}
 			}
-            
-            //If form ok button exists convert it to the JQuery-ui button
+
+			//If form ok button exists convert it to the JQuery-ui button
 			if (oConfirmRowEditingButton != null) {
 				if (properties.oEditRowOkButtonOptions != null) {
 					oConfirmRowEditingButton.button(properties.oEditRowOkButtonOptions);
@@ -1618,8 +1601,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
 						if (oDeleteRowButton != null) {
 							fnDisableDeleteButton();
 						}
-                        
-                        if (oEditRowButton != null) {
+
+						if (oEditRowButton != null) {
 							fnDisableEditButton();
 						}
 					} else {
@@ -1630,8 +1613,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
 						if (oDeleteRowButton != null) {
 							fnEnableDeleteButton();
 						}
-                        
-                        if (oEditRowButton != null) {
+
+						if (oEditRowButton != null) {
 							fnEnableEditButton();
 						}
 					}

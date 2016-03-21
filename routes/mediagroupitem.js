@@ -11,16 +11,19 @@ var urlencodedParser = bodyParser.urlencoded({
 	})
 
 	router.get('/', urlencodedParser, function (req, res) {
-        echo = req.query.sEcho;
-		var id = req.query["mediaGroupEditId"];
+		echo = req.query.sEcho;
+		var mediaGroupEditId = req.query["mediaGroupEditId"];
+		var mediaItemId = req.query["mediaItemId"];
+
 		Parse.initialize("***REMOVED***", "***REMOVED***");
 
-		var MediaGroup = Parse.Object.extend("MediaGroup");
-		var mediaGroupQuery = new Parse.Query(MediaGroup);
-		mediaGroupQuery.include("items");
+		if (mediaGroupEditId !== undefined && mediaGroupEditId !== null && mediaGroupEditId !== "") {
+			var MediaGroup = Parse.Object.extend("MediaGroup");
+			var mediaGroupQuery = new Parse.Query(MediaGroup);
+			mediaGroupQuery.include("items");
+            mediaGroupQuery.include("items.artists");
 
-		if (id !== undefined && id !== null && id !== "") {
-			mediaGroupQuery.get(id, {
+			mediaGroupQuery.get(mediaGroupEditId, {
 				success : function (mediaGroup) {
 					var data = [];
 					for (var i = 0; i < mediaGroup.get("items").length; i++) {
@@ -28,10 +31,10 @@ var urlencodedParser = bodyParser.urlencoded({
 						var mediaItemCredit = '';
 						var mediaItemName = '';
 						var mediaItemDuration = '';
-						var mediaItemContentURL = '';
+						var mediaItemContentURL = '';                       
 
 						if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined)
-							mediaItemCredit = mediaItem.get("artists")[0].get("name");
+                            mediaItemCredit = mediaItem.get("artists")[0].get("name"); 
 
 						if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
 							mediaItemName = mediaItem.get("name");
@@ -41,12 +44,12 @@ var urlencodedParser = bodyParser.urlencoded({
 
 						if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
 							mediaItemContentURL = mediaItem.get("contentURL");
-                        
+
 						data[i] = {
 							name : mediaItemName,
-                            duration : mediaItemDuration,
+							duration : mediaItemDuration,
 							contentURL : mediaItemContentURL,
-							artist : "",
+							artist : mediaItemCredit,
 							DT_RowId : mediaItem.id
 						};
 					}
@@ -62,8 +65,44 @@ var urlencodedParser = bodyParser.urlencoded({
 					// The request failed
 				}
 			});
+		} else if (mediaItemId !== undefined && mediaItemId !== null && mediaItemId !== "") {
+			var mediaItem = Parse.Object.extend("MediaItem");
+			var mediaItemQuery = new Parse.Query(mediaItem);
+            mediaGroupQuery.include("artists");
+
+			mediaItemQuery.get(mediaItemId, {
+				success : function (mediaItem) {
+					var mediaItemName = '';
+					var mediaItemDuration = '';
+					var mediaItemContentURL = '';
+
+					if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined)
+						mediaItemCredit = mediaItem.get("artists")[0].get("name");
+
+					if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
+						mediaItemName = mediaItem.get("name");
+
+					if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
+						mediaItemDuration = mediaItem.get("duration");
+
+					if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
+						mediaItemContentURL = mediaItem.get("contentURL");
+
+					res.json({
+						"mediaGroupItemId" : mediaItemId,
+						"mediaGroupItemDurationAdd" : mediaItemDuration,
+						"mediaGroupItemContentURLAdd" : mediaItemContentURL,
+						"mediaGroupItemArtistAdd" : mediaItemCredit,
+						sEcho : echo
+					});
+				},
+				error : function (error) {
+					// The request failed
+				}
+			});
 		};
 	});
+    
 router.post('/update', urlencodedParser, function (req, res) {
 	Parse.initialize("***REMOVED***", "***REMOVED***");
 
