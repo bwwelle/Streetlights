@@ -24,7 +24,7 @@ var urlencodedParser = bodyParser.urlencoded({
 		countQuery.count({
 			success : function (count) {
 				var tableDataQuery = new Parse.Query(MediaGroup);
-                tableDataQuery.include("artists");
+				tableDataQuery.include("artists");
 
 				tableDataQuery.descending("name");
 				tableDataQuery.limit(10);
@@ -41,7 +41,7 @@ var urlencodedParser = bodyParser.urlencoded({
 							var mediaGroupTitle = "";
 							var mediaGroupDetail = "";
 							var mediaGroupImageURL = "";
-                            var mediaGroupArtist = "";
+							var mediaGroupArtist = "";
 
 							if (mediaGroup.get("title") !== null && mediaGroup.get("title") !== undefined)
 								mediaGroupTitle = mediaGroup.get("title");
@@ -51,15 +51,15 @@ var urlencodedParser = bodyParser.urlencoded({
 
 							if (mediaGroup.get("imageURL") !== null && mediaGroup.get("imageURL") !== undefined)
 								mediaGroupImageURL = mediaGroup.get("imageURL");
-                                
-                            if (mediaGroup.get("artists") !== null && mediaGroup.get("artists") !== undefined)
-                                mediaGroupArtist = mediaGroup.get("artists")[0].get("name");
-                                
+
+							if (mediaGroup.get("artists") !== null && mediaGroup.get("artists") !== undefined)
+								mediaGroupArtist = mediaGroup.get("artists")[0].get("name");
+
 							data[i] = {
 								title : mediaGroupTitle,
 								detail : mediaGroupDetail,
 								imageURL : mediaGroupImageURL,
-                                artist : mediaGroupArtist,
+								artist : mediaGroupArtist,
 								DT_RowId : mediaGroup.id
 							};
 						}
@@ -111,9 +111,15 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaGroup.set("detail", req.body.detail);
 	mediaGroup.set("imageURL", req.body.imageURL);
 
+	var Credit = Parse.Object.extend("Credit");
+	var credit = new Credit();
+    
+	credit.id = req.body.artist;
+	mediaGroup.addUnique("artists", credit);
+
 	mediaGroup.save(null, {
 		success : function (mediaGroup) {
-			res.json("Successful Save!");
+			res.json(mediaGroup.id);
 		},
 		error : function (mediaGroup, error) {
 			res.json("Save Error!");

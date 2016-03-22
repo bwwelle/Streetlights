@@ -141,9 +141,6 @@ $(document).ready(function () {
 			"iDisplayStart" : 0,
 			"bFilter" : false
 		}).makeEditable({
-			fnOnAdded : function (value, settings) {
-				//return (value);
-			},
 			fnOnDeleted : function (value, settings) {
 				oMediaItemTable.fnDraw();
 				oMediaGroupTable.fnDraw();
@@ -211,7 +208,7 @@ $(document).ready(function () {
 					var imageURL = $('td:eq(2)', nRow).text();
 					var artist = $('td:eq(3)', nRow).text();
 
-					$('#mediaGroupEditId').val(objectId);
+					$('#mediaGroupId').val(objectId);
 					$('#mediaGroupTitleEdit').val(title);
 					$('#mediaGroupDetailEdit').val(detail);
 					$('#mediaGroupImageURLEdit').val(imageURL);
@@ -330,6 +327,12 @@ $(document).ready(function () {
 			"sAjaxSource" : "/mediagroupitem",
 			"bPaginate" : true,
 			"bSort" : true,
+			"aoColumnDefs" : [{
+					"aTargets" : ["0"],
+					"data": null,
+                    "sDefaultContent": ""                    
+				}
+			],
 			"aoColumns" : [{
 					"mDataProp" : "name"
 				}, {
@@ -343,8 +346,8 @@ $(document).ready(function () {
 			],
 			"fnServerParams" : function (aoData) {
 				aoData.push({
-					"name" : "mediaGroupEditId",
-					"value" : $('#mediaGroupEditId').val()
+					"name" : "mediaGroupId",
+					"value" : $('#mediaGroupId').val()
 				});
 			},
 			"sPaginationType" : "full_numbers",
@@ -360,6 +363,9 @@ $(document).ready(function () {
 			fnOnEdited : function (value, settings) {
 				oMediaItemTable.fnDraw();
 				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},            
+			fnOnAdded : function (value, settings) {
 				oMediaGroupItemTable.fnDraw();
 			},
 			sAddURL : "/mediagroupitem/add",
@@ -446,8 +452,9 @@ $(document).ready(function () {
 
 		$("#mediagroupdiv").hide();
 		$("#mediagroupeditadddiv").show();
-
 		$("#formEditMediaGroup").hide();
+
+		$("#mediGroupButtons").show();
 		$("#formAddMediaGroup").show();
 	});
 
@@ -468,12 +475,82 @@ $(document).ready(function () {
 		});
 	});
 
-	$("#mediaGroupItemNameAdd").on("change", function () {
-		var selected = $(this).val();
-		makeAjaxRequest(selected);
+	$("#saveMediaGroup").on("click", function (e) {
+		var mediaGroupTitle = $('#mediaGroupTitleAdd').val();
+		var mediaGroupDetail = $('#mediaGroupDetailAdd').val();
+		var mediaGroupImageURL = $('#mediaGroupImageURLAdd').val();
+		var mediaGroupArtist = $('#mediaGroupArtistAdd').val();
+
+		var data = [];
+		data = {
+			title : mediaGroupTitle,
+			detail : mediaGroupDetail,
+			imageURL : mediaGroupImageURL,
+			artist : mediaGroupArtist
+		};
+
+		mediaGroupAddAjaxCall(data);
 	});
 
-	function makeAjaxRequest(opts) {
+	$("#viewMediaGroup").on("click", function (e) {
+		$("#mediGroupButtons").hide();
+	});
+
+	$("#viewCredit").on("click", function (e) {
+		$("#mediGroupButtons").hide();
+	});
+
+	$("#viewMediaItem").on("click", function (e) {
+		$("#mediGroupButtons").hide();
+	});
+
+	function mediaGroupAddAjaxCall(opts) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"title" : opts.title,
+				"detail" : opts.detail,
+				"imageURL" : opts.imageURL,
+				"artist" : opts.artist
+			},
+			url : "/mediagroup/add",
+			success : function (res) {
+				oMediaGroupTable.fnDraw();
+
+				$("#mediaItemTableDiv").show();
+				$("#formEditMediaGroup").show();
+
+				$('#mediaGroupTitleEdit').val(opts.title);
+				$('#mediaGroupDetailEdit').val(opts.detail);
+				$('#mediaGroupImageURLEdit').val(opts.imageURL);
+
+				//$('#mediaGroupArtistAdd').val(opts.artist);
+                $("#formAddMediaGroupItem input[name=mediaGroupId]").val(res);  
+                $("#formEditMediaGroup input[name=mediaGroupId]").val(res);  
+
+				$("#formAddMediaGroup").hide();
+                
+				alert("Successfully Saved Media Group");
+			}
+		});
+	};
+
+	$("#cancelMediaGroup").on("click", function (e) {
+		$("#mediagroupeditadddiv").hide();
+		$("#formEditMediaGroup").hide();
+		$("#formAddMediaGroup").hide();
+		$("#mediagroupitem").hide();
+		$("#btnAddMediaGroupItem").hide();
+		$("#btnDeleteMediaGroupItem").hide();
+		$("#mediagroupdiv").show();
+	});
+
+	$("#mediaGroupItemNameAdd").on("change", function () {
+		var selected = $(this).val();
+		mediaGroupItemNameAddAjaxCall(selected);
+	});
+
+	function mediaGroupItemNameAddAjaxCall(opts) {
 		$.ajax({
 			type : "GET",
 			data : {

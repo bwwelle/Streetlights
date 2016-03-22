@@ -81,12 +81,12 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                 | Music
               ul
                 li
-                  a(href='#creditdiv') Credit
+                  a#viewCredit(href='#creditdiv') Credit
                 li
-                  a(href='#mediagroupdiv') Media Groups
+                  a#viewMediaGroup(href='#mediagroupdiv') Media Groups
                 // Add class "current" to sub menu items also
                 li
-                  a.current(href='#mediaitemdiv') Media Items
+                  a#viewMediaItem.current(href='#mediaitemdiv') Media Items
           // End #main-nav
       // End #sidebar
       #main-content
@@ -102,6 +102,22 @@ html(xmlns='http://www.w3.org/1999/xhtml')
               |  Javascript to navigate the interface properly.
         // Page Head
         h2 Welcome Streetlights Admin
+        #mediGroupButtons(style='display:none')
+          ul.shortcut-buttons-set
+            // Replace the icons URL's with your own
+            li
+              a#saveMediaGroup.shortcut-button
+                  img(src='resources/images/icons/path-to-icon.png', alt='icon')
+                  br
+                  | 					Save Album Data
+            li
+              a#cancelMediaGroup.shortcut-button
+                span
+                  img#cancelMediaGroup(src='resources/images/icons/path-to-icon.png', alt='icon')
+                  br
+                  | 					Cancel
+        .clear
+        // End .clear
         .content-box
           // Start Content Box
           .content-box-content
@@ -250,7 +266,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             label(for='mediaGroupArtistEdit') Media Group Artist
                             br
                             select#mediaGroupArtistEdit(name='mediaGroupArtistEdit', data-placeholder="Type 'C' to view", style='width:200px;', tabindex='11', rel='3')
-                            input#mediaGroupEditId(type='hidden', name='mediaGroupEditId')
+                            input#mediaGroupId(type='hidden', name='mediaGroupId')
                           form#formAddMediaGroupItem(style='width:600px;min-width:600px')
                             label(for='mediaGroupItemNameAdd') Name
                             br
@@ -268,22 +284,23 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             br
                             input#mediaGroupItemArtistAdd(type='text', name='mediaGroupItemArtistAdd', rel='3', readonly='')                            
                             input#mediaGroupItemId(type='hidden', name='mediaGroupItemId')
-                          <button id="btnAddMediaGroupItem"></button>
-                          <button id="btnDeleteMediaGroupItem"></button> 
-                          table#mediagroupitem.display(cellpadding='0', cellspacing='0', border='0')
-                            thead
-                              tr
-                                th name
-                                th duration
-                                th contentURL
-                                th artist
-                            tfoot
-                              tr
-                                th name
-                                th duration
-                                th contentURL
-                                th artist
-                                
+                            input#mediaGroupId(type='hidden', name='mediaGroupId')
+                          #mediaItemTableDiv(style='display:none')
+                            <button id="btnAddMediaGroupItem"></button>
+                            <button id="btnDeleteMediaGroupItem"></button> 
+                            table#mediagroupitem(cellpadding='0', cellspacing='0', border='0')
+                              thead
+                                tr
+                                  th name
+                                  th duration
+                                  th contentURL
+                                  th artist
+                              tfoot
+                                tr
+                                  th name
+                                  th duration
+                                  th contentURL
+                                  th artist                                
                 // End .clear
             // End #mediagroupdiv
         #footer
