@@ -14,24 +14,8 @@ $(document).ready(function () {
 					$('#durationEdit').val(duration);
 					$('#contentURLEdit').val(contentURL);
 					$('#mediaitemartist').val(artist);
-
-					var oTable = $('#credit').dataTable();
-					var endingText = "";
-
-					$.each(oTable.fnGetNodes(), function (index, value) {
-						var credit = $('td:eq(0)', value).text();
-						var creditId = $(value).attr("id");
-						var beginningText = "<option value='" + creditId + "'";
-
-						if (credit == artist)
-							endingText = " selected>" + credit + "</option>";
-						else
-							endingText = ">" + credit + "</option>";
-
-						var wholeString = beginningText.concat(endingText);
-
-						$('#artistEdit').append(wholeString);
-					});
+                    
+                    FillDropDownWithCredits($('#artistEdit'), artist);
 				});
 			},
 			"bJQueryUI" : true,
@@ -329,8 +313,8 @@ $(document).ready(function () {
 			"bSort" : true,
 			"aoColumnDefs" : [{
 					"aTargets" : ["0"],
-					"data": null,
-                    "sDefaultContent": ""                    
+					"data" : null,
+					"sDefaultContent" : ""
 				}
 			],
 			"aoColumns" : [{
@@ -364,7 +348,7 @@ $(document).ready(function () {
 				oMediaItemTable.fnDraw();
 				oMediaGroupTable.fnDraw();
 				oMediaGroupItemTable.fnDraw();
-			},            
+			},
 			fnOnAdded : function (value, settings) {
 				oMediaGroupItemTable.fnDraw();
 			},
@@ -409,20 +393,7 @@ $(document).ready(function () {
 	});
 
 	$("#btnAddMediaGroup").on("click", function (e) {
-		var oCreditTable = $('#credit').dataTable();
-		var endingText = "";
-
-		$.each(oCreditTable.fnGetNodes(), function (index, value) {
-			var credit = $('td:eq(0)', value).text();
-			var creditId = $(value).attr("id");
-			var beginningText = "<option value='" + creditId + "'";
-
-			endingText = ">" + credit + "</option>";
-
-			var wholeString = beginningText.concat(endingText);
-
-			$('#mediaGroupArtistAdd').append(wholeString);
-		});
+		FillDropDownWithCredits($('#mediaGroupArtistAdd'), null);
 
 		var oMediaItemTable = $('#mediaitem').dataTable();
 		var endingText = "";
@@ -459,6 +430,10 @@ $(document).ready(function () {
 	});
 
 	$("#btnAddMediaItem").on("click", function (e) {
+		FillDropDownWithCredits($('#mediaitemartist'), null);
+	});
+
+	function FillDropDownWithCredits(dropDownName, creditToSelect) {
 		var oTable = $('#credit').dataTable();
 		var endingText = "";
 
@@ -467,13 +442,16 @@ $(document).ready(function () {
 			var creditId = $(value).attr("id");
 			var beginningText = "<option value='" + creditId + "'";
 
-			endingText = ">" + credit + "</option>";
+			if (credit == creditToSelect)
+				endingText = " selected>" + credit + "</option>";
+			else
+				endingText = ">" + credit + "</option>";
 
 			var wholeString = beginningText.concat(endingText);
 
-			$('#mediaitemartist').append(wholeString);
+			dropDownName.append(wholeString);
 		});
-	});
+	};
 
 	$("#saveMediaGroup").on("click", function (e) {
 		var mediaGroupTitle = $('#mediaGroupTitleAdd').val();
@@ -525,11 +503,11 @@ $(document).ready(function () {
 				$('#mediaGroupImageURLEdit').val(opts.imageURL);
 
 				//$('#mediaGroupArtistAdd').val(opts.artist);
-                $("#formAddMediaGroupItem input[name=mediaGroupId]").val(res);  
-                $("#formEditMediaGroup input[name=mediaGroupId]").val(res);  
+				$("#formAddMediaGroupItem input[name=mediaGroupId]").val(res);
+				$("#formEditMediaGroup input[name=mediaGroupId]").val(res);
 
 				$("#formAddMediaGroup").hide();
-                
+
 				alert("Successfully Saved Media Group");
 			}
 		});
