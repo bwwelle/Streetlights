@@ -820,7 +820,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 			var id = fnGetCellID(nSelectedCell);
 			var jSelectedRow = $(nSelectedCell).parent("tr");
 			nSelectedRow = jSelectedRow[0];
-			if (typeof sDeleteURL !== 'undefined') {
+			if (properties.sDeleteURL !== "") {
 				if (properties.fnOnDeleting(jSelectedRow, id, fnDeleteRow)) {
 					fnDeleteRow(id);
 				}

@@ -84,12 +84,19 @@ router.post('/update', urlencodedParser, function (req, res) {
 
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var mediaGroup = new MediaGroup();
-	mediaGroup.id = req.body.id;
+    
+    mediaGroup.id = req.body.mediaGroupId;
+    
+	mediaGroup.set("title", req.body.title);
+	mediaGroup.set("detail", req.body.detail);
+	mediaGroup.set("imageURL", req.body.imageURL);
 
-	if (req.body.columnName == 'duration')
-		mediaGroup.set(req.body.columnName, parseInt(req.body.value));
-	else
-		mediaGroup.set(req.body.columnName, req.body.value);
+	var Credit = Parse.Object.extend("Credit");
+	var credit = new Credit();
+    
+	credit.id = req.body.artist;
+    mediaGroup.unset("artists");
+	mediaGroup.addUnique("artists", credit);
 
 	mediaGroup.save(null, {
 		success : function (mediaGroup) {

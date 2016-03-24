@@ -403,7 +403,9 @@ $(document).ready(function () {
 		$("#formAddMediaGroup").hide();
 		$("#formEditMediaGroup").show();
 		$("#mediaGroupItemTableDiv").show();
-		$("#mediagroupitem").show();
+		$("#mediagroupitem").show();               
+		$("#btnAddMediaGroupItem").show();
+		$("#btnDeleteMediaGroupItem").show();
 	});
 
 	$("#btnAddMediaGroup").on("click", function (e) {
@@ -466,20 +468,23 @@ $(document).ready(function () {
 	}
 
 	$("#saveMediaGroup").on("click", function (e) {
-		var mediaGroupTitle = $('#mediaGroupTitleAdd').val();
-		var mediaGroupDetail = $('#mediaGroupDetailAdd').val();
-		var mediaGroupImageURL = $('#mediaGroupImageURLAdd').val();
-		var mediaGroupArtist = $('#mediaGroupArtistAdd').val();
+		var mediaGroupTitle = $('#mediaGroupTitleEdit').val();
+		var mediaGroupDetail = $('#mediaGroupDetailEdit').val();
+		var mediaGroupImageURL = $('#mediaGroupImageURLEdit').val();
+		var mediaGroupArtist = $('#mediaGroupArtistEdit').val();
 
 		var data = [];
 		data = {
-			title : mediaGroupTitle,
+            title : mediaGroupTitle,
 			detail : mediaGroupDetail,
 			imageURL : mediaGroupImageURL,
 			artist : mediaGroupArtist
 		};
-
-		mediaGroupAddAjaxCall(data);
+        
+        if($("#formEditMediaGroup input[name=mediaGroupId]").val() == "" || $("#formEditMediaGroup input[name=mediaGroupId]").val() == null)
+            mediaGroupAddAjaxCall(data);
+        else
+            mediaGroupUpdateAjaxCall(data);
 	});
 
 	$("#viewMediaGroup").on("click", function (e) {
@@ -525,9 +530,35 @@ $(document).ready(function () {
 			}
 		});
 	};
+    
+    function mediaGroupUpdateAjaxCall(opts) {
+		$.ajax({
+			type : "POST",
+			data : {
+                "mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val(),
+				"title" : opts.title,
+				"detail" : opts.detail,
+				"imageURL" : opts.imageURL,
+				"artist" : opts.artist
+			},
+			url : "/mediagroup/update",
+			success : function (res) {
+				oMediaGroupTable.fnDraw();
+
+				//bDestroy for mediagroupitem table?
+				alert("Successfully Saved Media Group");
+			}
+		});
+	};
+    
+    function ConfirmDelete()
+    {
+        return confirm("Are you sure that you want to delete this record?");
+    }   
+    
 
 	$("#btnDeleteMediaGroupItem").on("click", function (e) {
-		//if (confirm("Are you sure that you want to delete this record?")) {
+		if (ConfirmDelete) {
 			$.ajax({
 				type : "POST",
 				data : {
@@ -535,11 +566,11 @@ $(document).ready(function () {
 					"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
 				},
 				url : "/mediagroupitem/delete",
-				success : function (res) {
+				success : function () {
 					oMediaGroupItemTable.fnDraw();
 				}
 			});
-		//}
+		}
 	});
 
 	$("#cancelMediaGroup").on("click", function (e) {

@@ -178,6 +178,8 @@ router.post('/delete', urlencodedParser, function (req, res) {
 	mediaGroup.remove("items", mediaItem);
 
 	mediaGroup.save();
+    
+    res.json("Successful Deletion");
 });
 
 module.exports = router;
