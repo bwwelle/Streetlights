@@ -13,7 +13,7 @@ var urlencodedParser = bodyParser.urlencoded({
 	router.get('/', urlencodedParser, function (req, res) {
 		echo = req.query.sEcho;
 		var mediaGroupId = req.query["mediaGroupId"];
-        var mediaItemId = req.query["mediaItemId"];
+		var mediaItemId = req.query["mediaItemId"];
 
 		Parse.initialize("***REMOVED***", "***REMOVED***");
 
@@ -100,24 +100,23 @@ var urlencodedParser = bodyParser.urlencoded({
 					// The request failed
 				}
 			});
-		}
-		else {
-            var data = [];
-            
-            data[0] = {
-							name : null,
-							duration : null,
-							contentURL : null,
-							artist : null,
-							DT_RowId : 0
-						};
-        
+		} else {
+			var data = [];
+
+			data[0] = {
+				name : null,
+				duration : null,
+				contentURL : null,
+				artist : null,
+				DT_RowId : 0
+			};
+
 			res.json({
-						aaData : data,
-						iTotalRecords : 0,
-						iTotalDisplayRecords : 0,
-						sEcho : echo
-					});
+				aaData : data,
+				iTotalRecords : 0,
+				iTotalDisplayRecords : 0,
+				sEcho : echo
+			});
 		};
 	});
 
@@ -148,14 +147,14 @@ router.post('/add', urlencodedParser, function (req, res) {
 
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var mediaGroup = new MediaGroup();
-    
-    mediaGroup.id = req.body.mediaGroupId;
-    
-    var MediaItem = Parse.Object.extend("MediaItem");
-    var mediaItem = new MediaItem();
-    mediaItem.id = req.body.mediaGroupItemId;
-    
-	mediaGroup.addUnique("items", mediaItem);   
+
+	mediaGroup.id = req.body.mediaGroupId;
+
+	var MediaItem = Parse.Object.extend("MediaItem");
+	var mediaItem = new MediaItem();
+	mediaItem.id = req.body.mediaGroupItemId;
+
+	mediaGroup.addUnique("items", mediaItem);
 
 	mediaGroup.save(null, {
 		success : function (mediaGroup) {
@@ -171,20 +170,14 @@ router.post('/delete', urlencodedParser, function (req, res) {
 	Parse.initialize("***REMOVED***", "***REMOVED***");
 
 	var MediaGroup = Parse.Object.extend("MediaGroup");
-	var query = new Parse.Query(MediaGroup);
+	var mediaGroup = new MediaGroup();
+	mediaGroup.id = req.body.mediaGroupId;
+	var MediaItem = Parse.Object.extend("MediaItem");
+	var mediaItem = new MediaItem();
+	mediaItem.id = req.body.mediaGroupItemId;
+	mediaGroup.remove("items", mediaItem);
 
-	var mediaGroupID = req.body.id;
-
-	query.get(mediaGroupID, {
-		success : function (myObj) {
-			// The object was retrieved successfully.
-			myObj.destroy({});
-			res.end();
-		},
-		error : function (object, error) {
-			res.json("Deletion Error: " + error);
-		}
-	});
+	mediaGroup.save();
 });
 
 module.exports = router;

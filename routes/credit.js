@@ -14,6 +14,7 @@ var urlencodedParser = bodyParser.urlencoded({
 		Parse.initialize("***REMOVED***", "***REMOVED***");
 
 		var searchText = req.query.sSearch;
+        var displayLength = req.query.iDisplayLength;
         displayStart = req.query.iDisplayStart;
         echo = req.query.sEcho;
 		if (searchText != null && searchText != "") {}
@@ -26,7 +27,7 @@ var urlencodedParser = bodyParser.urlencoded({
                 var tableDataQuery = new Parse.Query(Credit);
 				
                 tableDataQuery.descending("name");
-				tableDataQuery.limit(10);
+				tableDataQuery.limit(parseInt(displayLength));
                 
                 if(parseInt(displayStart) != 0)
                     tableDataQuery.skip(parseInt(displayStart));

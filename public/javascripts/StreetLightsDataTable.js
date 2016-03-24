@@ -14,8 +14,10 @@ $(document).ready(function () {
 					$('#durationEdit').val(duration);
 					$('#contentURLEdit').val(contentURL);
 					$('#mediaitemartist').val(artist);
-                    
-                    FillDropDownWithCredits($('#artistEdit'), artist);
+
+					$("#formEditMediaItem select[name=artistEdit] option").filter(function () {
+						return $(this).text() == artist;
+					}).prop('selected', true);
 				});
 			},
 			"bJQueryUI" : true,
@@ -26,6 +28,12 @@ $(document).ready(function () {
 			"sAjaxSource" : "/mediaitem",
 			"bPaginate" : true,
 			"bSort" : true,
+			"aoColumnDefs" : [{
+					"mDataProp" : null,
+					"sDefaultContent" : "&nbsp",
+					"aTargets" : ['_all']
+				}
+			],
 			"aoColumns" : [{
 					"mDataProp" : "name"
 				}, {
@@ -99,7 +107,120 @@ $(document).ready(function () {
 			sAddDeleteEditToolbarSelector : ".dataTables_length"
 		});
 
-	var oCredit = $('#credit').dataTable({
+	var oMediaGroupTable = $('#mediagroup')
+		.dataTable({
+			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				$(nRow).on('click', function () {
+					var objectId = $(nRow).attr("id");
+					var title = $('td:eq(0)', nRow).text();
+					var detail = $('td:eq(1)', nRow).text();
+					var imageURL = $('td:eq(2)', nRow).text();
+					var artist = $('td:eq(3)', nRow).text();
+
+					$('#formEditMediaGroup input[name=mediaGroupId]').val(objectId);
+                    $('#formAddMediaGroup input[name=mediaGroupId]').val(objectId);
+					$('#mediaGroupTitleEdit').val(title);
+					$('#mediaGroupDetailEdit').val(detail);
+					$('#mediaGroupImageURLEdit').val(imageURL);
+
+					$("#formEditMediaGroup select[name=mediaGroupArtistEdit] option").filter(function () {
+						return $(this).text() == artist;
+					}).prop('selected', true);
+
+					var oTable = $('#mediaitem').dataTable();
+					var endingText = "";
+
+					oMediaGroupItemTable.fnDraw();
+
+					$.each(oTable.fnGetNodes(), function (index, value) {
+						var objectId = $(value).attr("id");
+						var name = $('td:eq(0)', value).text();
+						var duration = $('td:eq(1)', nRow).text();
+						var contentURL = $('td:eq(2)', nRow).text();
+						var artist = $('td:eq(3)', nRow).text();
+						var beginningText = "<option value='" + objectId + "'";
+
+						if (index == 0) {
+							endingText = " selected>" + name + "</option>";
+
+							$('#mediaGroupItemId').val(objectId);
+							$('#mediaGroupItemDurationAdd').val(duration);
+							$('#mediaGroupItemContentURLAdd').val(contentURL);
+							$('#mediaGroupItemArtistAdd').val(artist);
+						} else
+							endingText = ">" + name + "</option>";
+
+						var wholeString = beginningText.concat(endingText);
+
+						$('#mediaGroupItemNameAdd').append(wholeString);
+					});
+				});
+			},
+			"bJQueryUI" : true,
+			"bProcessing" : true,
+			"bServerSide" : true,
+			"rowId" : "objectid",
+			"sAjaxSource" : "/mediagroup",
+			"bPaginate" : true,
+			"bSort" : true,
+			"aoColumnDefs" : [{
+					"mDataProp" : null,
+					"sDefaultContent" : "&nbsp",
+					"aTargets" : ['_all']
+				}
+			],
+			"aoColumns" : [{
+					"mDataProp" : "title"
+				}, {
+					"mDataProp" : "detail"
+				}, {
+					"mDataProp" : "imageURL"
+				}, {
+					"mDataProp" : "artist"
+				}
+			],
+			"sPaginationType" : "full_numbers",
+			"iDisplayLength" : 10,
+			"iDisplayStart" : 0,
+			"bFilter" : false
+		}).makeEditable({
+			fnOnDeleted : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
+			fnOnEdited : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
+			sDeleteHttpMethod : "POST",
+			sDeleteURL : "/mediagroup/delete",
+			sAddNewRowButtonId : "btnAddMediaGroup",
+			sEditRowButtonId : "btnEditMediaGroup",
+			sDeleteRowButtonId : "btnDeleteMediaGroup",
+			oAddNewRowButtonOptions : {
+				label : "Add",
+				icons : {
+					primary : 'ui-icon-plus'
+				}
+			},
+			oEditRowButtonOptions : {
+				label : "Edit",
+				icons : {
+					primary : 'ui-icon-pencil'
+				}
+			},
+			oDeleteRowButtonOptions : {
+				label : "Remove",
+				icons : {
+					primary : 'ui-icon-trash'
+				}
+			},
+			sAddDeleteEditToolbarSelector : ".dataTables_length"
+		});
+
+	var oCreditTable = $('#credit').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				$(nRow).on('click', function () {
 					var objectId = $(nRow).attr("id");
@@ -120,10 +241,19 @@ $(document).ready(function () {
 					"mDataProp" : "name"
 				}
 			],
+			"aoColumnDefs" : [{
+					"mDataProp" : null,
+					"sDefaultContent" : "&nbsp",
+					"aTargets" : ['_all']
+				}
+			],
 			"sPaginationType" : "full_numbers",
 			"iDisplayLength" : 10,
 			"iDisplayStart" : 0,
-			"bFilter" : false
+			"bFilter" : false,
+			"fnDrawCallback" : function (oSettings) {
+				IntializeDropDownBoxes();
+			}
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
 				oMediaItemTable.fnDraw();
@@ -182,128 +312,12 @@ $(document).ready(function () {
 			sAddDeleteEditToolbarSelector : ".dataTables_length"
 		});
 
-	var oMediaGroupTable = $('#mediagroup')
-		.dataTable({
+	var oMediaGroupItemTable = $('#mediagroupitem').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				$(nRow).on('click', function () {
-					var objectId = $(nRow).attr("id");
-					var title = $('td:eq(0)', nRow).text();
-					var detail = $('td:eq(1)', nRow).text();
-					var imageURL = $('td:eq(2)', nRow).text();
-					var artist = $('td:eq(3)', nRow).text();
-
-					$('#mediaGroupId').val(objectId);
-					$('#mediaGroupTitleEdit').val(title);
-					$('#mediaGroupDetailEdit').val(detail);
-					$('#mediaGroupImageURLEdit').val(imageURL);
-
-					var oTable = $('#credit').dataTable();
-					var endingText = "";
-
-					$.each(oTable.fnGetNodes(), function (index, value) {
-						var credit = $('td:eq(0)', value).text();
-						var creditId = $(value).attr("id");
-						var beginningText = "<option value='" + creditId + "'";
-
-						if (credit == artist)
-							endingText = " selected>" + credit + "</option>";
-						else
-							endingText = ">" + credit + "</option>";
-
-						var wholeString = beginningText.concat(endingText);
-
-						$('#mediaGroupArtistEdit').append(wholeString);
-					});
-
-					oMediaGroupItemTable.fnDraw(false);
-
-					var oTable = $('#mediaitem').dataTable();
-					var endingText = "";
-
-					$.each(oTable.fnGetNodes(), function (index, value) {
-						var objectId = $(value).attr("id");
-						var name = $('td:eq(0)', value).text();
-						var duration = $('td:eq(1)', nRow).text();
-						var contentURL = $('td:eq(2)', nRow).text();
-						var artist = $('td:eq(3)', nRow).text();
-						var beginningText = "<option value='" + objectId + "'";
-
-						if (index == 0) {
-							endingText = " selected>" + name + "</option>";
-
-							$('#mediaGroupItemId').val(objectId);
-							$('#mediaGroupItemDurationAdd').val(duration);
-							$('#mediaGroupItemContentURLAdd').val(contentURL);
-							$('#mediaGroupItemArtistAdd').val(artist);
-						} else
-							endingText = ">" + name + "</option>";
-
-						var wholeString = beginningText.concat(endingText);
-
-						$('#mediaGroupItemNameAdd').append(wholeString);
-					});
+					$("#formAddMediaGroupItem input[name=mediaGroupItemId]").val($(nRow).attr("id"));
 				});
 			},
-			"bJQueryUI" : true,
-			"bProcessing" : true,
-			"bServerSide" : true,
-			"rowId" : "objectid",
-			"sAjaxSource" : "/mediagroup",
-			"bPaginate" : true,
-			"bSort" : true,
-			"aoColumns" : [{
-					"mDataProp" : "title"
-				}, {
-					"mDataProp" : "detail"
-				}, {
-					"mDataProp" : "imageURL"
-				}, {
-					"mDataProp" : "artist"
-				}
-			],
-			"sPaginationType" : "full_numbers",
-			"iDisplayLength" : 10,
-			"iDisplayStart" : 0,
-			"bFilter" : false
-		}).makeEditable({
-			fnOnDeleted : function (value, settings) {
-				oMediaItemTable.fnDraw();
-				oMediaGroupTable.fnDraw();
-				oMediaGroupItemTable.fnDraw();
-			},
-			fnOnEdited : function (value, settings) {
-				oMediaItemTable.fnDraw();
-				oMediaGroupTable.fnDraw();
-				oMediaGroupItemTable.fnDraw();
-			},
-			sDeleteHttpMethod : "POST",
-			sDeleteURL : "/mediagroup/delete",
-			sAddNewRowButtonId : "btnAddMediaGroup",
-			sEditRowButtonId : "btnEditMediaGroup",
-			sDeleteRowButtonId : "btnDeleteMediaGroup",
-			oAddNewRowButtonOptions : {
-				label : "Add",
-				icons : {
-					primary : 'ui-icon-plus'
-				}
-			},
-			oEditRowButtonOptions : {
-				label : "Edit",
-				icons : {
-					primary : 'ui-icon-pencil'
-				}
-			},
-			oDeleteRowButtonOptions : {
-				label : "Remove",
-				icons : {
-					primary : 'ui-icon-trash'
-				}
-			},
-			sAddDeleteEditToolbarSelector : ".dataTables_length"
-		});
-
-	var oMediaGroupItemTable = $('#mediagroupitem').dataTable({
-			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {},
 			"bJQueryUI" : true,
 			"bProcessing" : true,
 			"bServerSide" : true,
@@ -312,9 +326,9 @@ $(document).ready(function () {
 			"bPaginate" : true,
 			"bSort" : true,
 			"aoColumnDefs" : [{
-					"aTargets" : ["0"],
-					"data" : null,
-					"sDefaultContent" : ""
+					"mDataProp" : null,
+					"sDefaultContent" : "&nbsp",
+					"aTargets" : ['_all']
 				}
 			],
 			"aoColumns" : [{
@@ -341,7 +355,6 @@ $(document).ready(function () {
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
 				oMediaItemTable.fnDraw();
-				oMediaGroupTable.fnDraw();
 				oMediaGroupItemTable.fnDraw();
 			},
 			fnOnEdited : function (value, settings) {
@@ -354,8 +367,6 @@ $(document).ready(function () {
 			},
 			sAddURL : "/mediagroupitem/add",
 			sAddHttpMethod : "POST",
-			sDeleteHttpMethod : "POST",
-			sDeleteURL : "/mediagroupitem/delete",
 			sAddNewRowFormId : "formAddMediaGroupItem",
 			sAddNewRowButtonId : "btnAddMediaGroupItem",
 			sAddNewRowOkButtonId : "btnAddMediaGroupItemOk",
@@ -387,14 +398,15 @@ $(document).ready(function () {
 		$("#mediagroupitemdiv").siblings().hide(); */
 
 		$("#mediagroupdiv").hide();
+		$("#mediGroupButtons").show();
 		$("#mediagroupeditadddiv").show();
 		$("#formAddMediaGroup").hide();
 		$("#formEditMediaGroup").show();
+		$("#mediaGroupItemTableDiv").show();
+		$("#mediagroupitem").show();
 	});
 
 	$("#btnAddMediaGroup").on("click", function (e) {
-		FillDropDownWithCredits($('#mediaGroupArtistAdd'), null);
-
 		var oMediaItemTable = $('#mediaitem').dataTable();
 		var endingText = "";
 
@@ -429,29 +441,29 @@ $(document).ready(function () {
 		$("#formAddMediaGroup").show();
 	});
 
-	$("#btnAddMediaItem").on("click", function (e) {
-		FillDropDownWithCredits($('#mediaitemartist'), null);
-	});
+	function IntializeDropDownBoxes() {
+		$.ajax({
+			url : "/credit"
+		}).done(function (data) {
+			var creditData = data.aaData;
 
-	function FillDropDownWithCredits(dropDownName, creditToSelect) {
-		var oTable = $('#credit').dataTable();
-		var endingText = "";
+			$('#formEditMediaItem select[name=artistEdit').empty();
+			$('#formAddMediaItem select[name=mediaitemartist').empty();
+			$('#formEditMediaGroup select[name=mediaGroupArtistEdit]').empty();
+			$('#formAddMediaGroup select[name=mediaGroupArtistAdd]').empty();
 
-		$.each(oTable.fnGetNodes(), function (index, value) {
-			var credit = $('td:eq(0)', value).text();
-			var creditId = $(value).attr("id");
-			var beginningText = "<option value='" + creditId + "'";
+			for (var i = 0; i < creditData.length; i++) {
+				var credit = creditData[i].name;
+				var creditId = creditData[i].DT_RowId;
+				var optionText = "<option value='" + creditId + "'>" + credit + "</option>";
 
-			if (credit == creditToSelect)
-				endingText = " selected>" + credit + "</option>";
-			else
-				endingText = ">" + credit + "</option>";
-
-			var wholeString = beginningText.concat(endingText);
-
-			dropDownName.append(wholeString);
+				$('#formEditMediaItem select[name=artistEdit').append(optionText);
+				$('#formAddMediaItem select[name=mediaitemartist').append(optionText);
+				$('#formEditMediaGroup select[name=mediaGroupArtistEdit]').append(optionText);
+				$('#formAddMediaGroup select[name=mediaGroupArtistAdd]').append(optionText);
+			}
 		});
-	};
+	}
 
 	$("#saveMediaGroup").on("click", function (e) {
 		var mediaGroupTitle = $('#mediaGroupTitleAdd').val();
@@ -495,7 +507,7 @@ $(document).ready(function () {
 			success : function (res) {
 				oMediaGroupTable.fnDraw();
 
-				$("#mediaItemTableDiv").show();
+				$("#mediaGroupItemTableDiv").show();
 				$("#formEditMediaGroup").show();
 
 				$('#mediaGroupTitleEdit').val(opts.title);
@@ -508,10 +520,27 @@ $(document).ready(function () {
 
 				$("#formAddMediaGroup").hide();
 
+				//bDestroy for mediagroupitem table?
 				alert("Successfully Saved Media Group");
 			}
 		});
 	};
+
+	$("#btnDeleteMediaGroupItem").on("click", function (e) {
+		//if (confirm("Are you sure that you want to delete this record?")) {
+			$.ajax({
+				type : "POST",
+				data : {
+					"mediaGroupId" : $('#formEditMediaGroup input[name=mediaGroupId]').val(),
+					"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
+				},
+				url : "/mediagroupitem/delete",
+				success : function (res) {
+					oMediaGroupItemTable.fnDraw();
+				}
+			});
+		//}
+	});
 
 	$("#cancelMediaGroup").on("click", function (e) {
 		$("#mediagroupeditadddiv").hide();

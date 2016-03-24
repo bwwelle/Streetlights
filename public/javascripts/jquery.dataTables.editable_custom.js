@@ -820,8 +820,10 @@ returns true if plugin should continue with sending AJAX request, false will abo
 			var id = fnGetCellID(nSelectedCell);
 			var jSelectedRow = $(nSelectedCell).parent("tr");
 			nSelectedRow = jSelectedRow[0];
-			if (properties.fnOnDeleting(jSelectedRow, id, fnDeleteRow)) {
-				fnDeleteRow(id);
+			if (typeof sDeleteURL !== 'undefined') {
+				if (properties.fnOnDeleting(jSelectedRow, id, fnDeleteRow)) {
+					fnDeleteRow(id);
+				}
 			}
 		}
 
@@ -1179,7 +1181,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
 			sUpdateURL : "UpdateData",
 			sAddURL : "AddData",
-			sDeleteURL : "DeleteData",
+			sDeleteURL : "",
 			oAddNewRowFormOptions : {
 				autoOpen : false,
 				modal : true
@@ -1298,14 +1300,13 @@ returns true if plugin should continue with sending AJAX request, false will abo
 			oAddNewRowButton = $("#" + properties.sAddNewRowButtonId);
 			if (oAddNewRowButton.length != 0) {
 				if (oAddNewRowButton.data("add-event-attached") != "true") {
-                    //Setup form to open in dialog
-                    oAddNewRowForm = $("#" + properties.sAddNewRowFormId);
-                    if(oAddNewRowForm.length != 0)
-                    {
-                        oAddNewRowButton.click(function () {
-                            oAddNewRowForm.dialog('open');
-                        });
-                    }
+					//Setup form to open in dialog
+					oAddNewRowForm = $("#" + properties.sAddNewRowFormId);
+					if (oAddNewRowForm.length != 0) {
+						oAddNewRowButton.click(function () {
+							oAddNewRowForm.dialog('open');
+						});
+					}
 					oAddNewRowButton.data("add-event-attached", "true");
 				}
 
@@ -1520,7 +1521,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
 				if (oEditRowButton == null && properties.sEditRowButtonId != ""
 					 && oEditRowForm != null) {
-/* 					oAddDeleteEditToolbar.append("<button id='" + properties.sEditRowButtonId + "' class='edit_row'>Edit</button>"); */
+					/* 					oAddDeleteEditToolbar.append("<button id='" + properties.sEditRowButtonId + "' class='edit_row'>Edit</button>"); */
 					oEditRowButton = $("#" + properties.sEditRowButtonId);
 
 					oEditRowButton.click(function () {

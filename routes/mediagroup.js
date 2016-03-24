@@ -39,7 +39,7 @@ var urlencodedParser = bodyParser.urlencoded({
 						for (var i = 0; i < mediaGroups.length; i++) {
 							var mediaGroup = mediaGroups[i];
 							var mediaGroupTitle = "";
-							var mediaGroupDetail = "";
+							var mediaGroupDetail = null;
 							var mediaGroupImageURL = "";
 							var mediaGroupArtist = "";
 
