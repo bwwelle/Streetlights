@@ -913,7 +913,10 @@ returns true if plugin should continue with sending AJAX request, false will abo
 		function _fnOnEdited(result, sOldValue, sNewValue, iRowIndex, iColumnIndex, iRealColumnIndex) {}
 
 		function fnOnAdding() {
-			return true;
+			if (properties.sAddURL !== "")
+				return true;
+			else
+				return false;
 		}
 		function _fnOnAdded(result) {}
 
@@ -1180,7 +1183,7 @@ returns true if plugin should continue with sending AJAX request, false will abo
 		var defaults = {
 
 			sUpdateURL : "UpdateData",
-			sAddURL : "AddData",
+			sAddURL : "",
 			sDeleteURL : "",
 			oAddNewRowFormOptions : {
 				autoOpen : false,
@@ -1340,18 +1343,20 @@ returns true if plugin should continue with sending AJAX request, false will abo
 				oAddNewRowForm.dialog(properties.oAddNewRowFormOptions);
 
 				//Prevent Submit handler
-				if (oAddNewRowForm[0].nodeName.toLowerCase() == "form") {
-					oAddNewRowForm.unbind('submit');
-					oAddNewRowForm.submit(function (event) {
-						fnOnRowAdding(event);
-						return false;
-					});
-				} else {
-					$("form", oAddNewRowForm[0]).unbind('submit');
-					$("form", oAddNewRowForm[0]).submit(function (event) {
-						fnOnRowAdding(event);
-						return false;
-					});
+				if (properties.sAddURL !== "") {
+					if (oAddNewRowForm[0].nodeName.toLowerCase() == "form") {
+						oAddNewRowForm.unbind('submit');
+						oAddNewRowForm.submit(function (event) {
+							fnOnRowAdding(event);
+							return false;
+						});
+					} else {
+						$("form", oAddNewRowForm[0]).unbind('submit');
+						$("form", oAddNewRowForm[0]).submit(function (event) {
+							fnOnRowAdding(event);
+							return false;
+						});
+					}
 				}
 
 				// array to add default buttons to

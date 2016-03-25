@@ -14,6 +14,8 @@ var urlencodedParser = bodyParser.urlencoded({
 		echo = req.query.sEcho;
 		var mediaGroupId = req.query["mediaGroupId"];
 		var mediaItemId = req.query["mediaItemId"];
+		var displayLength = req.query.iDisplayLength;
+		displayStart = req.query.iDisplayStart;
 
 		Parse.initialize("***REMOVED***", "***REMOVED***");
 
@@ -23,18 +25,23 @@ var urlencodedParser = bodyParser.urlencoded({
 			mediaGroupQuery.include("items");
 			mediaGroupQuery.include("items.artists");
 
+			var totalRecordsToView = parseInt(displayStart) + parseInt(displayLength);
+			var recordCount = 0;
+
 			mediaGroupQuery.get(mediaGroupId, {
 				success : function (mediaGroup) {
 					var data = [];
-					for (var i = 0; i < mediaGroup.get("items").length; i++) {
+					for (var i = parseInt(displayStart); i < totalRecordsToView && i < mediaGroup.get("items").length; i++) {
 						var mediaItem = mediaGroup.get("items")[i];
 						var mediaItemCredit = '';
 						var mediaItemName = '';
 						var mediaItemDuration = '';
 						var mediaItemContentURL = '';
 
-						if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined)
-							mediaItemCredit = mediaItem.get("artists")[0].get("name");
+						if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined) {
+							if (mediaItem.get("artists")[0] !== null && mediaItem.get("artists")[0] !== undefined)
+								mediaItemCredit = mediaItem.get("artists")[0].get("name");
+						}
 
 						if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
 							mediaItemName = mediaItem.get("name");
@@ -45,13 +52,15 @@ var urlencodedParser = bodyParser.urlencoded({
 						if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
 							mediaItemContentURL = mediaItem.get("contentURL");
 
-						data[i] = {
+						data[recordCount] = {
 							name : mediaItemName,
 							duration : mediaItemDuration,
 							contentURL : mediaItemContentURL,
 							artist : mediaItemCredit,
 							DT_RowId : mediaItem.id
 						};
+
+						recordCount++;
 					}
 
 					res.json({
@@ -68,16 +77,19 @@ var urlencodedParser = bodyParser.urlencoded({
 		} else if (mediaItemId !== undefined && mediaItemId !== null && mediaItemId !== "") {
 			var mediaItem = Parse.Object.extend("MediaItem");
 			var mediaItemQuery = new Parse.Query(mediaItem);
-			mediaGroupQuery.include("artists");
+			mediaItemQuery.include("artists");
 
 			mediaItemQuery.get(mediaItemId, {
 				success : function (mediaItem) {
 					var mediaItemName = '';
 					var mediaItemDuration = '';
 					var mediaItemContentURL = '';
+                    var mediaItemCredit = '';
 
-					if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined)
-						mediaItemCredit = mediaItem.get("artists")[0].get("name");
+					if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined) {
+						if (mediaItem.get("artists")[0] !== null && mediaItem.get("artists")[0] !== undefined)
+							mediaItemCredit = mediaItem.get("artists")[0].get("name");
+					}
 
 					if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
 						mediaItemName = mediaItem.get("name");
@@ -178,8 +190,8 @@ router.post('/delete', urlencodedParser, function (req, res) {
 	mediaGroup.remove("items", mediaItem);
 
 	mediaGroup.save();
-    
-    res.json("Successful Deletion");
+
+	res.json("Successful Deletion");
 });
 
 module.exports = router;

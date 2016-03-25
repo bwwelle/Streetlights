@@ -53,8 +53,11 @@ var urlencodedParser = bodyParser.urlencoded({
 								mediaGroupImageURL = mediaGroup.get("imageURL");
 
 							if (mediaGroup.get("artists") !== null && mediaGroup.get("artists") !== undefined)
-								mediaGroupArtist = mediaGroup.get("artists")[0].get("name");
-
+                            {
+                                if(mediaGroup.get("artists")[0] !== null && mediaGroup.get("artists")[0] !== undefined)
+                                    mediaGroupArtist = mediaGroup.get("artists")[0].get("name");
+                            }
+                            
 							data[i] = {
 								title : mediaGroupTitle,
 								detail : mediaGroupDetail,

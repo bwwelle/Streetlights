@@ -1,5 +1,6 @@
-$(document).ready(function () {
 
+
+$(document).ready(function () {
 	var oMediaItemTable = $('#mediaitem').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				$(nRow).on('click', function () {
@@ -14,6 +15,8 @@ $(document).ready(function () {
 					$('#durationEdit').val(duration);
 					$('#contentURLEdit').val(contentURL);
 					$('#mediaitemartist').val(artist);
+                    
+                    $('#durationEdit').mask("99:99:99");
 
 					$("#formEditMediaItem select[name=artistEdit] option").filter(function () {
 						return $(this).text() == artist;
@@ -47,7 +50,8 @@ $(document).ready(function () {
 			"iDisplayLength" : 10,
 			"iDisplayStart" : 0,
 			"sPaginationType" : "full_numbers",
-			"bFilter" : false
+			"bFilter" : false,
+			"deferLoading" : 10
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
 				oMediaItemTable.fnDraw();
@@ -118,7 +122,7 @@ $(document).ready(function () {
 					var artist = $('td:eq(3)', nRow).text();
 
 					$('#formEditMediaGroup input[name=mediaGroupId]').val(objectId);
-                    $('#formAddMediaGroup input[name=mediaGroupId]').val(objectId);
+					$('#formAddMediaGroup input[name=mediaGroupId]').val(objectId);
 					$('#mediaGroupTitleEdit').val(title);
 					$('#mediaGroupDetailEdit').val(detail);
 					$('#mediaGroupImageURLEdit').val(imageURL);
@@ -127,33 +131,7 @@ $(document).ready(function () {
 						return $(this).text() == artist;
 					}).prop('selected', true);
 
-					var oTable = $('#mediaitem').dataTable();
-					var endingText = "";
-
 					oMediaGroupItemTable.fnDraw();
-
-					$.each(oTable.fnGetNodes(), function (index, value) {
-						var objectId = $(value).attr("id");
-						var name = $('td:eq(0)', value).text();
-						var duration = $('td:eq(1)', nRow).text();
-						var contentURL = $('td:eq(2)', nRow).text();
-						var artist = $('td:eq(3)', nRow).text();
-						var beginningText = "<option value='" + objectId + "'";
-
-						if (index == 0) {
-							endingText = " selected>" + name + "</option>";
-
-							$('#mediaGroupItemId').val(objectId);
-							$('#mediaGroupItemDurationAdd').val(duration);
-							$('#mediaGroupItemContentURLAdd').val(contentURL);
-							$('#mediaGroupItemArtistAdd').val(artist);
-						} else
-							endingText = ">" + name + "</option>";
-
-						var wholeString = beginningText.concat(endingText);
-
-						$('#mediaGroupItemNameAdd').append(wholeString);
-					});
 				});
 			},
 			"bJQueryUI" : true,
@@ -182,7 +160,8 @@ $(document).ready(function () {
 			"sPaginationType" : "full_numbers",
 			"iDisplayLength" : 10,
 			"iDisplayStart" : 0,
-			"bFilter" : false
+			"bFilter" : false,
+			"deferLoading" : 10
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
 				oMediaItemTable.fnDraw();
@@ -252,7 +231,7 @@ $(document).ready(function () {
 			"iDisplayStart" : 0,
 			"bFilter" : false,
 			"fnDrawCallback" : function (oSettings) {
-				IntializeDropDownBoxes();
+				IntializeCreditDropDownBoxes();
 			}
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
@@ -365,8 +344,6 @@ $(document).ready(function () {
 			fnOnAdded : function (value, settings) {
 				oMediaGroupItemTable.fnDraw();
 			},
-			sAddURL : "/mediagroupitem/add",
-			sAddHttpMethod : "POST",
 			sAddNewRowFormId : "formAddMediaGroupItem",
 			sAddNewRowButtonId : "btnAddMediaGroupItem",
 			sAddNewRowOkButtonId : "btnAddMediaGroupItemOk",
@@ -391,6 +368,11 @@ $(document).ready(function () {
 			sAddDeleteEditToolbarSelector : ".dataTables_length"
 		});
 
+	oMediaGroupItemTable.fnDraw();
+	oCreditTable.fnDraw();
+	oMediaGroupTable.fnDraw();
+	oMediaItemTable.fnDraw();
+
 	$("#btnEditMediaGroup").on("click", function (e) {
 		/* 		var links = $("#main-nav li ul li a");
 		links.parent().siblings().find('a').removeClass('current');
@@ -403,47 +385,49 @@ $(document).ready(function () {
 		$("#formAddMediaGroup").hide();
 		$("#formEditMediaGroup").show();
 		$("#mediaGroupItemTableDiv").show();
-		$("#mediagroupitem").show();               
+		$("#mediagroupitem").show();
 		$("#btnAddMediaGroupItem").show();
 		$("#btnDeleteMediaGroupItem").show();
 	});
 
 	$("#btnAddMediaGroup").on("click", function (e) {
-		var oMediaItemTable = $('#mediaitem').dataTable();
+		/* var oMediaItemTable = $('#mediaitem').dataTable();
 		var endingText = "";
 
 		$.each(oMediaItemTable.fnGetNodes(), function (index, value) {
-			var objectId = $(value).attr("id");
-			var name = $('td:eq(0)', value).text();
-			var duration = $('td:eq(1)', value).text();
-			var contentURL = $('td:eq(2)', value).text();
-			var artist = $('td:eq(3)', value).text();
-			var beginningText = "<option value='" + objectId + "'";
+		var objectId = $(value).attr("id");
+		var name = $('td:eq(0)', value).text();
+		var duration = $('td:eq(1)', value).text();
+		var contentURL = $('td:eq(2)', value).text();
+		var artist = $('td:eq(3)', value).text();
+		var beginningText = "<option value='" + objectId + "'";
 
-			if (index == 0) {
-				endingText = " selected>" + name + "</option>";
+		if (index == 0) {
+		endingText = " selected>" + name + "</option>";
 
-				$('#mediaGroupItemId').val(objectId);
-				$('#mediaGroupItemDurationAdd').val(duration);
-				$('#mediaGroupItemContentURLAdd').val(contentURL);
-				$('#mediaGroupItemArtistAdd').val(artist);
-			} else
-				endingText = ">" + name + "</option>";
+		$('#mediaGroupItemId').val(objectId);
+		$('#mediaGroupItemDurationAdd').val(duration);
+		$('#mediaGroupItemContentURLAdd').val(contentURL);
+		$('#mediaGroupItemArtistAdd').val(artist);
+		} else
+		endingText = ">" + name + "</option>";
 
-			var wholeString = beginningText.concat(endingText);
+		var wholeString = beginningText.concat(endingText);
 
-			$('#mediaGroupItemNameAdd').append(wholeString);
-		});
+		$('#mediaGroupItemNameAdd').append(wholeString);
+		}); */
+
+		//IntializeMediaGroupItemDropDownBoxes();
 
 		$("#mediagroupdiv").hide();
 		$("#mediagroupeditadddiv").show();
 		$("#formEditMediaGroup").hide();
 
-		$("#mediGroupButtons").show();
+		$("#mediaGroupButtons").show();
 		$("#formAddMediaGroup").show();
 	});
 
-	function IntializeDropDownBoxes() {
+	function IntializeCreditDropDownBoxes() {
 		$.ajax({
 			url : "/credit"
 		}).done(function (data) {
@@ -467,6 +451,65 @@ $(document).ready(function () {
 		});
 	}
 
+	$("#btnAddMediaGroupItem").on("click", function (e) {
+		IntializeMediaGroupItemDropDownBoxes();
+	});
+
+	function IntializeMediaGroupItemDropDownBoxes() {
+		$.ajax({
+			url : "/mediaitem"
+		}).done(function (data) {
+			var mediaItemData = data.aaData;
+			$('#mediaGroupItemNameAdd').empty();
+
+			for (var i = 0; i < mediaItemData.length; i++) {
+				var mediaItemName = mediaItemData[i].name;
+				var mediaItemId = mediaItemData[i].DT_RowId;
+				var optionText = "<option value='" + mediaItemId + "'>" + mediaItemName + "</option>"; ;
+
+				$('#mediaGroupItemNameAdd').append(optionText);
+			}
+		});
+	}
+
+	function filterCombobox(selectObject, filterValue, autoSelect) {
+		//data-filter="2"
+		//<option data-filter="2" value="FFF">Option 6</option>
+		//<option data-filter-emptyvalue disabled>No Options</option>
+		var fullData = selectObject.data("filterdata-values");
+		var emptyValue = selectObject.data("filterdata-emptyvalue");
+
+		// Initialize if first time.
+		if (!fullData) {
+			fullData = selectObject.find("option[data-filter]").detach();
+			selectObject.data("filterdata-values", fullData);
+			emptyValue = selectObject.find("option[data-filter-emptyvalue]").detach();
+			selectObject.data("filterdata-emptyvalue", emptyValue);
+			selectObject.addClass("filtered");
+		} else {
+			// Remove elements from DOM
+			selectObject.find("option[data-filter]").remove();
+			selectObject.find("option[data-filter-emptyvalue]").remove();
+		}
+
+		// Get filtered elements.
+		var toEnable = fullData.filter("option[data-filter][data-filter='" + filterValue + "']");
+
+		// Attach elements to DOM
+		selectObject.append(toEnable);
+
+		// If toEnable is empty, show empty option.
+		if (toEnable.length == 0) {
+			selectObject.append(emptyValue);
+		}
+
+		// Select First Occurrence
+		if (autoSelect) {
+			var obj = selectObject.find("option[selected]");
+			selectObject.val(obj.length == 0 ? toEnable.val() : obj.val());
+		}
+	}
+
 	$("#saveMediaGroup").on("click", function (e) {
 		var mediaGroupTitle = $('#mediaGroupTitleEdit').val();
 		var mediaGroupDetail = $('#mediaGroupDetailEdit').val();
@@ -475,16 +518,16 @@ $(document).ready(function () {
 
 		var data = [];
 		data = {
-            title : mediaGroupTitle,
+			title : mediaGroupTitle,
 			detail : mediaGroupDetail,
 			imageURL : mediaGroupImageURL,
 			artist : mediaGroupArtist
 		};
-        
-        if($("#formEditMediaGroup input[name=mediaGroupId]").val() == "" || $("#formEditMediaGroup input[name=mediaGroupId]").val() == null)
-            mediaGroupAddAjaxCall(data);
-        else
-            mediaGroupUpdateAjaxCall(data);
+
+		if ($("#formEditMediaGroup input[name=mediaGroupId]").val() == "" || $("#formEditMediaGroup input[name=mediaGroupId]").val() == null)
+			mediaGroupAddAjaxCall(data);
+		else
+			mediaGroupUpdateAjaxCall(data);
 	});
 
 	$("#viewMediaGroup").on("click", function (e) {
@@ -530,12 +573,12 @@ $(document).ready(function () {
 			}
 		});
 	};
-    
-    function mediaGroupUpdateAjaxCall(opts) {
+
+	function mediaGroupUpdateAjaxCall(opts) {
 		$.ajax({
 			type : "POST",
 			data : {
-                "mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val(),
+				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val(),
 				"title" : opts.title,
 				"detail" : opts.detail,
 				"imageURL" : opts.imageURL,
@@ -550,12 +593,10 @@ $(document).ready(function () {
 			}
 		});
 	};
-    
-    function ConfirmDelete()
-    {
-        return confirm("Are you sure that you want to delete this record?");
-    }   
-    
+
+	function ConfirmDelete() {
+		return confirm("Are you sure that you want to delete this record?");
+	}
 
 	$("#btnDeleteMediaGroupItem").on("click", function (e) {
 		if (ConfirmDelete) {
@@ -573,6 +614,38 @@ $(document).ready(function () {
 		}
 	});
 
+	$("#btnDeleteMediaGroupItem").on("click", function (e) {
+		if (ConfirmDelete) {
+			$.ajax({
+				type : "POST",
+				data : {
+					"mediaGroupId" : $('#formEditMediaGroup input[name=mediaGroupId]').val(),
+					"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
+				},
+				url : "/mediagroupitem/delete",
+				success : function () {
+					oMediaGroupItemTable.fnDraw();
+				}
+			});
+		}
+	});
+
+	$("#btnAddMediaGroupItemOk").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"mediaGroupId" : $('#formEditMediaGroup input[name=mediaGroupId]').val(),
+                "mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
+			},
+			url : "/mediagroupitem/add",
+			success : function () {
+                $("#formAddMediaGroupItem").dialog('close');
+                
+				oMediaGroupItemTable.fnDraw();
+			}
+		});
+	});
+
 	$("#cancelMediaGroup").on("click", function (e) {
 		$("#mediagroupeditadddiv").hide();
 		$("#formEditMediaGroup").hide();
@@ -581,6 +654,7 @@ $(document).ready(function () {
 		$("#btnAddMediaGroupItem").hide();
 		$("#btnDeleteMediaGroupItem").hide();
 		$("#mediagroupdiv").show();
+        $("#mediGroupButtons").hide();
 	});
 
 	$("#mediaGroupItemNameAdd").on("change", function () {

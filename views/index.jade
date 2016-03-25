@@ -11,8 +11,9 @@ html(xmlns='http://www.w3.org/1999/xhtml')
     link(rel='stylesheet', href='stylesheets/demo_table_jui.css', type='text/css', media='screen')
     link(rel='stylesheet', href='stylesheets/jquery-ui.css', type='text/css', media='screen')
     script(type='text/javascript', src='javascripts/complete.js')
-    script(src='javascripts/jquery.js', type='text/javascript')
-    script(src='javascripts/jquery-ui.js', type='text/javascript')      
+    script(src='javascripts/jquery.js', type='text/javascript')    
+    script(src='javascripts/jquery-ui.js', type='text/javascript')
+    script(src='javascripts/jquery.mask.js', type='text/javascript')
     script(type='text/javascript', src='javascripts/chosen.jquery.js')
     script(src='javascripts/jquery.dataTables.js', type='text/javascript')   
     script(src='javascripts/jquery.jeditable.js', type='text/javascript')    
@@ -132,7 +133,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             br
                             input#name.required(type='text', name='name', rel='0')
                             br
-                            label(for='duration') Duration        
+                            label(for='duration') Duration (HH:MM:SS)    
                             br
                             input#duration.required(type='text', name='duration', rel='1')
                             br
@@ -148,7 +149,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             br
                             input#nameEdit.required(type='text', name='nameEdit', rel='0')
                             br
-                            label(for='durationEdit') Duration
+                            label(for='durationEdit') Duration (HH:MM:SS)
                             br
                             input#durationEdit.required(type='text', name='durationEdit', rel='1')
                             br
@@ -167,13 +168,13 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             thead
                               tr
                                 th name
-                                th duration
+                                th duration (HH:MM:SS)
                                 th contentURL
                                 th artist
                             tfoot
                               tr
                                 th name
-                                th duration
+                                th duration (HH:MM:SS)
                                 th contentURL
                                 th artist
             // End #mediaitemdiv
@@ -272,7 +273,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             br
                             select#mediaGroupItemNameAdd(name='mediaGroupItemNameAdd', data-placeholder="Type 'C' to view", style='width:200px;', tabindex='11', rel='0')                            
                             br
-                            label(for='mediaGroupItemDurationAdd') Duration
+                            label(for='mediaGroupItemDurationAdd') Duration (HH:MM:SS)
                             br
                             input#mediaGroupItemDurationAdd(type='text', name='mediaGroupItemDurationAdd', rel='1', readonly='')
                             br
@@ -292,13 +293,13 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                               thead
                                 tr
                                   th name
-                                  th duration
+                                  th duration (HH:MM:SS)
                                   th contentURL
                                   th artist
                               tfoot
                                 tr
                                   th name
-                                  th duration
+                                  th duration (HH:MM:SS)
                                   th contentURL
                                   th artist                                
                 // End .clear
