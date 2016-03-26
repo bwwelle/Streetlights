@@ -55,7 +55,7 @@ router.get('/', function (req, res) {
 					var mediaItemDuration = '';
 					var mediaItemContentURL = '';
 
-					if(mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined) {
+					if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined) {
 						if (mediaItem.get("artists")[0] !== null && mediaItem.get("artists")[0] !== undefined)
 							mediaItemCredit = mediaItem.get("artists")[0].get("name");
 					}
@@ -89,7 +89,7 @@ router.get('/', function (req, res) {
 	})
 });
 
-function ConvertDurationTime (duration) {
+function ConvertDurationTime(duration) {
 	var storedSeconds = 0;
 
 	if (duration != null)
@@ -111,24 +111,28 @@ function ConvertDurationTime (duration) {
 		seconds = storedSeconds - minutes * 60;
 	} else
 		seconds = storedSeconds;
-        
-    return pad(hours,2) + ":" + pad(minutes,2) + ":" + pad(seconds,2);
+
+	return pad(hours, 2) + ":" + pad(minutes, 2) + ":" + pad(seconds, 2);
 };
 
 function pad(num, size) {
-    var s = num+"";
-    while (s.length < size) s = "0" + s;
-    return s;
+	var s = num + "";
+	while (s.length < size)
+		s = "0" + s;
+	return s;
 }
 
 router.get('/edit', urlencodedParser, function (req, res) {
 	Parse.initialize("***REMOVED***", "***REMOVED***");
 	var MediaItem = Parse.Object.extend("MediaItem");
 	var mediaItem = new MediaItem();
+    var duration = req.query["durationEdit"].split(":");
+    
+    var durationInSeconds = ConvertDurationForSave(duration[0], duration[1], duration[2]);    
 
 	mediaItem.id = req.query["mediaItemEditId"];
 	mediaItem.set("name", req.query["nameEdit"]);
-	mediaItem.set("duration", parseInt(req.query["durationEdit"]));
+	mediaItem.set("duration", parseInt(durationInSeconds));
 	mediaItem.set("contentURL", req.query["contentURLEdit"]);
 
 	var creditId = req.query["artistEdit"];
@@ -153,9 +157,12 @@ router.post('/add', urlencodedParser, function (req, res) {
 
 	var MediaItem = Parse.Object.extend("MediaItem");
 	var mediaItem = new MediaItem();
+    var duration = req.query["durationEdit"].split(":");
+    
+    var durationInSeconds = ConvertDurationForSave(duration[0], duration[1], duration[2]); 
 
 	mediaItem.set("name", req.body.name);
-	mediaItem.set("duration", parseInt(req.body.duration));
+	mediaItem.set("duration", parseInt(durationInSeconds));
 	mediaItem.set("contentURL", req.body.contentURL);
 	mediaItem.unset("artists");
 
@@ -173,6 +180,24 @@ router.post('/add', urlencodedParser, function (req, res) {
 		}
 	});
 });
+
+function ConvertDurationForSave (formHours, formMinutes, formSeconds) {
+	var seconds = parseInt(formSeconds);
+	var minutes = parseInt(formMinutes);
+	var hours = parseInt(formHours);
+	var storedSeconds = 0;
+
+	if (hours > 0)
+		storedSeconds = 3600 * hours;
+
+	if (minutes > 0)
+		storedSeconds = 60 * minutes + storedSeconds;
+
+	if (seconds > 0)
+		storedSeconds = storedSeconds + seconds;
+
+	return storedSeconds;
+}
 
 router.post('/delete', urlencodedParser, function (req, res) {
 	Parse.initialize("***REMOVED***", "***REMOVED***");

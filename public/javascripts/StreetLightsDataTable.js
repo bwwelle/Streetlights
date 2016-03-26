@@ -16,7 +16,7 @@ $(document).ready(function () {
 					$('#contentURLEdit').val(contentURL);
 					$('#mediaitemartist').val(artist);
                     
-                    $('#durationEdit').mask("99:99:99");
+                    $('#durationEdit').mask("00:00:00",{placeholder: "__:__:__"});
 
 					$("#formEditMediaItem select[name=artistEdit] option").filter(function () {
 						return $(this).text() == artist;
@@ -645,7 +645,11 @@ $(document).ready(function () {
 			}
 		});
 	});
-
+    
+    $("#btnAddMediaItem").on("click", function (e) {
+        $('#duration').mask("00:00:00",{placeholder: "__:__:__"});
+    });
+    
 	$("#cancelMediaGroup").on("click", function (e) {
 		$("#mediagroupeditadddiv").hide();
 		$("#formEditMediaGroup").hide();

@@ -47,7 +47,7 @@ var urlencodedParser = bodyParser.urlencoded({
 							mediaItemName = mediaItem.get("name");
 
 						if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
-							mediaItemDuration = mediaItem.get("duration");
+							mediaItemDuration = ConvertDurationTime(mediaItem.get("duration"));
 
 						if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
 							mediaItemContentURL = mediaItem.get("contentURL");
@@ -95,7 +95,7 @@ var urlencodedParser = bodyParser.urlencoded({
 						mediaItemName = mediaItem.get("name");
 
 					if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
-						mediaItemDuration = mediaItem.get("duration");
+						mediaItemDuration = ConvertDurationTime(mediaItem.get("duration"));
 
 					if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
 						mediaItemContentURL = mediaItem.get("contentURL");
@@ -131,6 +131,38 @@ var urlencodedParser = bodyParser.urlencoded({
 			});
 		};
 	});
+
+function ConvertDurationTime (duration) {
+	var storedSeconds = 0;
+
+	if (duration != null)
+		storedSeconds = duration;
+
+	var hours = 0;
+	var minutes = 0;
+	var seconds = 0;
+
+	if (storedSeconds > 3599) {
+		hours = Math.floor(storedSeconds / 3600);
+		storedSeconds = storedSeconds - hours * 3600;
+
+		minutes = Math.floor(storedSeconds / 60);
+
+		seconds = storedSeconds - minutes * 60;
+	} else if (storedSeconds > 59) {
+		minutes = Math.floor(storedSeconds / 60);
+		seconds = storedSeconds - minutes * 60;
+	} else
+		seconds = storedSeconds;
+        
+    return pad(hours,2) + ":" + pad(minutes,2) + ":" + pad(seconds,2);
+};
+
+function pad(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
 
 router.post('/update', urlencodedParser, function (req, res) {
 	Parse.initialize("***REMOVED***", "***REMOVED***");
