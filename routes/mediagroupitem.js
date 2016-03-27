@@ -32,34 +32,35 @@ var urlencodedParser = bodyParser.urlencoded({
 				success : function (mediaGroup) {
 					var data = [];
 					for (var i = parseInt(displayStart); i < totalRecordsToView && i < mediaGroup.get("items").length; i++) {
-						var mediaItem = mediaGroup.get("items")[i];
-						var mediaItemCredit = '';
-						var mediaItemName = '';
-						var mediaItemDuration = '';
-						var mediaItemContentURL = '';
+						if (mediaGroup.get("items")[i] !== null && mediaGroup.get("items")[i] !== undefined) {
+							var mediaItem = mediaGroup.get("items")[i];
+							var mediaItemCredit = '';
+							var mediaItemName = '';
+							var mediaItemDuration = '';
+							var mediaItemContentURL = '';
 
-						if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined) {
-							if (mediaItem.get("artists")[0] !== null && mediaItem.get("artists")[0] !== undefined)
-								mediaItemCredit = mediaItem.get("artists")[0].get("name");
+							if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined) {
+								if (mediaItem.get("artists")[0] !== null && mediaItem.get("artists")[0] !== undefined)
+									mediaItemCredit = mediaItem.get("artists")[0].get("name");
+							}
+
+							if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
+								mediaItemName = mediaItem.get("name");
+
+							if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
+								mediaItemDuration = ConvertDurationTime(mediaItem.get("duration"));
+
+							if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
+								mediaItemContentURL = mediaItem.get("contentURL");
+
+							data[recordCount] = {
+								name : mediaItemName,
+								duration : mediaItemDuration,
+								contentURL : mediaItemContentURL,
+								artist : mediaItemCredit,
+								DT_RowId : mediaItem.id
+							};
 						}
-
-						if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
-							mediaItemName = mediaItem.get("name");
-
-						if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
-							mediaItemDuration = ConvertDurationTime(mediaItem.get("duration"));
-
-						if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
-							mediaItemContentURL = mediaItem.get("contentURL");
-
-						data[recordCount] = {
-							name : mediaItemName,
-							duration : mediaItemDuration,
-							contentURL : mediaItemContentURL,
-							artist : mediaItemCredit,
-							DT_RowId : mediaItem.id
-						};
-
 						recordCount++;
 					}
 
@@ -84,7 +85,7 @@ var urlencodedParser = bodyParser.urlencoded({
 					var mediaItemName = '';
 					var mediaItemDuration = '';
 					var mediaItemContentURL = '';
-                    var mediaItemCredit = '';
+					var mediaItemCredit = '';
 
 					if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined) {
 						if (mediaItem.get("artists")[0] !== null && mediaItem.get("artists")[0] !== undefined)
@@ -132,7 +133,7 @@ var urlencodedParser = bodyParser.urlencoded({
 		};
 	});
 
-function ConvertDurationTime (duration) {
+function ConvertDurationTime(duration) {
 	var storedSeconds = 0;
 
 	if (duration != null)
@@ -154,14 +155,15 @@ function ConvertDurationTime (duration) {
 		seconds = storedSeconds - minutes * 60;
 	} else
 		seconds = storedSeconds;
-        
-    return pad(hours,2) + ":" + pad(minutes,2) + ":" + pad(seconds,2);
+
+	return pad(hours, 2) + ":" + pad(minutes, 2) + ":" + pad(seconds, 2);
 };
 
 function pad(num, size) {
-    var s = num+"";
-    while (s.length < size) s = "0" + s;
-    return s;
+	var s = num + "";
+	while (s.length < size)
+		s = "0" + s;
+	return s;
 }
 
 router.post('/update', urlencodedParser, function (req, res) {

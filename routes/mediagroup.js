@@ -52,12 +52,11 @@ var urlencodedParser = bodyParser.urlencoded({
 							if (mediaGroup.get("imageURL") !== null && mediaGroup.get("imageURL") !== undefined)
 								mediaGroupImageURL = mediaGroup.get("imageURL");
 
-							if (mediaGroup.get("artists") !== null && mediaGroup.get("artists") !== undefined)
-                            {
-                                if(mediaGroup.get("artists")[0] !== null && mediaGroup.get("artists")[0] !== undefined)
-                                    mediaGroupArtist = mediaGroup.get("artists")[0].get("name");
-                            }
-                            
+							if (mediaGroup.get("artists") !== null && mediaGroup.get("artists") !== undefined) {
+								if (mediaGroup.get("artists")[0] !== null && mediaGroup.get("artists")[0] !== undefined)
+									mediaGroupArtist = mediaGroup.get("artists")[0].get("name");
+							}
+
 							data[i] = {
 								title : mediaGroupTitle,
 								detail : mediaGroupDetail,
@@ -87,18 +86,18 @@ router.post('/update', urlencodedParser, function (req, res) {
 
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var mediaGroup = new MediaGroup();
-    
-    mediaGroup.id = req.body.mediaGroupId;
-    
+
+	mediaGroup.id = req.body.mediaGroupId;
+
 	mediaGroup.set("title", req.body.title);
 	mediaGroup.set("detail", req.body.detail);
 	mediaGroup.set("imageURL", req.body.imageURL);
 
 	var Credit = Parse.Object.extend("Credit");
 	var credit = new Credit();
-    
+
 	credit.id = req.body.artist;
-    mediaGroup.unset("artists");
+	mediaGroup.unset("artists");
 	mediaGroup.addUnique("artists", credit);
 
 	mediaGroup.save(null, {
@@ -123,7 +122,7 @@ router.post('/add', urlencodedParser, function (req, res) {
 
 	var Credit = Parse.Object.extend("Credit");
 	var credit = new Credit();
-    
+
 	credit.id = req.body.artist;
 	mediaGroup.addUnique("artists", credit);
 
@@ -135,7 +134,27 @@ router.post('/add', urlencodedParser, function (req, res) {
 			res.json("Save Error!");
 		}
 	});
+
 });
+
+router.post('/login', urlencodedParser, function (req, res) {
+		Parse.initialize("***REMOVED***", "***REMOVED***");
+
+		Parse.User.logIn('bwwelle', '23!jordan', {
+			success : function (user) {
+				res.send('POST request to the homepage');
+			},
+			error : function (user, err) {
+				if (err) {
+					res.json({
+						message : err
+					});
+				}
+			}
+		});
+	});
+
+
 
 router.post('/delete', urlencodedParser, function (req, res) {
 	Parse.initialize("***REMOVED***", "***REMOVED***");

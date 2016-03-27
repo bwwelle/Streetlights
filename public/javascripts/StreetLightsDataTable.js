@@ -380,7 +380,7 @@ $(document).ready(function () {
 		$("#mediagroupitemdiv").siblings().hide(); */
 
 		$("#mediagroupdiv").hide();
-		$("#mediGroupButtons").show();
+		$("#mediaGroupButtons").show();
 		$("#mediagroupeditadddiv").show();
 		$("#formAddMediaGroup").hide();
 		$("#formEditMediaGroup").show();
@@ -531,15 +531,15 @@ $(document).ready(function () {
 	});
 
 	$("#viewMediaGroup").on("click", function (e) {
-		$("#mediGroupButtons").hide();
+		$("#mediaGroupButtons").hide();
 	});
 
 	$("#viewCredit").on("click", function (e) {
-		$("#mediGroupButtons").hide();
+		$("#mediaGroupButtons").hide();
 	});
 
 	$("#viewMediaItem").on("click", function (e) {
-		$("#mediGroupButtons").hide();
+		$("#mediaGroupButtons").hide();
 	});
 
 	function mediaGroupAddAjaxCall(opts) {
@@ -658,7 +658,7 @@ $(document).ready(function () {
 		$("#btnAddMediaGroupItem").hide();
 		$("#btnDeleteMediaGroupItem").hide();
 		$("#mediagroupdiv").show();
-        $("#mediGroupButtons").hide();
+        $("#mediaGroupButtons").hide();
 	});
 
 	$("#mediaGroupItemNameAdd").on("change", function () {

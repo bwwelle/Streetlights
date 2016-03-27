@@ -4,8 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
-var Parse = require('parse').Parse;
+var parse = require('parse/node').Parse;
 
 var app = express();
 app.use(express.static(__dirname + '/public'));
@@ -24,6 +23,7 @@ var mediaitem = require('./routes/mediaitem');
 var mediagroup = require('./routes/mediagroup');
 var mediagroupitem = require('./routes/mediagroupitem');
 var credit = require('./routes/credit');
+var login = require('./routes/login');
 app.use(cookieParser());
 
 app.use('/', routes);
@@ -31,6 +31,7 @@ app.use('/mediaitem', mediaitem);
 app.use('/mediagroup', mediagroup);
 app.use('/mediagroupitem', mediagroupitem);
 app.use('/credit', credit);
+app.use('/login', login);
 
 
 if (app.get('env') === 'development') {

@@ -1,0 +1,63 @@
+doctype html
+html(xmlns='http://www.w3.org/1999/xhtml')
+  head
+    meta(http-equiv='Content-Type', content='text/html; charset=iso-8859-1')
+    title Simpla Admin | Sign In
+    // CSS
+    // Reset Stylesheet
+    link(rel='stylesheet', href='stylesheets/reset.css', type='text/css', media='screen')
+    // Main Stylesheet
+    link(rel='stylesheet', href='stylesheets/style.css', type='text/css', media='screen')
+    // Invalid Stylesheet. This makes stuff look pretty. Remove it if you want the CSS completely valid
+    link(rel='stylesheet', href='stylesheets/invalid.css', type='text/css', media='screen')
+    //
+      Colour Schemes
+      Default colour scheme is green. Uncomment prefered stylesheet to use it.
+      <link rel="stylesheet" href="stylesheets/blue.css" type="text/css" media="screen" />
+      <link rel="stylesheet" href="stylesheets/red.css" type="text/css" media="screen" />
+    // Internet Explorer Fixes Stylesheet
+    //if lte IE 7
+      link(rel='stylesheet', href='stylesheets/ie.css', type='text/css', media='screen')
+    // Javascripts
+    // jQuery
+    script(type='text/javascript', src='javascripts/jquery.js')
+    // jQuery Configuration
+    script(type='text/javascript', src='javascripts/simpla.jquery.configuration.js')
+    // Facebox jQuery Plugin
+    script(type='text/javascript', src='javascripts/facebox.js')
+    // jQuery WYSIWYG Plugin
+    script(type='text/javascript', src='javascripts/jquery.wysiwyg.js')
+    script(type='text/javascript', src='javascripts/login.js')
+    // Internet Explorer .png-fix
+    //if IE 6
+      script(type='text/javascript', src='javascripts/DD_belatedPNG_0.0.7a.js')
+      script(type='text/javascript').
+        DD_belatedPNG.fix('.png_bg, img, li');
+  body#login
+    #login-wrapper.png_bg
+      #login-top
+        h1 Simpla Admin
+        // Logo (221px width)
+        img#logo(src='images/logo.png', alt='Simpla Admin logo')
+      // End #logn-top
+      #login-content
+        form
+          .notification.information.png_bg
+            div
+              | Just click "Sign In". No password needed.
+          p
+            label Username
+            input#username.text-input(type='text', name='username')
+          .clear
+          p
+            label Password
+            input#password.text-input(type='password', name='password')
+          .clear
+          p#remember-password
+            input(type='checkbox')
+            | Remember me
+          .clear
+          p
+            input#btnSubmitLogin.button(type='submit', name='btnSubmitLogin', value='Sign In')
+      // End #login-content
+    // End #login-wrapper
