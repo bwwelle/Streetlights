@@ -21,11 +21,11 @@ var router = express.Router();
 
 env(__dirname + '/config/.env');
 
-app.use(session({
+app.use(cookieParser(session({
 		secret : 'thisissomethingthatnooneknows',
 		resave : true,
 		saveUninitialized : true
-	}));
+	})));
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -40,7 +40,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({
 		type : 'application/vnd.api+json'
 	}));
-app.use(cookieParser());
+
 app.use(bodyParser()); // get information from html forms
 
 app.use(morgan('dev')); // log every request to the console
