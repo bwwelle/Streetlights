@@ -5,10 +5,10 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var Parse = require('parse/node').Parse;
-var passport = require('passport');
-var flash = require('connect-flash');
+//var passport = require('passport');
+//var flash = require('connect-flash');
 var session = require('express-session');
-var assert = require('assert');
+//var assert = require('assert');
 //var env = require('node-env-file');
 
 var mediaitem = require('./routes/mediaitem');
@@ -46,7 +46,7 @@ app.use(bodyParser()); // get information from html forms
 app.use(morgan('dev')); // log every request to the console
 
 app.use(express.static(__dirname + '/public'));
-app.use(flash()); // use connect-flash for flash messages stored in session
+//app.use(flash()); // use connect-flash for flash messages stored in session
 Parse.initialize(process.env.ParseApplicationID, process.env.ParseJavascriptID);
 
 // Authentication and Authorization Middleware
