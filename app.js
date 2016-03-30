@@ -19,10 +19,13 @@ var credit = require('./routes/credit');
 var app = express();
 var router = express.Router();
 
+// Use this if node env is development or != production
 //env(__dirname + '/config/.env');
 
+
+// You need to use the cookieParser here rather than later.
 app.use(cookieParser(session({
-		secret : 'thisissomethingthatnooneknows',
+		secret : process.env.SESSION_SECRET || 'thisissomethingthatnooneknows',
 		resave : true,
 		saveUninitialized : true
 	})));
