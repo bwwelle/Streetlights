@@ -5,24 +5,13 @@ var router = express.Router();
 var displayStart = 0;
 var echo = 0;
 module.exports = router;
+Parse.initialize(process.env.ParseApplicationID, process.env.ParseJavascriptID);
 
 var urlencodedParser = bodyParser.urlencoded({
 		extended : false
 	});
 
-var findUserByUsername = function (username, callback) {
-	// Perform database query that calls callback when it's done
-	// This is our fake database
-	if (!users[username])
-		return callback(new Error(
-				'No user matching '
-				 + username));
-	return callback(null, users[username]);
-};
-
 router.get('/', function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
-
 	var searchText = req.query.sSearch;
 	displayStart = req.query.iDisplayStart;
 	var displayLength = req.query.iDisplayLength;
@@ -123,12 +112,11 @@ function pad(num, size) {
 }
 
 router.get('/edit', urlencodedParser, function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
 	var MediaItem = Parse.Object.extend("MediaItem");
 	var mediaItem = new MediaItem();
-    var duration = req.query["durationEdit"].split(":");
-    
-    var durationInSeconds = ConvertDurationForSave(duration[0], duration[1], duration[2]);    
+	var duration = req.query["durationEdit"].split(":");
+
+	var durationInSeconds = ConvertDurationForSave(duration[0], duration[1], duration[2]);
 
 	mediaItem.id = req.query["mediaItemEditId"];
 	mediaItem.set("name", req.query["nameEdit"]);
@@ -136,7 +124,7 @@ router.get('/edit', urlencodedParser, function (req, res) {
 	mediaItem.set("contentURL", req.query["contentURLEdit"]);
 
 	var creditId = req.query["artistEdit"];
-	var Credit = Parse.Object.extend("Credit");
+	var Credit = exports.Parse.Object.extend("Credit");
 	var credit = new Credit();
 	credit.id = creditId;
 	mediaItem.unset("artists");
@@ -153,13 +141,11 @@ router.get('/edit', urlencodedParser, function (req, res) {
 });
 
 router.post('/add', urlencodedParser, function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
-
 	var MediaItem = Parse.Object.extend("MediaItem");
 	var mediaItem = new MediaItem();
-    var duration = req.query["durationEdit"].split(":");
-    
-    var durationInSeconds = ConvertDurationForSave(duration[0], duration[1], duration[2]); 
+	var duration = req.query["durationEdit"].split(":");
+
+	var durationInSeconds = ConvertDurationForSave(duration[0], duration[1], duration[2]);
 
 	mediaItem.set("name", req.body.name);
 	mediaItem.set("duration", parseInt(durationInSeconds));
@@ -181,7 +167,7 @@ router.post('/add', urlencodedParser, function (req, res) {
 	});
 });
 
-function ConvertDurationForSave (formHours, formMinutes, formSeconds) {
+function ConvertDurationForSave(formHours, formMinutes, formSeconds) {
 	var seconds = parseInt(formSeconds);
 	var minutes = parseInt(formMinutes);
 	var hours = parseInt(formHours);
@@ -200,7 +186,7 @@ function ConvertDurationForSave (formHours, formMinutes, formSeconds) {
 }
 
 router.post('/delete', urlencodedParser, function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
+	//Parse.initialize("***REMOVED***", "***REMOVED***");
 
 	var MediaItem = Parse.Object.extend("MediaItem");
 	var query = new Parse.Query(MediaItem);

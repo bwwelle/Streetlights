@@ -5,6 +5,7 @@ var router = express.Router();
 var displayStart = 0;
 var echo = 0;
 module.exports = router;
+Parse.initialize(process.env.ParseApplicationID, process.env.ParseJavascriptID);
 
 var urlencodedParser = bodyParser.urlencoded({
 		extended : false
@@ -16,8 +17,6 @@ var urlencodedParser = bodyParser.urlencoded({
 		var mediaItemId = req.query["mediaItemId"];
 		var displayLength = req.query.iDisplayLength;
 		displayStart = req.query.iDisplayStart;
-
-		Parse.initialize("***REMOVED***", "***REMOVED***");
 
 		if (mediaGroupId !== undefined && mediaGroupId !== null && mediaGroupId !== "") {
 			var MediaGroup = Parse.Object.extend("MediaGroup");
@@ -167,8 +166,6 @@ function pad(num, size) {
 }
 
 router.post('/update', urlencodedParser, function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
-
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var mediaGroup = new MediaGroup();
 	mediaGroup.id = req.body.id;
@@ -189,8 +186,6 @@ router.post('/update', urlencodedParser, function (req, res) {
 });
 
 router.post('/add', urlencodedParser, function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
-
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var mediaGroup = new MediaGroup();
 
@@ -213,8 +208,6 @@ router.post('/add', urlencodedParser, function (req, res) {
 });
 
 router.post('/delete', urlencodedParser, function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
-
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var mediaGroup = new MediaGroup();
 	mediaGroup.id = req.body.mediaGroupId;

@@ -66,14 +66,10 @@ html(xmlns='http://www.w3.org/1999/xhtml')
           // Sidebar Profile links
           #profile-links
             | Hello, 
-            a(href='#', title='Edit your profile') John Doe
-            | , you have 
-            a(href='#messages', rel='modal', title='3 Messages') 3 Messages
-            br
-            br
-            a(href='#', title='View the Site') View the Site
-            |  
-            a(href='#', title='Sign Out') Sign Out
+            a#currentUser John Doe
+            | 
+            br            
+            a(href='\logout', title='Sign Out') Sign Out
           ul#main-nav
             // Accordion Menu            
             li

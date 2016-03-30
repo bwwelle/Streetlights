@@ -5,14 +5,13 @@ var router = express.Router();
 var displayStart = 0;
 var echo = 0;
 module.exports = router;
+Parse.initialize(process.env.ParseApplicationID, process.env.ParseJavascriptID);
 
 var urlencodedParser = bodyParser.urlencoded({
 		extended : false
 	})
 
 	router.get('/', function (req, res) {
-		Parse.initialize("***REMOVED***", "***REMOVED***");
-
 		var searchText = req.query.sSearch;
         var displayLength = req.query.iDisplayLength;
         displayStart = req.query.iDisplayStart;
@@ -65,8 +64,7 @@ var urlencodedParser = bodyParser.urlencoded({
 	});
 
 router.get('/edit', urlencodedParser, function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
-    var Credit = Parse.Object.extend("Credit");
+	var Credit = Parse.Object.extend("Credit");
 	var credit = new Credit();
     
     credit.id = req.query["creditEditId"];
@@ -83,8 +81,6 @@ router.get('/edit', urlencodedParser, function (req, res) {
 });
 
 router.post('/add', urlencodedParser, function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
-
 	var Credit = Parse.Object.extend("Credit");
 	var credit = new Credit();
 
@@ -101,8 +97,6 @@ router.post('/add', urlencodedParser, function (req, res) {
 });
 
 router.post('/delete', urlencodedParser, function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
-
 	var Credit = Parse.Object.extend("Credit");
 	var query = new Parse.Query(Credit);
 

@@ -12,8 +12,11 @@ $(document).ready(function () {
 			},
 			url : "/login",
 			success : function (data) {
-				var test22 = "12";
-			}
+				alert('success message: ' + data);
+			},
+            error: function (data) {
+                alert(data);
+            }
 		});
 	}
 });

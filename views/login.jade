@@ -27,7 +27,6 @@ html(xmlns='http://www.w3.org/1999/xhtml')
     script(type='text/javascript', src='javascripts/facebox.js')
     // jQuery WYSIWYG Plugin
     script(type='text/javascript', src='javascripts/jquery.wysiwyg.js')
-    script(type='text/javascript', src='javascripts/login.js')
     // Internet Explorer .png-fix
     //if IE 6
       script(type='text/javascript', src='javascripts/DD_belatedPNG_0.0.7a.js')
@@ -41,7 +40,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
         img#logo(src='images/logo.png', alt='Simpla Admin logo')
       // End #logn-top
       #login-content
-        form
+        form(action='/login', method='post')
           .notification.information.png_bg
             div
               | Just click "Sign In". No password needed.

@@ -5,14 +5,13 @@ var router = express.Router();
 var displayStart = 0;
 var echo = 0;
 module.exports = router;
+Parse.initialize(process.env.ParseApplicationID, process.env.ParseJavascriptID);
 
 var urlencodedParser = bodyParser.urlencoded({
 		extended : false
 	})
 
 	router.get('/', function (req, res) {
-		Parse.initialize("***REMOVED***", "***REMOVED***");
-
 		var searchText = req.query.sSearch;
 		displayStart = req.query.iDisplayStart;
 		echo = req.query.sEcho;
@@ -82,8 +81,6 @@ var urlencodedParser = bodyParser.urlencoded({
 	});
 
 router.post('/update', urlencodedParser, function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
-
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var mediaGroup = new MediaGroup();
 
@@ -111,8 +108,6 @@ router.post('/update', urlencodedParser, function (req, res) {
 });
 
 router.post('/add', urlencodedParser, function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
-
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var mediaGroup = new MediaGroup();
 
@@ -137,28 +132,7 @@ router.post('/add', urlencodedParser, function (req, res) {
 
 });
 
-router.post('/login', urlencodedParser, function (req, res) {
-		Parse.initialize("***REMOVED***", "***REMOVED***");
-
-		Parse.User.logIn('bwwelle', '23!jordan', {
-			success : function (user) {
-				res.send('POST request to the homepage');
-			},
-			error : function (user, err) {
-				if (err) {
-					res.json({
-						message : err
-					});
-				}
-			}
-		});
-	});
-
-
-
 router.post('/delete', urlencodedParser, function (req, res) {
-	Parse.initialize("***REMOVED***", "***REMOVED***");
-
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var query = new Parse.Query(MediaGroup);
 
