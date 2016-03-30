@@ -9,7 +9,7 @@ var passport = require('passport');
 var flash = require('connect-flash');
 var session = require('express-session');
 var assert = require('assert');
-var env = require('node-env-file');
+//var env = require('node-env-file');
 
 var mediaitem = require('./routes/mediaitem');
 var mediagroup = require('./routes/mediagroup');
@@ -19,7 +19,7 @@ var credit = require('./routes/credit');
 var app = express();
 var router = express.Router();
 
-env(__dirname + '/config/.env');
+//env(__dirname + '/config/.env');
 
 app.use(session({
 		secret : 'thisissomethingthatnooneknows',
