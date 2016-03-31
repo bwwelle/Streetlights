@@ -124,7 +124,7 @@ router.get('/edit', urlencodedParser, function (req, res) {
 	mediaItem.set("contentURL", req.query["contentURLEdit"]);
 
 	var creditId = req.query["artistEdit"];
-	var Credit = exports.Parse.Object.extend("Credit");
+	var Credit = Parse.Object.extend("Credit");
 	var credit = new Credit();
 	credit.id = creditId;
 	mediaItem.unset("artists");
