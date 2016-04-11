@@ -9,26 +9,28 @@ var Parse = require('parse/node').Parse;
 //var flash = require('connect-flash');
 var session = require('express-session');
 //var assert = require('assert');
-//var env = require('node-env-file');
+var env = require('node-env-file');
 
 var mediaitem = require('./routes/mediaitem');
 var mediagroup = require('./routes/mediagroup');
 var mediagroupitem = require('./routes/mediagroupitem');
 var credit = require('./routes/credit');
+var user = require('./routes/user');
 
 var app = express();
 var router = express.Router();
 
 // Use this if node env is development or != production
-//env(__dirname + '/config/.env');
-
+env(__dirname + '/config/.env');
 
 // You need to use the cookieParser here rather than later.
+// the app.use sessions startup is not working....
 app.use(cookieParser(session({
-		secret : process.env.SESSION_SECRET || 'thisissomethingthatnooneknows',
-		resave : true,
-		saveUninitialized : true
-	})));
+			secret : process.env.SESSION_SECRET || 'thisissomethingthatnooneknows',
+			resave : true,
+			saveUninitialized : true
+		})));
+
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -57,7 +59,7 @@ var auth = function (req, res, next) {
 	if (req.session && req.session.user === Parse.User.current() && req.session.admin)
 		return next();
 	else
-		return res.render('login','');
+		return res.render('login', '');
 };
 
 // Login endpoint
@@ -67,17 +69,33 @@ app.post('/login', urlencodedParser, function (req, res) {
 	} else {
 		Parse.User.logIn(req.body.username, req.body.password).then(
 			function (user) {
-			//req.session.user = user;
-			//req.session.admin = true;
-			res.render('index', {title:'',data: user}); //when successfully logged in
+			req.session.user = user;  //this is not working
+			req.session.admin = true;  //this is not working
+			res.render('index', {
+				title : '',
+				data : user
+			}); //when successfully logged in
 		});
 	};
 });
 
 // Logout endpoint
 app.get('/logout', function (req, res) {
-	//req.session.destroy();
+	req.session.destroy();  //this is not working
 	res.render('login', '');
+});
+
+// Reset Password endpoint
+app.post('/resetpassword', urlencodedParser, function (req, res) {
+	Parse.User.requestPasswordReset(req.body.password, {
+		success : function () {
+			
+		},
+		error : function (error) {
+			// Show the error message somewhere
+			alert("Error: " + error.code + " " + error.message);
+		}
+	});
 });
 
 // Get content endpoint
@@ -89,6 +107,7 @@ app.use('/mediaitem', mediaitem);
 app.use('/mediagroup', mediagroup);
 app.use('/mediagroupitem', mediagroupitem);
 app.use('/credit', credit);
+app.use('/user', user);
 
 // error handlers
 // catch 404 and forward to error handler

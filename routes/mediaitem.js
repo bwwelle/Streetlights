@@ -186,8 +186,6 @@ function ConvertDurationForSave(formHours, formMinutes, formSeconds) {
 }
 
 router.post('/delete', urlencodedParser, function (req, res) {
-	//Parse.initialize("***REMOVED***", "***REMOVED***");
-
 	var MediaItem = Parse.Object.extend("MediaItem");
 	var query = new Parse.Query(MediaItem);
 

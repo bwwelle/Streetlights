@@ -1,6 +1,99 @@
 
 
 $(document).ready(function () {
+
+	var oUserTable = $('#user').dataTable({
+			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				$(nRow).on('click', function () {
+					var objectId = $(nRow).attr("id");
+					var userName = $('td:eq(0)', nRow).text();
+					var email = $('td:eq(1)', nRow).text();
+                    var password = $('td:eq(2)', nRow).text();
+                    
+                    //todo: add logic for btnEditLogin
+					$('#userEditId').val(objectId);
+				});
+			},
+			"bJQueryUI" : true,
+			"bScrollCollapse" : true,
+			"bProcessing" : true,
+			"bServerSide" : true,
+			"rowId" : "objectid",
+			"sAjaxSource" : "/user",
+			"bPaginate" : true,
+			"bSort" : true,
+			"aoColumnDefs" : [{
+					"mDataProp" : null,
+					"sDefaultContent" : "&nbsp",
+					"aTargets" : ['_all']
+				}
+			],
+			"aoColumns" : [{
+					"mDataProp" : "userName"
+				}, {
+					"mDataProp" : "email"
+				}
+			],
+			"iDisplayLength" : 10,
+			"iDisplayStart" : 0,
+			"sPaginationType" : "full_numbers",
+			"bFilter" : false,
+			"deferLoading" : 10
+		}).makeEditable({
+			fnOnDeleted : function (value, settings) {
+				oUserTable.fnDraw();
+			},
+			fnOnEdited : function (value, settings) {
+				oUserTable.fnDraw();
+			},
+			sAddURL : "/user/add",
+			sAddHttpMethod : "POST",
+			sEditHttpMethod : "GET",
+			sDeleteHttpMethod : "POST",
+			sEditURL : "/user/edit",
+			sDeleteURL : "/user/delete",
+			sAddNewRowFormId : "formAddUser",
+			sAddNewRowButtonId : "btnAddUser",
+			sAddNewRowOkButtonId : "btnAddUserOk",
+			sAddNewRowCancelButtonId : "btnAddUserCancel",
+			sEditRowFormId : "formEditUser",
+			sEditRowButtonId : "btnEditUser",
+			sEditRowOkButtonId : "btnEditUserOk",
+			sEditRowCancelButtonId : "btnEditUserCancel",
+			sDeleteRowButtonId : "btnDeleteUser",
+			oAddNewRowButtonOptions : {
+				label : "Add",
+				icons : {
+					primary : 'ui-icon-plus'
+				}
+			},
+			oEditRowButtonOptions : {
+				label : "Edit",
+				icons : {
+					primary : 'ui-icon-pencil'
+				}
+			},
+			oDeleteRowButtonOptions : {
+				label : "Remove",
+				icons : {
+					primary : 'ui-icon-trash'
+				}
+			},
+			oAddNewRowFormOptions : {
+				title : 'Add a user',
+				show : "blind",
+				hide : "explode",
+				modal : true
+			},
+			oEditRowFormOptions : {
+				title : 'Edit a user',
+				show : "blind",
+				hide : "explode",
+				modal : true
+			},
+			sAddDeleteEditToolbarSelector : ".dataTables_length"
+		});
+
 	var oMediaItemTable = $('#mediaitem').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				$(nRow).on('click', function () {
@@ -15,8 +108,10 @@ $(document).ready(function () {
 					$('#durationEdit').val(duration);
 					$('#contentURLEdit').val(contentURL);
 					$('#mediaitemartist').val(artist);
-                    
-                    $('#durationEdit').mask("00:00:00",{placeholder: "__:__:__"});
+
+					$('#durationEdit').mask("00:00:00", {
+						placeholder : "__:__:__"
+					});
 
 					$("#formEditMediaItem select[name=artistEdit] option").filter(function () {
 						return $(this).text() == artist;
@@ -635,21 +730,42 @@ $(document).ready(function () {
 			type : "POST",
 			data : {
 				"mediaGroupId" : $('#formEditMediaGroup input[name=mediaGroupId]').val(),
-                "mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
+				"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
 			},
 			url : "/mediagroupitem/add",
 			success : function () {
-                $("#formAddMediaGroupItem").dialog('close');
-                
+				$("#formAddMediaGroupItem").dialog('close');
+
 				oMediaGroupItemTable.fnDraw();
 			}
 		});
 	});
+
+	$("#btnAddMediaItem").on("click", function (e) {
+		$('#duration').mask("00:00:00", {
+			placeholder : "__:__:__"
+		});
+	});
     
-    $("#btnAddMediaItem").on("click", function (e) {
-        $('#duration').mask("00:00:00",{placeholder: "__:__:__"});
-    });
-    
+    $("#btnEditUser").on("click", function (e) {        
+		$.ajax({
+			type : "GET",
+			data : {
+				"userId" : $('#userEditId').val()
+			},
+			url : "/user",
+			success : function (res) {
+				var objectId = res.userId;
+				var userName = res.userName;
+				var email = res.email;
+                
+                $('#userEditId').val(objectId);
+                $('#userNameEdit').val(userName);
+                $('#emailEdit').val(email);
+			}
+		});
+	});
+
 	$("#cancelMediaGroup").on("click", function (e) {
 		$("#mediagroupeditadddiv").hide();
 		$("#formEditMediaGroup").hide();
@@ -658,7 +774,7 @@ $(document).ready(function () {
 		$("#btnAddMediaGroupItem").hide();
 		$("#btnDeleteMediaGroupItem").hide();
 		$("#mediagroupdiv").show();
-        $("#mediaGroupButtons").hide();
+		$("#mediaGroupButtons").hide();
 	});
 
 	$("#mediaGroupItemNameAdd").on("change", function () {

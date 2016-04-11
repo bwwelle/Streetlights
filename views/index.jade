@@ -84,6 +84,13 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                 // Add class "current" to sub menu items also
                 li
                   a#viewMediaItem.current(href='#mediaitemdiv') Media Items
+             li
+              a.nav-top-item(href='#')
+                // Add the class "current" to current menu item
+                | Settings
+              ul
+                li
+                  a#viewUser(href='#userdiv') Users
           // End #main-nav
       // End #sidebar
       #main-content
@@ -118,6 +125,48 @@ html(xmlns='http://www.w3.org/1999/xhtml')
         .content-box
           // Start Content Box
           .content-box-content
+            #userdiv.tab-content
+              // This is the target div. id must match the href of this div's tab
+              div(style='margin:10px 0')
+                  #fw_container
+                      #fw_content
+                        .full_width
+                          form#formAddUser(style='width:600px;min-width:600px')
+                            label UserName
+                            br
+                            input#userName.required(type='text', name='userName', rel='0')
+                            br
+                            label(for='email') Email
+                            br
+                            input#email.required(type='text', name='email', rel='1')
+                            br
+                            label(for='password') Password
+                            br
+                            input#password.required(type='password', name='password', rel='2')
+                          form#formEditUser(style='width:600px;min-width:600px')
+                            label(for='userName') UserName
+                            br
+                            input#userNameEdit.required(type='text', name='userNameEdit', rel='0')
+                            br
+                            label(for='emailEdit') Email
+                            br
+                            input#emailEdit.required(type='text', name='emailEdit', rel='1')
+                            br
+                            a#resetPassword(href='\resetpassword') Send Reset Password Email
+                            input#userEditId(type='hidden', name='userEditId')
+                          <button id="btnAddUser"></button>
+                          <button id="btnEditUser"></button>
+                          <button id="btnDeleteUser"></button>                          
+                          table#user.display(cellpadding='0', cellspacing='0', border='0')
+                            thead
+                              tr
+                                th userName
+                                th email
+                            tfoot
+                              tr
+                                th userName
+                                th email
+            // End #userdiv
             #mediaitemdiv.tab-content.default-tab
               // This is the target div. id must match the href of this div's tab
               div(style='margin:10px 0')
