@@ -2,7 +2,7 @@ doctype html
 html(xmlns='http://www.w3.org/1999/xhtml')
   head
     meta(http-equiv='Content-Type', content='text/html; charset=iso-8859-1')
-    title Simpla Admin | Sign In
+    title Streetlights Admin | Sign In
     // CSS
     // Reset Stylesheet
     link(rel='stylesheet', href='stylesheets/reset.css', type='text/css', media='screen')
@@ -35,10 +35,11 @@ html(xmlns='http://www.w3.org/1999/xhtml')
   body#login
     #login-wrapper.png_bg
       #login-top
-        h1 Simpla Admin
+        h1 Streetlights Admin
         // Logo (221px width)
-        img#logo(src='images/logo.png', alt='Simpla Admin logo')
+        img#logo(src='images/streetlights.png', alt='Simpla Admin logo')
       // End #logn-top
+         h1 Streetlights Admin
       #login-content
         form(action='/login', method='post')
           .notification.information.png_bg
@@ -51,10 +52,6 @@ html(xmlns='http://www.w3.org/1999/xhtml')
           p
             label Password
             input#password.text-input(type='password', name='password')
-          .clear
-          p#remember-password
-            input(type='checkbox')
-            | Remember me
           .clear
           p
             input#btnSubmitLogin.button(type='submit', name='btnSubmitLogin', value='Sign In')
