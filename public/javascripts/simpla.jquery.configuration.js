@@ -23,6 +23,7 @@ $(document).ready(function(){
                 var currentSubMenu = $(this).attr('href'); // Set variable "currentSubMenu" to the value of href of clicked sub menu
                 $(currentSubMenu).siblings().hide(); // Hide all content divs
 				$(currentSubMenu).show(); // Show the content div with the id equal to the id of clicked sub menu
+                $("#ContentHeaderLabel").text($(this).attr('headertext'));
 				return false;
 			}
 		);

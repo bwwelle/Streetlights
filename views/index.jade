@@ -1,6 +1,9 @@
 doctype strict
 html(xmlns='http://www.w3.org/1999/xhtml')
   head
+    style(type='text/css').
+      ::-webkit-scrollbar {background: #727272; }
+      ::-webkit-scrollbar-thumb { background-color: #f7a800;}
     meta(http-equiv='Content-type', content='text/html; charset=UTF-8')
     title Streetlights Data Administration
     link(rel='shortcut icon', type='image/ico', href='http://www.datatables.net/media/images/favicon.ico')
@@ -78,19 +81,19 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                 | Music
               ul
                 li
-                  a#viewCredit(href='#creditdiv') Credit
+                  a#viewCredit(href='#creditdiv' headertext='Credit (Artists)') Credit (Artists)
                 li
-                  a#viewMediaGroup(href='#mediagroupdiv') Media Groups
+                  a#viewMediaGroup(href='#mediagroupdiv' headertext='Media Groups (Albums)') Media Groups (Albums)
                 // Add class "current" to sub menu items also
                 li
-                  a#viewMediaItem.current(href='#mediaitemdiv') Media Items
+                  a#viewMediaItem.current(href='#mediaitemdiv' headertext='Media Items (Tracks)') Media Items (Tracks)
              li
               a.nav-top-item(href='#')
                 // Add the class "current" to current menu item
                 | Settings
               ul
                 li
-                  a#viewUser(href='#userdiv') Users
+                  a#viewUser(href='#userdiv' headertext='Users') Users
           // End #main-nav
       // End #sidebar
       #main-content
@@ -111,17 +114,20 @@ html(xmlns='http://www.w3.org/1999/xhtml')
             // Replace the icons URL's with your own
             li
               a#saveMediaGroup.shortcut-button
-                  img(src='resources/images/icons/path-to-icon.png', alt='icon')
+                span
+                  img(src='images/1461412786_floppy_disk_48.png', alt='icon')
                   br
-                  | 					Save Album Data
+                  | 					Save Album
             li
               a#cancelMediaGroup.shortcut-button
                 span
-                  img#cancelMediaGroup(src='resources/images/icons/path-to-icon.png', alt='icon')
+                  img(src='images/1461412996_cancel_48.png', alt='icon')
                   br
                   | 					Cancel
         .clear
         // End .clear
+        #contentHeader.content-box-header
+          h3#ContentHeaderLabel Media Items (Tracks)
         .content-box
           // Start Content Box
           .content-box-content
@@ -131,26 +137,35 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                   #fw_container
                       #fw_content
                         .full_width
-                          form#formAddUser(style='width:600px;min-width:600px')
+                          form#formAddUser
                             label UserName
                             br
-                            input#userName.required(type='text', name='userName', rel='0')
+                            br
+                            input#userName.required(type='text', name='userName', style='width:500px;', rel='0')
+                            br
                             br
                             label(for='email') Email
                             br
-                            input#email.required(type='text', name='email', rel='1')
+                            br
+                            input#email.required(type='text', name='email', style='width:500px;', rel='1')
+                            br
                             br
                             label(for='password') Password
                             br
-                            input#password.required(type='password', name='password', rel='2')
-                          form#formEditUser(style='width:600px;min-width:600px')
+                            br
+                            input#password.required(type='password', name='password', style='width:500px;', rel='2')
+                          form#formEditUser
                             label(for='userName') UserName
                             br
-                            input#userNameEdit.required(type='text', name='userNameEdit', rel='0')
+                            br
+                            input#userNameEdit.required(type='text', name='userNameEdit', style='width:500px;', rel='0')
+                            br
                             br
                             label(for='emailEdit') Email
                             br
-                            input#emailEdit.required(type='text', name='emailEdit', rel='1')
+                            br
+                            input#emailEdit.required(type='text', name='emailEdit', style='width:500px;', rel='1')
+                            br
                             br
                             a#resetPassword(href='\resetpassword') Send Reset Password Email
                             input#userEditId(type='hidden', name='userEditId')
@@ -173,38 +188,52 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                   #fw_container
                       #fw_content
                         .full_width
-                          form#formAddMediaItem(style='width:600px;min-width:600px')
+                          form#formAddMediaItem
                             label Name
                             br
-                            input#name.required(type='text', name='name', rel='0')
+                            br
+                            input#name.required(type='text', name='name', style='width:500px;', rel='0')
+                            br
                             br
                             label(for='duration') Duration (HH:MM:SS)    
                             br
-                            input#duration.required(type='text', name='duration', rel='1')
+                            br
+                            input#duration.required(type='text', name='duration', style='width:75px;', rel='1')
+                            br
                             br
                             label(for='contentURL') contentURL          
                             br
-                            input#contentURL.required(type='text', name='contentURL', rel='2')
+                            br
+                            input#contentURL.required(type='text', name='contentURL', style='width:500px;', rel='2')
+                            br
                             br
                             label(for='mediaitemartist') Media Item Artist
                             br
-                            select#mediaitemartist(name='mediaitemartist', rel='3')
-                          form#formEditMediaItem(style='width:600px;min-width:600px')
+                            br
+                            select#mediaitemartist(name='mediaitemartist', style='width:300px;', rel='3')
+                          form#formEditMediaItem
                             label(for='name') Name
                             br
-                            input#nameEdit.required(type='text', name='nameEdit', rel='0')
+                            br
+                            input#nameEdit.required(type='text', name='nameEdit', style='width:500px;', rel='0')
+                            br
                             br
                             label(for='durationEdit') Duration (HH:MM:SS)
                             br
-                            input#durationEdit.required(type='text', name='durationEdit', rel='1')
+                            br
+                            input#durationEdit.required(type='text', name='durationEdit', style='width:75px;', rel='1')
+                            br
                             br
                             label(for='contentURLEdit') contentURL
                             br
-                            input#contentURLEdit.required(type='text', name='contentURLEdit', rel='2')
+                            br
+                            input#contentURLEdit.required(type='text', name='contentURLEdit', style='width:500px;', rel='2')
+                            br
                             br
                             label(for='artistEdit') Media Item Artist
                             br
-                            select#artistEdit(name='artistEdit', data-placeholder="Type 'C' to view", style='width:200px;', tabindex='11', rel='3')
+                            br
+                            select#artistEdit(name='artistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='3')
                             input#mediaItemEditId(type='hidden', name='mediaItemEditId')
                           <button id="btnAddMediaItem"></button>
                           <button id="btnEditMediaItem"></button>
@@ -229,14 +258,16 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                   #fw_container
                       #fw_content
                         .full_width
-                          form#formAddCredit(style='width:600px;min-width:600px')
+                          form#formAddCredit
                             label(for='creditNameAdd') Name
                             br
-                            input#creditNameAdd.required(type='text', name='creditNameAdd', rel='0')
-                          form#formEditCredit(style='width:600px;min-width:600px')
+                            br
+                            input#creditNameAdd.required(type='text', name='creditNameAdd', style='width:500px;', rel='0')
+                          form#formEditCredit
                             label(for='creditNameEdit') Name
                             br
-                            input#creditNameEdit.required(type='text', name='creditNameEdit', rel='0')
+                            br
+                            input#creditNameEdit.required(type='text', name='creditNameEdit', style='width:500px;', rel='0')
                             input#creditEditId(type='hidden', name='creditEditId') 
                           <button id="btnAddCredit"></button>                          
                           <button id="btnEditCredit"></button>   
@@ -280,75 +311,103 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                   #fw_container
                       #fw_content
                         .full_width
-                          form#formAddMediaGroup(style='width:600px;min-width:600px')
+                          form#formAddMediaGroup
                             label(for='mediaGroupTitleAdd') Title
                             br
-                            input#mediaGroupTitleAdd.required(type='text', name='mediaGroupTitleAdd', rel='0')
+                            br
+                            input#mediaGroupTitleAdd.required(type='text', name='mediaGroupTitleAdd', style='width:500px;', rel='0')
+                            br
                             br
                             label(for='mediaGroupDetailAdd') Detail
                             br
-                            input#mediaGroupDetailAdd(type='text', name='mediaGroupDetailAdd', rel='1')
+                            br
+                            input#mediaGroupDetailAdd(type='text', name='mediaGroupDetailAdd', style='width:500px;', rel='1')
+                            br
                             br
                             label(for='mediaGroupImageURLAdd') ImageURL
                             br
-                            input#mediaGroupImageURLAdd(type='text', name='mediaGroupImageURLAdd', rel='2')
+                            br
+                            input#mediaGroupImageURLAdd(type='text', name='mediaGroupImageURLAdd', style='width:500px;', rel='2')
+                            br
                             br
                             label(for='mediaGroupArtistAdd') Group Artist
                             br
-                            select#mediaGroupArtistAdd(name='mediaGroupArtistAdd', data-placeholder="Type 'C' to view", style='width:200px;', tabindex='11', rel='3')
+                            br
+                            select#mediaGroupArtistAdd(name='mediaGroupArtistAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='3')
                           form#formEditMediaGroup(style='width:100%;')
                             label(for='mediaGroupTitleEdit') Title
                             br
-                            input#mediaGroupTitleEdit.required(type='text', name='mediaGroupTitleEdit', rel='0')
+                            br
+                            input#mediaGroupTitleEdit.required(type='text', name='mediaGroupTitleEdit', style='width:500px;', rel='0')
+                            br
                             br
                             label(for='mediaGroupDetailEdit') Detail
                             br
-                            input#mediaGroupDetailEdit(type='text', name='mediaGroupDetailEdit', rel='1')
+                            br
+                            input#mediaGroupDetailEdit(type='text', name='mediaGroupDetailEdit', style='width:500px;', rel='1')
+                            br
                             br
                             label(for='mediaGroupImageURLEdit') ImageURL
                             br
-                            input#mediaGroupImageURLEdit(type='text', name='mediaGroupImageURLEdit', rel='2')
+                            br
+                            input#mediaGroupImageURLEdit(type='text', name='mediaGroupImageURLEdit', style='width:500px;', rel='2')
+                            br
                             br
                             label(for='mediaGroupArtistEdit') Media Group Artist
                             br
-                            select#mediaGroupArtistEdit(name='mediaGroupArtistEdit', data-placeholder="Type 'C' to view", style='width:200px;', tabindex='11', rel='3')
+                            br
+                            select#mediaGroupArtistEdit(name='mediaGroupArtistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='3')
                             input#mediaGroupId(type='hidden', name='mediaGroupId')
-                          form#formAddMediaGroupItem(style='width:600px;min-width:600px')
+                          form#formAddMediaGroupItem
                             label(for='mediaGroupItemNameAdd') Name
                             br
-                            select#mediaGroupItemNameAdd(name='mediaGroupItemNameAdd', data-placeholder="Type 'C' to view", style='width:200px;', tabindex='11', rel='0')                            
+                            br
+                            select#mediaGroupItemNameAdd(name='mediaGroupItemNameAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='0')                            
+                            br
                             br
                             label(for='mediaGroupItemDurationAdd') Duration (HH:MM:SS)
                             br
-                            input#mediaGroupItemDurationAdd(type='text', name='mediaGroupItemDurationAdd', rel='1', readonly='')
+                            br
+                            input#mediaGroupItemDurationAdd(type='text', name='mediaGroupItemDurationAdd', style='width:75px;', rel='1', readonly='')
+                            br
                             br
                             label(for='mediaGroupItemContentURLAdd') contentURL
                             br
-                            input#mediaGroupItemContentURLAdd(type='text', name='mediaGroupItemContentURLAdd', rel='2', readonly='')
+                            br
+                            input#mediaGroupItemContentURLAdd(type='text', name='mediaGroupItemContentURLAdd', style='width:500px;', rel='2', readonly='')
+                            br
                             br
                             label(for='mediaGroupItemArtistAdd') Media Group Item Artist
                             br
-                            input#mediaGroupItemArtistAdd(type='text', name='mediaGroupItemArtistAdd', rel='3', readonly='')                            
+                            br
+                            input#mediaGroupItemArtistAdd(type='text', name='mediaGroupItemArtistAdd', style='width:500px;', rel='3', readonly='')                            
                             input#mediaGroupItemId(type='hidden', name='mediaGroupItemId')
                             input#mediaGroupId(type='hidden', name='mediaGroupId')
-                          #mediaGroupItemTableDiv(style='display:none')
-                            <button id="btnAddMediaGroupItem"></button>
-                            <button id="btnDeleteMediaGroupItem"></button> 
-                            table#mediagroupitem(cellpadding='0', cellspacing='0', border='0')
-                              thead
-                                tr
-                                  th name
-                                  th duration (HH:MM:SS)
-                                  th contentURL
-                                  th artist
-                              tfoot
-                                tr
-                                  th name
-                                  th duration (HH:MM:SS)
-                                  th contentURL
-                                  th artist                                
-                // End .clear
-            // End #mediagroupdiv
+          #mediaGroupItemContentHeader.content-box-header(style='display:none')
+            h3#ContentHeaderLabel Media Album Items (Album Tracks)
+          #mediaGroupItemTableDiv.tabcontent(style='display:none')
+            // This is the target div. id must match the href of this div's tab
+            div(style='margin:10px 0')
+                #fw_container
+                    #fw_content
+                      .full_width
+                        <button id="btnAddMediaGroupItem"></button>
+                        <button id="btnDeleteMediaGroupItem"></button> 
+                        table#mediagroupitem(cellpadding='0', cellspacing='0', border='0')
+                          thead
+                            tr
+                              th name
+                              th duration (HH:MM:SS)
+                              th contentURL
+                              th artist
+                          tfoot
+                            tr
+                              th name
+                              th duration (HH:MM:SS)
+                              th contentURL
+                              th artist                                
+                          // End .clear
+          // End #mediagroupdiv
         #footer
           small
             | © Copyright 2009 Simpla Admin | Powered by 

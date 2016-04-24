@@ -483,6 +483,7 @@ $(document).ready(function () {
 		$("#mediagroupitem").show();
 		$("#btnAddMediaGroupItem").show();
 		$("#btnDeleteMediaGroupItem").show();
+        $("#mediaGroupItemContentHeader").show();
 	});
 
 	$("#btnAddMediaGroup").on("click", function (e) {
@@ -517,6 +518,7 @@ $(document).ready(function () {
 		$("#mediagroupdiv").hide();
 		$("#mediagroupeditadddiv").show();
 		$("#formEditMediaGroup").hide();
+        $("#mediaGroupItemContentHeader").hide();
 
 		$("#mediaGroupButtons").show();
 		$("#formAddMediaGroup").show();
@@ -627,10 +629,12 @@ $(document).ready(function () {
 
 	$("#viewMediaGroup").on("click", function (e) {
 		$("#mediaGroupButtons").hide();
+        $("#mediaGroupItemContentHeader").hide();
 	});
 
 	$("#viewCredit").on("click", function (e) {
 		$("#mediaGroupButtons").hide();
+        $("#mediaGroupItemContentHeader").hide();
 	});
 
 	$("#viewMediaItem").on("click", function (e) {
@@ -775,6 +779,7 @@ $(document).ready(function () {
 		$("#btnDeleteMediaGroupItem").hide();
 		$("#mediagroupdiv").show();
 		$("#mediaGroupButtons").hide();
+        $("#mediaGroupItemContentHeader").hide();
 	});
 
 	$("#mediaGroupItemNameAdd").on("change", function () {

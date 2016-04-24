@@ -215,6 +215,8 @@
 	vertical-align: middle;
 	text-align: center;
 	overflow: visible; /* removes extra width in IE */
+  background: #727272;
+  color:#ffffff;
 }
 .ui-button,
 .ui-button:link,
@@ -1088,7 +1090,8 @@ body .ui-tooltip {
 .ui-icon-comment { background-position: -128px -96px; }
 .ui-icon-person { background-position: -144px -96px; }
 .ui-icon-print { background-position: -160px -96px; }
-.ui-icon-trash { background-position: -176px -96px; }
+.ui-icon-trash { background-position: -176px -96px; 
+ background-image: url(/images/ui-icons_ffffff_256x240.png); }
 .ui-icon-locked { background-position: -192px -96px; }
 .ui-icon-unlocked { background-position: -208px -96px; }
 .ui-icon-bookmark { background-position: -224px -96px; }
@@ -1097,7 +1100,8 @@ body .ui-tooltip {
 .ui-icon-flag { background-position: -16px -112px; }
 .ui-icon-calendar { background-position: -32px -112px; }
 .ui-icon-cart { background-position: -48px -112px; }
-.ui-icon-pencil { background-position: -64px -112px; }
+.ui-icon-pencil { background-position: -64px -112px; 
+               background-image: url(/images/ui-icons_ffffff_256x240.png); }
 .ui-icon-clock { background-position: -80px -112px; }
 .ui-icon-disk { background-position: -96px -112px; }
 .ui-icon-calculator { background-position: -112px -112px; }
@@ -1110,7 +1114,8 @@ body .ui-tooltip {
 .ui-icon-star { background-position: -224px -112px; }
 .ui-icon-link { background-position: -240px -112px; }
 .ui-icon-cancel { background-position: 0 -128px; }
-.ui-icon-plus { background-position: -16px -128px; }
+.ui-icon-plus { background-position: -16px -128px; 
+                background-image: url(/images/ui-icons_ffffff_256x240.png); }
 .ui-icon-plusthick { background-position: -32px -128px; }
 .ui-icon-minus { background-position: -48px -128px; }
 .ui-icon-minusthick { background-position: -64px -128px; }

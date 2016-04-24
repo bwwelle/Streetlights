@@ -149,7 +149,7 @@ a.remove-link:hover {
                 }
 
 #sidebar #main-nav li a.nav-top-item {
-                background: transparent url('../images/bg-menu-item-green.gif') right center no-repeat; /* Background image for default color scheme - green */
+                background: transparent url('../images/bg-menu-item-yelloworange.gif') right center no-repeat; /* Background image for default color scheme - green */
                 padding: 10px 15px;
                 color: #fff;
                 font-size: 14px;
@@ -284,12 +284,12 @@ a.remove-link:hover {
                 }
 
 .content-box-header {
-                background: #e5e5e5 url('../images/bg-content-box.gif') top left repeat-x;
+                background: #f7a800 url('../images/bg-content-box.gif') top left repeat-x;
                 margin-top: 1px;
                 height: 40px;
                 }
 
-.content-box-header h3 {
+.content-box-header h3{
                 padding: 12px 15px 10px;
                 float: left;
                 }
@@ -440,7 +440,10 @@ table{
 .shortcut-button span:hover {
 				color: #57a000; 
                 }
-
+.sectionlabel{
+        height:100px;
+        background: #f7a800;
+}
 ul.shortcut-buttons-set li {
                 float: left;
                 margin: 0 15px 0 0;
@@ -466,8 +469,12 @@ form p small {
                 font-size: 0.75em;
                 color: #777;
                 }
-				
-				
+input{
+
+  background-color : #fdfdfd; 
+
+}
+
 form input.text-input,
 form select,
 form textarea,
@@ -476,7 +483,7 @@ form .wysiwyg {
                 font-size: 13px;
                 background: #fff url('../images/bg-form-field.gif') top left repeat-x;
                 border: 1px solid #d5d5d5;
-				color: #333;
+                color: #333;
                 }
             
 form .small-input {

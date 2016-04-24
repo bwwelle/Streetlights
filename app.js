@@ -69,8 +69,8 @@ app.post('/login', urlencodedParser, function (req, res) {
 	} else {
 		Parse.User.logIn(req.body.username, req.body.password).then(
 			function (user) {
-			req.session.user = user;  //this is not working
-			req.session.admin = true;  //this is not working
+			//req.session.user = user;  //this is not working
+			//req.session.admin = true;  //this is not working
 			res.render('index', {
 				title : '',
 				data : user
@@ -81,7 +81,7 @@ app.post('/login', urlencodedParser, function (req, res) {
 
 // Logout endpoint
 app.get('/logout', function (req, res) {
-	req.session.destroy();  //this is not working
+	//req.session.destroy();  //this is not working
 	res.render('login', '');
 });
 
