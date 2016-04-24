@@ -9,7 +9,7 @@ var Parse = require('parse/node').Parse;
 //var flash = require('connect-flash');
 var session = require('express-session');
 //var assert = require('assert');
-//var env = require('node-env-file');
+var env = require('node-env-file');
 
 var mediaitem = require('./routes/mediaitem');
 var mediagroup = require('./routes/mediagroup');
@@ -21,7 +21,7 @@ var app = express();
 var router = express.Router();
 
 // Use this if node env is development or != production
-//env(__dirname + '/config/.env');
+env(__dirname + '/config/.env');
 
 // You need to use the cookieParser here rather than later.
 // the app.use sessions startup is not working....
