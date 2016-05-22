@@ -383,31 +383,31 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#mediaGroupItemArtistAdd(type='text', name='mediaGroupItemArtistAdd', style='width:500px;', rel='3', readonly='')                            
                             input#mediaGroupItemId(type='hidden', name='mediaGroupItemId')
                             input#mediaGroupId(type='hidden', name='mediaGroupId')
-          #mediaGroupItemContentHeader.content-box-header(style='display:none')
-            h3#ContentHeaderLabel Media Album Items (Album Tracks)
-          #mediaGroupItemTableDiv.tabcontent(style='display:none')
-            // This is the target div. id must match the href of this div's tab
-            div(style='margin:10px 0')
-                #fw_container
-                    #fw_content
-                      .full_width
-                        <button id="btnAddMediaGroupItem"></button>
-                        <button id="btnDeleteMediaGroupItem"></button> 
-                        table#mediagroupitem(cellpadding='0', cellspacing='0', border='0')
-                          thead
-                            tr
-                              th name
-                              th duration (HH:MM:SS)
-                              th contentURL
-                              th artist
-                          tfoot
-                            tr
-                              th name
-                              th duration (HH:MM:SS)
-                              th contentURL
-                              th artist                                
-                          // End .clear
-          // End #mediagroupdiv
+              #mediaGroupItemContentHeader.content-box-header(style='display:none')
+                h3#ContentHeaderLabel Media Album Items (Album Tracks)
+              #mediaGroupItemTableDiv.tabcontent(style='display:none')
+                // This is the target div. id must match the href of this div's tab
+                div(style='margin:10px 0')
+                    #fw_container
+                        #fw_content
+                          .full_width
+                            <button id="btnAddMediaGroupItem"></button>
+                            <button id="btnDeleteMediaGroupItem"></button> 
+                            table#mediagroupitem(cellpadding='0', cellspacing='0', border='0')
+                              thead
+                                tr
+                                  th name
+                                  th duration (HH:MM:SS)
+                                  th contentURL
+                                  th artist
+                              tfoot
+                                tr
+                                  th name
+                                  th duration (HH:MM:SS)
+                                  th contentURL
+                                  th artist                                
+                              // End .clear
+              // End #mediagroupdiv
         #footer
           small
             | © Copyright 2009 Simpla Admin | Powered by 

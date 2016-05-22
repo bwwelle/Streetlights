@@ -608,23 +608,30 @@ $(document).ready(function () {
 	}
 
 	$("#saveMediaGroup").on("click", function (e) {
-		var mediaGroupTitle = $('#mediaGroupTitleEdit').val();
-		var mediaGroupDetail = $('#mediaGroupDetailEdit').val();
-		var mediaGroupImageURL = $('#mediaGroupImageURLEdit').val();
-		var mediaGroupArtist = $('#mediaGroupArtistEdit').val();
-
-		var data = [];
-		data = {
-			title : mediaGroupTitle,
-			detail : mediaGroupDetail,
-			imageURL : mediaGroupImageURL,
-			artist : mediaGroupArtist
-		};
+		var data = [];		
 
 		if ($("#formEditMediaGroup input[name=mediaGroupId]").val() == "" || $("#formEditMediaGroup input[name=mediaGroupId]").val() == null)
+        {
+            data = {
+                title : $('#mediaGroupTitleAdd').val(),
+                detail : $('#mediaGroupDetailAdd').val(),
+                imageURL : $('#mediaGroupImageURLAdd').val(),
+                artist : $('#mediaGroupArtistAdd').val()
+            };
+            
 			mediaGroupAddAjaxCall(data);
+        }
 		else
+        {
+            data = {
+                title : $('#mediaGroupTitleEdit').val(),
+                detail : $('#mediaGroupDetailEdit').val(),
+                imageURL : $('#mediaGroupImageURLEdit').val(),
+                artist : $('#mediaGroupArtistEdit').val()
+            };
+            
 			mediaGroupUpdateAjaxCall(data);
+        }
 	});
 
 	$("#viewMediaGroup").on("click", function (e) {
@@ -662,7 +669,7 @@ $(document).ready(function () {
 				$('#mediaGroupImageURLEdit').val(opts.imageURL);
 
 				//$('#mediaGroupArtistAdd').val(opts.artist);
-				$("#formAddMediaGroupItem input[name=mediaGroupId]").val(res);
+				$("#formAddMediaGroupItem input[name=mediaGroupId]").val("");
 				$("#formEditMediaGroup input[name=mediaGroupId]").val(res);
 
 				$("#formAddMediaGroup").hide();
@@ -770,7 +777,9 @@ $(document).ready(function () {
 		});
 	});
 
-	$("#cancelMediaGroup").on("click", function (e) {
+	$("#cancelMediaGroup").on("click", function (e) {        
+        $("#formAddMediaGroupItem input[name=mediaGroupId]").val("");
+		$("#formEditMediaGroup input[name=mediaGroupId]").val("");
 		$("#mediagroupeditadddiv").hide();
 		$("#formEditMediaGroup").hide();
 		$("#formAddMediaGroup").hide();
