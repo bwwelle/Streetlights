@@ -425,7 +425,11 @@ $(document).ready(function () {
 			"sPaginationType" : "full_numbers",
 			"iDisplayLength" : 10,
 			"iDisplayStart" : 0,
-			"bFilter" : false
+			"bFilter" : false,
+            "oLanguage": {
+			           "sEmptyTable": "No media items(tracks) added to media group(album)",
+                       "sZeroRecords": "No media items(tracks) added to media group(album)"
+			        }
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
 				oMediaItemTable.fnDraw();
@@ -514,7 +518,12 @@ $(document).ready(function () {
 		}); */
 
 		//IntializeMediaGroupItemDropDownBoxes();
-
+        $("#formAddMediaGroup input[name=mediaGroupId]").val("");
+        $("#formAddMediaGroup input[name=mediaGroupTitleAdd]").val("");
+        $("#formAddMediaGroup input[name=mediaGroupDetailAdd]").val("");
+        $("#formAddMediaGroup input[name=mediaGroupImageURLAdd]").val("");
+        $("#formAddMediaGroup select[name=mediaGroupArtistAdd]").selectedIndex = 0;
+        
 		$("#mediagroupdiv").hide();
 		$("#mediagroupeditadddiv").show();
 		$("#formEditMediaGroup").hide();
@@ -660,8 +669,11 @@ $(document).ready(function () {
 			url : "/mediagroup/add",
 			success : function (res) {
 				oMediaGroupTable.fnDraw();
+                
+                oMediaGroupItemTable.fnDraw();
 
 				$("#mediaGroupItemTableDiv").show();
+                $("#mediaGroupItemContentHeader").show();
 				$("#formEditMediaGroup").show();
 
 				$('#mediaGroupTitleEdit').val(opts.title);
