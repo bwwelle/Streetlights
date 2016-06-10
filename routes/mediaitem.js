@@ -143,7 +143,7 @@ router.get('/edit', urlencodedParser, function (req, res) {
 router.post('/add', urlencodedParser, function (req, res) {
 	var MediaItem = Parse.Object.extend("MediaItem");
 	var mediaItem = new MediaItem();
-	var duration = req.query["durationEdit"].split(":");
+	var duration = req.body.duration.split(":");
 
 	var durationInSeconds = ConvertDurationForSave(duration[0], duration[1], duration[2]);
 
