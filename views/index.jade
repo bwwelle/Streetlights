@@ -81,7 +81,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                 | Music
               ul
                 li
-                  a#viewCredit(href='#creditdiv' headertext='Credit (Artists)') Credit (Artists)
+                  a#viewCredit(href='#creditdiv' headertext='Credit (Producers/Artists)') Credit (Producers/Artists)
                 li
                   a#viewMediaGroup(href='#mediagroupdiv' headertext='Media Groups (Albums)') Media Groups (Albums)
                 // Add class "current" to sub menu items also
@@ -207,10 +207,16 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#contentURL.required(type='text', name='contentURL', style='width:500px;', rel='2')
                             br
                             br
+                            label(for='mediaitemproducer') Media Item Producer
+                            br
+                            br
+                            select#mediaitemproducer(name='mediaitemproducer', style='width:300px;', rel='3')
+                            br
+                            br
                             label(for='mediaitemartist') Media Item Artist
                             br
                             br
-                            select#mediaitemartist(name='mediaitemartist', style='width:300px;', rel='3')
+                            select#mediaitemartist(name='mediaitemartist', style='width:300px;', rel='4')
                           form#formEditMediaItem
                             label(for='name') Name
                             br
@@ -230,10 +236,16 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#contentURLEdit.required(type='text', name='contentURLEdit', style='width:500px;', rel='2')
                             br
                             br
+                            label(for='producerEdit') Media Item Producer
+                            br
+                            br
+                            select#producerEdit(name='producerEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='3')
+                            br
+                            br
                             label(for='artistEdit') Media Item Artist
                             br
                             br
-                            select#artistEdit(name='artistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='3')
+                            select#artistEdit(name='artistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='4')
                             input#mediaItemEditId(type='hidden', name='mediaItemEditId')
                           <button id="btnAddMediaItem"></button>
                           <button id="btnEditMediaItem"></button>
@@ -244,12 +256,14 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                                 th name
                                 th duration (HH:MM:SS)
                                 th contentURL
+                                th producer
                                 th artist
                             tfoot
                               tr
                                 th name
                                 th duration (HH:MM:SS)
                                 th contentURL
+                                th producer
                                 th artist
             // End #mediaitemdiv
             #creditdiv.tab-content
@@ -296,12 +310,14 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                                 th title
                                 th detail
                                 th imageURL
+                                th producer
                                 th artist
                             tfoot
                               tr
                                 th title
                                 th detail
                                 th imageURL
+                                th producer
                                 th artist
                 // End .clear
             // End #mediagroupdiv
@@ -330,10 +346,16 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#mediaGroupImageURLAdd(type='text', name='mediaGroupImageURLAdd', style='width:500px;', rel='2')
                             br
                             br
+                            label(for='mediaGroupProducerAdd') Group Producer
+                            br
+                            br
+                            select#mediaGroupProducerAdd(name='mediaGroupProducerAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='3')
+                            br
+                            br
                             label(for='mediaGroupArtistAdd') Group Artist
                             br
                             br
-                            select#mediaGroupArtistAdd(name='mediaGroupArtistAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='3')
+                            select#mediaGroupArtistAdd(name='mediaGroupArtistAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='4')
                           form#formEditMediaGroup(style='width:100%;')
                             label(for='mediaGroupTitleEdit') Title
                             br
@@ -353,10 +375,16 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#mediaGroupImageURLEdit(type='text', name='mediaGroupImageURLEdit', style='width:500px;', rel='2')
                             br
                             br
+                            label(for='mediaGroupProducerEdit') Media Group Producer
+                            br
+                            br
+                            select#mediaGroupProducerEdit(name='mediaGroupProducerEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='3')
+                            br
+                            br
                             label(for='mediaGroupArtistEdit') Media Group Artist
                             br
                             br
-                            select#mediaGroupArtistEdit(name='mediaGroupArtistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='3')
+                            select#mediaGroupArtistEdit(name='mediaGroupArtistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='4')
                             input#mediaGroupId(type='hidden', name='mediaGroupId')
                           form#formAddMediaGroupItem
                             label(for='mediaGroupItemNameAdd') Name
@@ -377,10 +405,16 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#mediaGroupItemContentURLAdd(type='text', name='mediaGroupItemContentURLAdd', style='width:500px;', rel='2', readonly='')
                             br
                             br
+                            label(for='mediaGroupItemProducerAdd') Media Group Item Producer
+                            br
+                            br
+                            input#mediaGroupItemProducerAdd(type='text', name='mediaGroupItemProducerAdd', style='width:500px;', rel='3', readonly='')       
+                            br
+                            br
                             label(for='mediaGroupItemArtistAdd') Media Group Item Artist
                             br
                             br
-                            input#mediaGroupItemArtistAdd(type='text', name='mediaGroupItemArtistAdd', style='width:500px;', rel='3', readonly='')                            
+                            input#mediaGroupItemArtistAdd(type='text', name='mediaGroupItemArtistAdd', style='width:500px;', rel='4', readonly='')                            
                             input#mediaGroupItemId(type='hidden', name='mediaGroupItemId')
                             input#mediaGroupId(type='hidden', name='mediaGroupId')
               #mediaGroupItemContentHeader.content-box-header(style='display:none')
@@ -399,12 +433,14 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                                   th name
                                   th duration (HH:MM:SS)
                                   th contentURL
+                                  th producer
                                   th artist
                               tfoot
                                 tr
                                   th name
                                   th duration (HH:MM:SS)
                                   th contentURL
+                                  th producer     
                                   th artist                                
                               // End .clear
               // End #mediagroupdiv

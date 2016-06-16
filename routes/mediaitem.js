@@ -24,6 +24,7 @@ router.get('/', function (req, res) {
 
 	countQuery.count().then(function (count) {
 		var tableDataQuery = new Parse.Query(MediaItem);
+        tableDataQuery.include("producers");
 		tableDataQuery.include("artists");
 
 		tableDataQuery.descending("name");
@@ -38,15 +39,22 @@ router.get('/', function (req, res) {
 				for (var
 					i = 0; i < mediaItems.length; i++) {
 					var mediaItem = mediaItems[i];
-					var mediaItemCredit = '';
-					var mediaItemCreditId = '';
+                    var mediaItemProducer = '';
+					var mediaItemProducerId = '';
+					var mediaItemArtist = '';
+					var mediaItemArtistId = '';
 					var mediaItemName = '';
 					var mediaItemDuration = '';
 					var mediaItemContentURL = '';
+                    
+                    if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
+						if (mediaItem.get("producers")[0] !== null && mediaItem.get("producers")[0] !== undefined)
+							mediaItemProducer = mediaItem.get("producers")[0].get("name");
+					}
 
 					if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined) {
 						if (mediaItem.get("artists")[0] !== null && mediaItem.get("artists")[0] !== undefined)
-							mediaItemCredit = mediaItem.get("artists")[0].get("name");
+							mediaItemArtist = mediaItem.get("artists")[0].get("name");
 					}
 
 					if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
@@ -62,7 +70,8 @@ router.get('/', function (req, res) {
 						name : mediaItemName,
 						duration : mediaItemDuration,
 						contentURL : mediaItemContentURL,
-						artist : mediaItemCredit,
+                        producer : mediaItemProducer,
+						artist : mediaItemArtist,
 						DT_RowId : mediaItem.id
 					};
 				}
@@ -123,12 +132,19 @@ router.get('/edit', urlencodedParser, function (req, res) {
 	mediaItem.set("duration", parseInt(durationInSeconds));
 	mediaItem.set("contentURL", req.query["contentURLEdit"]);
 
-	var creditId = req.query["artistEdit"];
-	var Credit = Parse.Object.extend("Credit");
-	var credit = new Credit();
-	credit.id = creditId;
+	var producerId = req.query["producerEdit"];
+    var Producer = Parse.Object.extend("Credit");
+	var producer = new Producer();
+    var artistId = req.query["artistEdit"];
+	var Artist = Parse.Object.extend("Credit");
+	var artist = new Artist();
+    
+    producer.id = producerId
+    mediaItem.unset("producers");
+	mediaItem.addUnique("producers", producer);
+	artist.id = artistId;
 	mediaItem.unset("artists");
-	mediaItem.addUnique("artists", credit);
+	mediaItem.addUnique("artists", artist);
 
 	mediaItem.save(null, {
 		success : function (results) {
@@ -150,12 +166,18 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaItem.set("name", req.body.name);
 	mediaItem.set("duration", parseInt(durationInSeconds));
 	mediaItem.set("contentURL", req.body.contentURL);
+    mediaItem.unset("producers");
 	mediaItem.unset("artists");
+    
+    var Producer = Parse.Object.extend("Credit");
+	var producer = new Producer();
+	producer.id = req.body.mediaitemproducer;
+	mediaItem.addUnique("producers", producer);
 
-	var Credit = Parse.Object.extend("Credit");
-	var credit = new Credit();
-	credit.id = req.body.mediaitemartist;
-	mediaItem.addUnique("artists", credit);
+	var Artist = Parse.Object.extend("Credit");
+	var artist = new Artist();
+	artist.id = req.body.mediaitemartist;
+	mediaItem.addUnique("artists", artist);
 
 	mediaItem.save(null, {
 		success : function (mediaItem) {

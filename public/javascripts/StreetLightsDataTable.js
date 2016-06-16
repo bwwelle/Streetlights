@@ -101,18 +101,24 @@ $(document).ready(function () {
 					var name = $('td:eq(0)', nRow).text();
 					var duration = $('td:eq(1)', nRow).text();
 					var contentURL = $('td:eq(2)', nRow).text();
-					var artist = $('td:eq(3)', nRow).text();
+                    var producer = $('td:eq(3)', nRow).text();
+					var artist = $('td:eq(4)', nRow).text();
 
 					$('#mediaItemEditId').val(objectId);
 					$('#nameEdit').val(name);
 					$('#durationEdit').val(duration);
 					$('#contentURLEdit').val(contentURL);
+                    $('#mediaitemproducer').val(producer);
 					$('#mediaitemartist').val(artist);
 
 					$('#durationEdit').mask("00:00:00", {
 						placeholder : "__:__:__"
 					});
 
+                    $("#formEditMediaItem select[name=producerEdit] option").filter(function () {
+						return $(this).text() == producer;
+					}).prop('selected', true);
+                    
 					$("#formEditMediaItem select[name=artistEdit] option").filter(function () {
 						return $(this).text() == artist;
 					}).prop('selected', true);
@@ -138,6 +144,8 @@ $(document).ready(function () {
 					"mDataProp" : "duration"
 				}, {
 					"mDataProp" : "contentURL"
+				}, {
+					"mDataProp" : "producer"
 				}, {
 					"mDataProp" : "artist"
 				}
@@ -214,13 +222,18 @@ $(document).ready(function () {
 					var title = $('td:eq(0)', nRow).text();
 					var detail = $('td:eq(1)', nRow).text();
 					var imageURL = $('td:eq(2)', nRow).text();
-					var artist = $('td:eq(3)', nRow).text();
+                    var producer = $('td:eq(3)', nRow).text();
+					var artist = $('td:eq(4)', nRow).text();
 
 					$('#formEditMediaGroup input[name=mediaGroupId]').val(objectId);
 					$('#formAddMediaGroup input[name=mediaGroupId]').val(objectId);
 					$('#mediaGroupTitleEdit').val(title);
 					$('#mediaGroupDetailEdit').val(detail);
 					$('#mediaGroupImageURLEdit').val(imageURL);
+                    
+                    $("#formEditMediaGroup select[name=mediaGroupProducerEdit] option").filter(function () {
+						return $(this).text() == producer;
+					}).prop('selected', true);
 
 					$("#formEditMediaGroup select[name=mediaGroupArtistEdit] option").filter(function () {
 						return $(this).text() == artist;
@@ -248,6 +261,8 @@ $(document).ready(function () {
 					"mDataProp" : "detail"
 				}, {
 					"mDataProp" : "imageURL"
+				}, {
+					"mDataProp" : "producer"
 				}, {
 					"mDataProp" : "artist"
 				}
@@ -412,6 +427,8 @@ $(document).ready(function () {
 				}, {
 					"mDataProp" : "contentURL"
 				}, {
+					"mDataProp" : "producer"
+				}, {
 					"mDataProp" : "artist"
 				}
 
@@ -522,6 +539,7 @@ $(document).ready(function () {
         $("#formAddMediaGroup input[name=mediaGroupTitleAdd]").val("");
         $("#formAddMediaGroup input[name=mediaGroupDetailAdd]").val("");
         $("#formAddMediaGroup input[name=mediaGroupImageURLAdd]").val("");
+        $("#formAddMediaGroup select[name=mediaGroupProducerAdd]").selectedIndex = 0;
         $("#formAddMediaGroup select[name=mediaGroupArtistAdd]").selectedIndex = 0;
         
 		$("#mediagroupdiv").hide();
@@ -539,6 +557,11 @@ $(document).ready(function () {
 		}).done(function (data) {
 			var creditData = data.aaData;
 
+            $('#formEditMediaItem select[name=producerEdit').empty();
+			$('#formAddMediaItem select[name=mediaitemproducer').empty();
+			$('#formEditMediaGroup select[name=mediaGroupProducerEdit]').empty();
+			$('#formAddMediaGroup select[name=mediaGroupProducerAdd]').empty();
+            
 			$('#formEditMediaItem select[name=artistEdit').empty();
 			$('#formAddMediaItem select[name=mediaitemartist').empty();
 			$('#formEditMediaGroup select[name=mediaGroupArtistEdit]').empty();
@@ -548,6 +571,11 @@ $(document).ready(function () {
 				var credit = creditData[i].name;
 				var creditId = creditData[i].DT_RowId;
 				var optionText = "<option value='" + creditId + "'>" + credit + "</option>";
+                
+                $('#formEditMediaItem select[name=producerEdit').append(optionText);
+				$('#formAddMediaItem select[name=mediaitemproducer').append(optionText);
+				$('#formEditMediaGroup select[name=mediaGroupProducerEdit]').append(optionText);
+				$('#formAddMediaGroup select[name=mediaGroupProducerAdd]').append(optionText);
 
 				$('#formEditMediaItem select[name=artistEdit').append(optionText);
 				$('#formAddMediaItem select[name=mediaitemartist').append(optionText);
@@ -625,6 +653,7 @@ $(document).ready(function () {
                 title : $('#mediaGroupTitleAdd').val(),
                 detail : $('#mediaGroupDetailAdd').val(),
                 imageURL : $('#mediaGroupImageURLAdd').val(),
+                producer : $('#mediaGroupProducerAdd').val(),
                 artist : $('#mediaGroupArtistAdd').val()
             };
             
@@ -636,6 +665,7 @@ $(document).ready(function () {
                 title : $('#mediaGroupTitleEdit').val(),
                 detail : $('#mediaGroupDetailEdit').val(),
                 imageURL : $('#mediaGroupImageURLEdit').val(),
+                producer : $('#mediaGroupProducerEdit').val(),
                 artist : $('#mediaGroupArtistEdit').val()
             };
             
@@ -664,6 +694,7 @@ $(document).ready(function () {
 				"title" : opts.title,
 				"detail" : opts.detail,
 				"imageURL" : opts.imageURL,
+                "producer" : opts.producer,
 				"artist" : opts.artist
 			},
 			url : "/mediagroup/add",
@@ -700,6 +731,7 @@ $(document).ready(function () {
 				"title" : opts.title,
 				"detail" : opts.detail,
 				"imageURL" : opts.imageURL,
+                "producer" : opts.producer,
 				"artist" : opts.artist
 			},
 			url : "/mediagroup/update",
@@ -819,11 +851,13 @@ $(document).ready(function () {
 				var objectId = res.mediaGroupItemId;
 				var duration = res.mediaGroupItemDurationAdd;
 				var contentURL = res.mediaGroupItemContentURLAdd;
+                var producer = res.mediaGroupItemProducerAdd;
 				var artist = res.mediaGroupItemArtistAdd;
 
 				$('#mediaGroupItemId').val(objectId);
 				$('#mediaGroupItemDurationAdd').val(duration);
 				$('#mediaGroupItemContentURLAdd').val(contentURL);
+                $('#mediaGroupItemProducerAdd').val(producer);
 				$('#mediaGroupItemArtistAdd').val(artist);
 			}
 		});

@@ -23,6 +23,7 @@ var urlencodedParser = bodyParser.urlencoded({
 		countQuery.count({
 			success : function (count) {
 				var tableDataQuery = new Parse.Query(MediaGroup);
+                tableDataQuery.include("producers");
 				tableDataQuery.include("artists");
 
 				tableDataQuery.descending("name");
@@ -40,6 +41,7 @@ var urlencodedParser = bodyParser.urlencoded({
 							var mediaGroupTitle = "";
 							var mediaGroupDetail = null;
 							var mediaGroupImageURL = "";
+                            var mediaGroupProducer = "";
 							var mediaGroupArtist = "";
 
 							if (mediaGroup.get("title") !== null && mediaGroup.get("title") !== undefined)
@@ -50,6 +52,11 @@ var urlencodedParser = bodyParser.urlencoded({
 
 							if (mediaGroup.get("imageURL") !== null && mediaGroup.get("imageURL") !== undefined)
 								mediaGroupImageURL = mediaGroup.get("imageURL");
+                                
+                            if (mediaGroup.get("producers") !== null && mediaGroup.get("producers") !== undefined) {
+								if (mediaGroup.get("producers")[0] !== null && mediaGroup.get("producers")[0] !== undefined)
+									mediaGroupProducer = mediaGroup.get("producers")[0].get("name");
+							}
 
 							if (mediaGroup.get("artists") !== null && mediaGroup.get("artists") !== undefined) {
 								if (mediaGroup.get("artists")[0] !== null && mediaGroup.get("artists")[0] !== undefined)
@@ -60,6 +67,7 @@ var urlencodedParser = bodyParser.urlencoded({
 								title : mediaGroupTitle,
 								detail : mediaGroupDetail,
 								imageURL : mediaGroupImageURL,
+                                producer : mediaGroupProducer,
 								artist : mediaGroupArtist,
 								DT_RowId : mediaGroup.id
 							};
@@ -89,13 +97,20 @@ router.post('/update', urlencodedParser, function (req, res) {
 	mediaGroup.set("title", req.body.title);
 	mediaGroup.set("detail", req.body.detail);
 	mediaGroup.set("imageURL", req.body.imageURL);
+    
+    var Producer = Parse.Object.extend("Credit");
+	var producer = new Producer();
 
-	var Credit = Parse.Object.extend("Credit");
-	var credit = new Credit();
+	producer.id = req.body.producer;
+	mediaGroup.unset("producers");
+	mediaGroup.addUnique("producers", producer);
 
-	credit.id = req.body.artist;
+	var Artist = Parse.Object.extend("Credit");
+	var artist = new Artist();
+
+	artist.id = req.body.artist;
 	mediaGroup.unset("artists");
-	mediaGroup.addUnique("artists", credit);
+	mediaGroup.addUnique("artists", artist);
 
 	mediaGroup.save(null, {
 		success : function (mediaGroup) {
@@ -114,12 +129,18 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaGroup.set("title", req.body.title);
 	mediaGroup.set("detail", req.body.detail);
 	mediaGroup.set("imageURL", req.body.imageURL);
+    
+    var Producer = Parse.Object.extend("Credit");
+	var producer = new Producer();
 
-	var Credit = Parse.Object.extend("Credit");
-	var credit = new Credit();
+	producer.id = req.body.producer;
+	mediaGroup.addUnique("producers", producer);
 
-	credit.id = req.body.artist;
-	mediaGroup.addUnique("artists", credit);
+	var Artist = Parse.Object.extend("Credit");
+	var artist = new Artist();
+
+	artist.id = req.body.artist;
+	mediaGroup.addUnique("artists", artist);
 
 	mediaGroup.save(null, {
 		success : function (mediaGroup) {
