@@ -1092,6 +1092,10 @@ body .ui-tooltip {
 .ui-icon-print { background-position: -160px -96px; }
 .ui-icon-trash { background-position: -176px -96px; 
  background-image: url(/images/ui-icons_ffffff_256x240.png); }
+ .ui-icon-arrowthick-1-n { background-position: 0 -48px;
+ background-image: url(/images/ui-icons_ffffff_256x240.png); }
+  .ui-icon-arrowthick-1-s { background-position: -64px -48px;
+ background-image: url(/images/ui-icons_ffffff_256x240.png); }
 .ui-icon-locked { background-position: -192px -96px; }
 .ui-icon-unlocked { background-position: -208px -96px; }
 .ui-icon-bookmark { background-position: -224px -96px; }

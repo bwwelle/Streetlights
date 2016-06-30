@@ -304,9 +304,12 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                           <button id="btnAddMediaGroup"></button>
                           <button id="btnEditMediaGroup"></button>
                           <button id="btnDeleteMediaGroup"></button>
+                          <button id="btnMoveAlbumUp"></button>
+                          <button id="btnMoveAlbumDown"></button>
                           table#mediagroup.display(cellpadding='0', cellspacing='0', border='0', width='100%')
                             thead
                               tr
+                                th index
                                 th title
                                 th detail
                                 th imageURL
@@ -314,6 +317,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                                 th artist
                             tfoot
                               tr
+                                th index
                                 th title
                                 th detail
                                 th imageURL
@@ -334,28 +338,34 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#mediaGroupTitleAdd.required(type='text', name='mediaGroupTitleAdd', style='width:500px;', rel='0')
                             br
                             br
+                            label(for='mediaGroupIndexAdd') Index (Number in Album Order)
+                            br
+                            br
+                            input#mediaGroupIndexAdd(type='text', name='mediaGroupIndexAdd', style='width:500px;', rel='1')
+                            br
+                            br
                             label(for='mediaGroupDetailAdd') Detail
                             br
                             br
-                            input#mediaGroupDetailAdd(type='text', name='mediaGroupDetailAdd', style='width:500px;', rel='1')
+                            input#mediaGroupDetailAdd(type='text', name='mediaGroupDetailAdd', style='width:500px;', rel='2')
                             br
                             br
                             label(for='mediaGroupImageURLAdd') ImageURL
                             br
                             br
-                            input#mediaGroupImageURLAdd(type='text', name='mediaGroupImageURLAdd', style='width:500px;', rel='2')
+                            input#mediaGroupImageURLAdd(type='text', name='mediaGroupImageURLAdd', style='width:500px;', rel='3')
                             br
                             br
                             label(for='mediaGroupProducerAdd') Group Producer
                             br
                             br
-                            select#mediaGroupProducerAdd(name='mediaGroupProducerAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='3')
+                            select#mediaGroupProducerAdd(name='mediaGroupProducerAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='4')
                             br
                             br
                             label(for='mediaGroupArtistAdd') Group Artist
                             br
                             br
-                            select#mediaGroupArtistAdd(name='mediaGroupArtistAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='4')
+                            select#mediaGroupArtistAdd(name='mediaGroupArtistAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='5')
                           form#formEditMediaGroup(style='width:100%;')
                             label(for='mediaGroupTitleEdit') Title
                             br
@@ -363,28 +373,34 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#mediaGroupTitleEdit.required(type='text', name='mediaGroupTitleEdit', style='width:500px;', rel='0')
                             br
                             br
+                            label(for='mediaGroupIndexEdit') Index (Number in Album Order)
+                            br
+                            br
+                            input#mediaGroupIndexEdit(type='text', name='mediaGroupIndexEdit', style='width:500px;', rel='1')
+                            br
+                            br
                             label(for='mediaGroupDetailEdit') Detail
                             br
                             br
-                            input#mediaGroupDetailEdit(type='text', name='mediaGroupDetailEdit', style='width:500px;', rel='1')
+                            input#mediaGroupDetailEdit(type='text', name='mediaGroupDetailEdit', style='width:500px;', rel='2')
                             br
                             br
                             label(for='mediaGroupImageURLEdit') ImageURL
                             br
                             br
-                            input#mediaGroupImageURLEdit(type='text', name='mediaGroupImageURLEdit', style='width:500px;', rel='2')
+                            input#mediaGroupImageURLEdit(type='text', name='mediaGroupImageURLEdit', style='width:500px;', rel='3')
                             br
                             br
                             label(for='mediaGroupProducerEdit') Media Group Producer
                             br
                             br
-                            select#mediaGroupProducerEdit(name='mediaGroupProducerEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='3')
+                            select#mediaGroupProducerEdit(name='mediaGroupProducerEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='4')
                             br
                             br
                             label(for='mediaGroupArtistEdit') Media Group Artist
                             br
                             br
-                            select#mediaGroupArtistEdit(name='mediaGroupArtistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='4')
+                            select#mediaGroupArtistEdit(name='mediaGroupArtistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='5')
                             input#mediaGroupId(type='hidden', name='mediaGroupId')
                           form#formAddMediaGroupItem
                             label(for='mediaGroupItemNameAdd') Name

@@ -1,16 +1,15 @@
 
 
 $(document).ready(function () {
-
 	var oUserTable = $('#user').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				$(nRow).on('click', function () {
 					var objectId = $(nRow).attr("id");
 					var userName = $('td:eq(0)', nRow).text();
 					var email = $('td:eq(1)', nRow).text();
-                    var password = $('td:eq(2)', nRow).text();
-                    
-                    //todo: add logic for btnEditLogin
+					var password = $('td:eq(2)', nRow).text();
+
+					//todo: add logic for btnEditLogin
 					$('#userEditId').val(objectId);
 				});
 			},
@@ -101,24 +100,24 @@ $(document).ready(function () {
 					var name = $('td:eq(0)', nRow).text();
 					var duration = $('td:eq(1)', nRow).text();
 					var contentURL = $('td:eq(2)', nRow).text();
-                    var producer = $('td:eq(3)', nRow).text();
+					var producer = $('td:eq(3)', nRow).text();
 					var artist = $('td:eq(4)', nRow).text();
 
 					$('#mediaItemEditId').val(objectId);
 					$('#nameEdit').val(name);
 					$('#durationEdit').val(duration);
 					$('#contentURLEdit').val(contentURL);
-                    $('#mediaitemproducer').val(producer);
+					$('#mediaitemproducer').val(producer);
 					$('#mediaitemartist').val(artist);
 
 					$('#durationEdit').mask("00:00:00", {
 						placeholder : "__:__:__"
 					});
 
-                    $("#formEditMediaItem select[name=producerEdit] option").filter(function () {
+					$("#formEditMediaItem select[name=producerEdit] option").filter(function () {
 						return $(this).text() == producer;
 					}).prop('selected', true);
-                    
+
 					$("#formEditMediaItem select[name=artistEdit] option").filter(function () {
 						return $(this).text() == artist;
 					}).prop('selected', true);
@@ -217,21 +216,28 @@ $(document).ready(function () {
 	var oMediaGroupTable = $('#mediagroup')
 		.dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				if(selectedRowId == aData['DT_RowId']){
+					$(nRow).addClass('row_selected');   
+				}   
+				
 				$(nRow).on('click', function () {
+					selectedRowId = $(nRow).attr("id");
 					var objectId = $(nRow).attr("id");
-					var title = $('td:eq(0)', nRow).text();
-					var detail = $('td:eq(1)', nRow).text();
-					var imageURL = $('td:eq(2)', nRow).text();
-                    var producer = $('td:eq(3)', nRow).text();
-					var artist = $('td:eq(4)', nRow).text();
+					var index = $('td:eq(0)', nRow).text();
+					var title = $('td:eq(1)', nRow).text();
+					var detail = $('td:eq(2)', nRow).text();
+					var imageURL = $('td:eq(3)', nRow).text();
+					var producer = $('td:eq(4)', nRow).text();
+					var artist = $('td:eq(5)', nRow).text();
 
 					$('#formEditMediaGroup input[name=mediaGroupId]').val(objectId);
 					$('#formAddMediaGroup input[name=mediaGroupId]').val(objectId);
 					$('#mediaGroupTitleEdit').val(title);
+					$('#mediaGroupIndexEdit').val(index);
 					$('#mediaGroupDetailEdit').val(detail);
 					$('#mediaGroupImageURLEdit').val(imageURL);
-                    
-                    $("#formEditMediaGroup select[name=mediaGroupProducerEdit] option").filter(function () {
+
+					$("#formEditMediaGroup select[name=mediaGroupProducerEdit] option").filter(function () {
 						return $(this).text() == producer;
 					}).prop('selected', true);
 
@@ -241,7 +247,7 @@ $(document).ready(function () {
 
 					oMediaGroupItemTable.fnDraw();
 				});
-			},
+			},			
 			"bJQueryUI" : true,
 			"bProcessing" : true,
 			"bServerSide" : true,
@@ -256,6 +262,8 @@ $(document).ready(function () {
 				}
 			],
 			"aoColumns" : [{
+					"mDataProp" : "index"
+				}, {
 					"mDataProp" : "title"
 				}, {
 					"mDataProp" : "detail"
@@ -287,7 +295,21 @@ $(document).ready(function () {
 			sDeleteURL : "/mediagroup/delete",
 			sAddNewRowButtonId : "btnAddMediaGroup",
 			sEditRowButtonId : "btnEditMediaGroup",
-			sDeleteRowButtonId : "btnDeleteMediaGroup",
+			sDeleteRowButtonId : "btnDeleteMediaGroup",			
+			sMoveRowUpButtonId : "btnMoveAlbumUp",
+			sMoveRowDownButtonId : "btnMoveAlbumDown",
+			oMoveRowUpButtonOptions : {
+				label : "Move Album Up",
+				icons : {
+					primary : 'ui-icon-arrowthick-1-n'
+				}
+			},
+			oMoveRowDownButtonOptions : {
+				label : "Move Album Down",
+				icons : {
+					primary : 'ui-icon-arrowthick-1-s'
+				}
+			},
 			oAddNewRowButtonOptions : {
 				label : "Add",
 				icons : {
@@ -443,10 +465,10 @@ $(document).ready(function () {
 			"iDisplayLength" : 10,
 			"iDisplayStart" : 0,
 			"bFilter" : false,
-            "oLanguage": {
-			           "sEmptyTable": "No media items(tracks) added to media group(album)",
-                       "sZeroRecords": "No media items(tracks) added to media group(album)"
-			        }
+			"oLanguage" : {
+				"sEmptyTable" : "No media items(tracks) added to media group(album)",
+				"sZeroRecords" : "No media items(tracks) added to media group(album)"
+			}
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
 				oMediaItemTable.fnDraw();
@@ -490,11 +512,6 @@ $(document).ready(function () {
 	oMediaItemTable.fnDraw();
 
 	$("#btnEditMediaGroup").on("click", function (e) {
-		/* 		var links = $("#main-nav li ul li a");
-		links.parent().siblings().find('a').removeClass('current');
-		$('#main-nav li ul li a').eq(2).addClass("current")
-		$("#mediagroupitemdiv").siblings().hide(); */
-
 		$("#mediagroupdiv").hide();
 		$("#mediaGroupButtons").show();
 		$("#mediagroupeditadddiv").show();
@@ -504,48 +521,23 @@ $(document).ready(function () {
 		$("#mediagroupitem").show();
 		$("#btnAddMediaGroupItem").show();
 		$("#btnDeleteMediaGroupItem").show();
-        $("#mediaGroupItemContentHeader").show();
+		$("#mediaGroupItemContentHeader").show();
 	});
 
 	$("#btnAddMediaGroup").on("click", function (e) {
-		/* var oMediaItemTable = $('#mediaitem').dataTable();
-		var endingText = "";
-
-		$.each(oMediaItemTable.fnGetNodes(), function (index, value) {
-		var objectId = $(value).attr("id");
-		var name = $('td:eq(0)', value).text();
-		var duration = $('td:eq(1)', value).text();
-		var contentURL = $('td:eq(2)', value).text();
-		var artist = $('td:eq(3)', value).text();
-		var beginningText = "<option value='" + objectId + "'";
-
-		if (index == 0) {
-		endingText = " selected>" + name + "</option>";
-
-		$('#mediaGroupItemId').val(objectId);
-		$('#mediaGroupItemDurationAdd').val(duration);
-		$('#mediaGroupItemContentURLAdd').val(contentURL);
-		$('#mediaGroupItemArtistAdd').val(artist);
-		} else
-		endingText = ">" + name + "</option>";
-
-		var wholeString = beginningText.concat(endingText);
-
-		$('#mediaGroupItemNameAdd').append(wholeString);
-		}); */
-
 		//IntializeMediaGroupItemDropDownBoxes();
-        $("#formAddMediaGroup input[name=mediaGroupId]").val("");
-        $("#formAddMediaGroup input[name=mediaGroupTitleAdd]").val("");
-        $("#formAddMediaGroup input[name=mediaGroupDetailAdd]").val("");
-        $("#formAddMediaGroup input[name=mediaGroupImageURLAdd]").val("");
-        $("#formAddMediaGroup select[name=mediaGroupProducerAdd]").selectedIndex = 0;
-        $("#formAddMediaGroup select[name=mediaGroupArtistAdd]").selectedIndex = 0;
-        
+		$("#formAddMediaGroup input[name=mediaGroupId]").val("");
+		$("#formAddMediaGroup input[name=mediaGroupTitleAdd]").val("");
+		$("#formAddMediaGroup input[name=mediaGroupIndexAdd]").val("");
+		$("#formAddMediaGroup input[name=mediaGroupDetailAdd]").val("");
+		$("#formAddMediaGroup input[name=mediaGroupImageURLAdd]").val("");
+		$("#formAddMediaGroup select[name=mediaGroupProducerAdd]").selectedIndex = 0;
+		$("#formAddMediaGroup select[name=mediaGroupArtistAdd]").selectedIndex = 0;
+
 		$("#mediagroupdiv").hide();
 		$("#mediagroupeditadddiv").show();
 		$("#formEditMediaGroup").hide();
-        $("#mediaGroupItemContentHeader").hide();
+		$("#mediaGroupItemContentHeader").hide();
 
 		$("#mediaGroupButtons").show();
 		$("#formAddMediaGroup").show();
@@ -557,11 +549,11 @@ $(document).ready(function () {
 		}).done(function (data) {
 			var creditData = data.aaData;
 
-            $('#formEditMediaItem select[name=producerEdit').empty();
+			$('#formEditMediaItem select[name=producerEdit').empty();
 			$('#formAddMediaItem select[name=mediaitemproducer').empty();
 			$('#formEditMediaGroup select[name=mediaGroupProducerEdit]').empty();
 			$('#formAddMediaGroup select[name=mediaGroupProducerAdd]').empty();
-            
+
 			$('#formEditMediaItem select[name=artistEdit').empty();
 			$('#formAddMediaItem select[name=mediaitemartist').empty();
 			$('#formEditMediaGroup select[name=mediaGroupArtistEdit]').empty();
@@ -571,8 +563,8 @@ $(document).ready(function () {
 				var credit = creditData[i].name;
 				var creditId = creditData[i].DT_RowId;
 				var optionText = "<option value='" + creditId + "'>" + credit + "</option>";
-                
-                $('#formEditMediaItem select[name=producerEdit').append(optionText);
+
+				$('#formEditMediaItem select[name=producerEdit').append(optionText);
 				$('#formAddMediaItem select[name=mediaitemproducer').append(optionText);
 				$('#formEditMediaGroup select[name=mediaGroupProducerEdit]').append(optionText);
 				$('#formAddMediaGroup select[name=mediaGroupProducerAdd]').append(optionText);
@@ -607,9 +599,6 @@ $(document).ready(function () {
 	}
 
 	function filterCombobox(selectObject, filterValue, autoSelect) {
-		//data-filter="2"
-		//<option data-filter="2" value="FFF">Option 6</option>
-		//<option data-filter-emptyvalue disabled>No Options</option>
 		var fullData = selectObject.data("filterdata-values");
 		var emptyValue = selectObject.data("filterdata-emptyvalue");
 
@@ -645,42 +634,41 @@ $(document).ready(function () {
 	}
 
 	$("#saveMediaGroup").on("click", function (e) {
-		var data = [];		
+		var data = [];
 
-		if ($("#formEditMediaGroup input[name=mediaGroupId]").val() == "" || $("#formEditMediaGroup input[name=mediaGroupId]").val() == null)
-        {
-            data = {
-                title : $('#mediaGroupTitleAdd').val(),
-                detail : $('#mediaGroupDetailAdd').val(),
-                imageURL : $('#mediaGroupImageURLAdd').val(),
-                producer : $('#mediaGroupProducerAdd').val(),
-                artist : $('#mediaGroupArtistAdd').val()
-            };
-            
+		if ($("#formEditMediaGroup input[name=mediaGroupId]").val() == "" || $("#formEditMediaGroup input[name=mediaGroupId]").val() == null) {
+			data = {
+				title : $('#mediaGroupTitleAdd').val(),
+				index : $('#mediaGroupIndexAdd').val(),
+				detail : $('#mediaGroupDetailAdd').val(),
+				imageURL : $('#mediaGroupImageURLAdd').val(),
+				producer : $('#mediaGroupProducerAdd').val(),
+				artist : $('#mediaGroupArtistAdd').val()
+			};
+
 			mediaGroupAddAjaxCall(data);
-        }
-		else
-        {
-            data = {
-                title : $('#mediaGroupTitleEdit').val(),
-                detail : $('#mediaGroupDetailEdit').val(),
-                imageURL : $('#mediaGroupImageURLEdit').val(),
-                producer : $('#mediaGroupProducerEdit').val(),
-                artist : $('#mediaGroupArtistEdit').val()
-            };
-            
+		} else {
+			data = {
+				title : $('#mediaGroupTitleEdit').val(),
+				index : $('#mediaGroupIndexEdit').val(),
+				detail : $('#mediaGroupDetailEdit').val(),
+				imageURL : $('#mediaGroupImageURLEdit').val(),
+				producer : $('#mediaGroupProducerEdit').val(),
+				artist : $('#mediaGroupArtistEdit').val()
+			};
+
 			mediaGroupUpdateAjaxCall(data);
-        }
+		}
 	});
 
 	$("#viewMediaGroup").on("click", function (e) {
 		$("#mediaGroupButtons").hide();
-        $("#mediaGroupItemContentHeader").hide();
+		$("#mediaGroupItemContentHeader").hide();
 	});
 
 	$("#viewCredit").on("click", function (e) {
 		$("#mediaGroupButtons").hide();
-        $("#mediaGroupItemContentHeader").hide();
+		$("#mediaGroupItemContentHeader").hide();
 	});
 
 	$("#viewMediaItem").on("click", function (e) {
@@ -692,46 +680,47 @@ $(document).ready(function () {
 			type : "POST",
 			data : {
 				"title" : opts.title,
+				"index" : opts.index,
 				"detail" : opts.detail,
 				"imageURL" : opts.imageURL,
-                "producer" : opts.producer,
+				"producer" : opts.producer,
 				"artist" : opts.artist
 			},
 			url : "/mediagroup/add",
 			success : function (res) {
 				oMediaGroupTable.fnDraw();
-                
-                oMediaGroupItemTable.fnDraw();
+
+				oMediaGroupItemTable.fnDraw();
 
 				$("#mediaGroupItemTableDiv").show();
-                $("#mediaGroupItemContentHeader").show();
+				$("#mediaGroupItemContentHeader").show();
 				$("#formEditMediaGroup").show();
 
 				$('#mediaGroupTitleEdit').val(opts.title);
+				$('#mediaGroupIndexEdit').val(opts.index);
 				$('#mediaGroupDetailEdit').val(opts.detail);
 				$('#mediaGroupImageURLEdit').val(opts.imageURL);
 
-				//$('#mediaGroupArtistAdd').val(opts.artist);
 				$("#formAddMediaGroupItem input[name=mediaGroupId]").val("");
 				$("#formEditMediaGroup input[name=mediaGroupId]").val(res);
 
 				$("#formAddMediaGroup").hide();
 
-				//bDestroy for mediagroupitem table?
 				alert("Successfully Saved Media Group");
 			}
 		});
 	};
-
+	
 	function mediaGroupUpdateAjaxCall(opts) {
 		$.ajax({
 			type : "POST",
 			data : {
 				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val(),
 				"title" : opts.title,
+				"index" : opts.index,
 				"detail" : opts.detail,
 				"imageURL" : opts.imageURL,
-                "producer" : opts.producer,
+				"producer" : opts.producer,
 				"artist" : opts.artist
 			},
 			url : "/mediagroup/update",
@@ -801,8 +790,8 @@ $(document).ready(function () {
 			placeholder : "__:__:__"
 		});
 	});
-    
-    $("#btnEditUser").on("click", function (e) {        
+
+	$("#btnEditUser").on("click", function (e) {
 		$.ajax({
 			type : "GET",
 			data : {
@@ -813,16 +802,16 @@ $(document).ready(function () {
 				var objectId = res.userId;
 				var userName = res.userName;
 				var email = res.email;
-                
-                $('#userEditId').val(objectId);
-                $('#userNameEdit').val(userName);
-                $('#emailEdit').val(email);
+
+				$('#userEditId').val(objectId);
+				$('#userNameEdit').val(userName);
+				$('#emailEdit').val(email);
 			}
 		});
 	});
 
-	$("#cancelMediaGroup").on("click", function (e) {        
-        $("#formAddMediaGroupItem input[name=mediaGroupId]").val("");
+	$("#cancelMediaGroup").on("click", function (e) {
+		$("#formAddMediaGroupItem input[name=mediaGroupId]").val("");
 		$("#formEditMediaGroup input[name=mediaGroupId]").val("");
 		$("#mediagroupeditadddiv").hide();
 		$("#formEditMediaGroup").hide();
@@ -832,7 +821,7 @@ $(document).ready(function () {
 		$("#btnDeleteMediaGroupItem").hide();
 		$("#mediagroupdiv").show();
 		$("#mediaGroupButtons").hide();
-        $("#mediaGroupItemContentHeader").hide();
+		$("#mediaGroupItemContentHeader").hide();
 	});
 
 	$("#mediaGroupItemNameAdd").on("change", function () {
@@ -851,16 +840,45 @@ $(document).ready(function () {
 				var objectId = res.mediaGroupItemId;
 				var duration = res.mediaGroupItemDurationAdd;
 				var contentURL = res.mediaGroupItemContentURLAdd;
-                var producer = res.mediaGroupItemProducerAdd;
+				var producer = res.mediaGroupItemProducerAdd;
 				var artist = res.mediaGroupItemArtistAdd;
 
 				$('#mediaGroupItemId').val(objectId);
 				$('#mediaGroupItemDurationAdd').val(duration);
 				$('#mediaGroupItemContentURLAdd').val(contentURL);
-                $('#mediaGroupItemProducerAdd').val(producer);
+				$('#mediaGroupItemProducerAdd').val(producer);
 				$('#mediaGroupItemArtistAdd').val(artist);
 			}
 		});
 	};
 
+	$("#btnMoveAlbumUp").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val()
+			},
+			url : "/mediagroup/moveup",
+			success : function () {
+				oMediaGroupTable.fnDraw();
+				
+				$("#btnMoveAlbumUp").removeClass('ui-state-focus');
+			}
+		});
+	});
+	var selectedRowId = "";
+	$("#btnMoveAlbumDown").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val()
+			},
+			url : "/mediagroup/movedown",
+			success : function () {
+				oMediaGroupTable.fnDraw();	
+				
+				$("#btnMoveAlbumDown").removeClass('ui-state-focus');
+			}
+		});
+	});	
 });

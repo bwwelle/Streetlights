@@ -28,6 +28,10 @@
  * @oAddNewRowCancelButtonOptions    Object        Options that will be set to the Cancel button in the "Add new row" form
  * @sEditRowButtonId               String      Id of the button for updating row. Default id is "btnEditRow".
  * @oEditRowButtonOptions            Object        Options that will be set to the "Edit" button
+ * @sMoveRowUpButtonId               String      Id of the button for moving a row up. Default id is "btnMoveRowUp".
+ * @oMoveRowUpButtonOptions            Object        Options that will be set to the "Move Row Up" button
+ * @sMoveRowDownButtonId               String      Id of the button for moving a row down. Default id is "btnMoveRowDown".
+ * @oMoveRowDownButtonOptions            Object        Options that will be set to the "Move Row Down" button
  * @sEditRowOkButtonId             String      Id of the OK button placed in edit row dialog. Default value is "btnEditRowOk".
  * @oEditRowOkButtonOptions        Object        Options that will be set to the Ok button in the "Edit row" form
  * @sEditRowCancelButtonId         String      Id of the Cancel button placed in edit row dialog. Default value is "btnAddNewRowCancel".
@@ -163,6 +167,8 @@ returns true if plugin should continue with sending AJAX request, false will abo
 		oCancelRowAddingButton,
 		oEditRowButton,
 		oConfirmRowEditingButton,
+		oMoveRowUpButton,
+		oMoveRowDownButton,
 		oCancelRowEditingButton;
 		//Reference to the form used for adding new data
 		var oAddNewRowForm;
@@ -726,6 +732,35 @@ returns true if plugin should continue with sending AJAX request, false will abo
 				oDeleteRowButton.removeAttr("disabled");
 			}
 		}
+		
+		function fnDisableDeleteButton() {
+			///<summary>
+			///Function that disables delete button
+			///</summary>
+
+			if (properties.bUseKeyTable) {
+				return;
+			}
+			if (properties.oDeleteRowButtonOptions != null) {
+				//oDeleteRowButton.disable();
+				oDeleteRowButton.button("option", "disabled", true);
+			} else {
+				oDeleteRowButton.attr("disabled", "true");
+			}
+		}
+
+		function fnEnableDeleteButton() {
+			///<summary>
+			///Function that enables delete button
+			///</summary>
+
+			if (properties.oDeleteRowButtonOptions != null) {
+				//oDeleteRowButton.enable();
+				oDeleteRowButton.button("option", "disabled", false);
+			} else {
+				oDeleteRowButton.removeAttr("disabled");
+			}
+		}
 
 		function fnDisableEditButton() {
 			///<summary>
@@ -740,6 +775,60 @@ returns true if plugin should continue with sending AJAX request, false will abo
 				oEditRowButton.button("option", "disabled", true);
 			} else {
 				oEditRowButton.attr("disabled", "true");
+			}
+		}
+		
+		function fnDisableMoveRowUpButton() {
+			///<summary>
+			///Function that disables Move Row Up button
+			///</summary>
+
+			if (properties.bUseKeyTable) {
+				return;
+			}
+			if (properties.oMoveRowUpButtonOptions != null) {
+				oMoveRowUpButton.button("option", "disabled", true);
+			} else {
+				oMoveRowUpButton.attr("disabled", "true");
+			}
+		}
+		
+		function fnDisableMoveRowDownButton() {
+			///<summary>
+			///Function that disables Move Row Down button
+			///</summary>
+
+			if (properties.bUseKeyTable) {
+				return;
+			}
+			if (properties.oMoveRowDownButtonOptions != null) {
+				oMoveRowDownButton.button("option", "disabled", true);
+			} else {
+				oMoveRowDownButton.attr("disabled", "true");
+			}
+		}
+		
+		function fnEnableMoveRowUpButton() {
+			///<summary>
+			///Function that enables move row up button
+			///</summary>
+
+			if (properties.oMoveRowUpButtonOptions != null) {
+				oMoveRowUpButton.button("option", "disabled", false);
+			} else {
+				oMoveRowUpButton.removeAttr("disabled");
+			}
+		}
+		
+		function fnEnableMoveRowDownButton() {
+			///<summary>
+			///Function that enables move row down button
+			///</summary>
+
+			if (properties.oMoveRowDownButtonOptions != null) {
+				oMoveRowDownButton.button("option", "disabled", false);
+			} else {
+				oMoveRowDownButton.removeAttr("disabled");
 			}
 		}
 
@@ -1193,6 +1282,10 @@ returns true if plugin should continue with sending AJAX request, false will abo
 			sAddNewRowButtonId : "btnAddNewMediaItemRow",
 			sEditRowFormId : "formEditMediaItemRow",
 			sEditRowButtonId : "btnEditMediaItemRow",
+			sMoveRowUpButtonId : "btnMoveRowUp",
+			sMoveRowDownButtonId : "btnMoveRowDown",
+			oMoveRowUpButtonOptions : null,
+			oMoveRowDownButtonOptions : null,
 			oAddNewRowButtonOptions : null,
 			oEditRowButtonOptions : null,
 			sAddNewRowOkButtonId : "btnAddNewMediaItemRowOk",
@@ -1499,6 +1592,12 @@ returns true if plugin should continue with sending AJAX request, false will abo
 				oEditRowButton = $("#" + properties.sEditRowButtonId);
 				if (oEditRowButton.length != 0) {}
 			}
+			
+			oMoveRowUpButton = $("#" + properties.sMoveRowUpButtonId);
+			if (oMoveRowUpButton.length != 0) {}
+			
+			oMoveRowDownButton = $("#" + properties.sMoveRowDownButtonId);
+			if (oMoveRowDownButton.length != 0) {}
 
 			//Set the click handler on the "Delete selected row" button
 			oDeleteRowButton = $('#' + properties.sDeleteRowButtonId);
@@ -1540,8 +1639,24 @@ returns true if plugin should continue with sending AJAX request, false will abo
 					oDeleteRowButton.click(_fnOnRowDelete);
 				}
 			}
+			
+			//If move row up button exists disable it until some row is selected
+			if (oMoveRowUpButton != null) {
+				if (properties.oMoveRowUpButtonOptions != null) {
+					oMoveRowUpButton.button(properties.oMoveRowUpButtonOptions);
+				}
+				fnDisableMoveRowUpButton();
+			}
+			
+			//If move row down button exists disable it until some row is selected
+			if (oMoveRowDownButton != null) {
+				if (properties.oMoveRowDownButtonOptions != null) {
+					oMoveRowDownButton.button(properties.oMoveRowDownButtonOptions);
+				}
+				fnDisableMoveRowDownButton();
+			}
 
-			//If delete button exists disable it until some row is selected
+			//If edit button exists disable it until some row is selected
 			if (oEditRowButton != null) {
 				if (properties.oEditRowButtonOptions != null) {
 					oEditRowButton.button(properties.oEditRowButtonOptions);
@@ -1571,7 +1686,21 @@ returns true if plugin should continue with sending AJAX request, false will abo
 					oEditRowButton.button(properties.oEditRowButtonOptions);
 				}
 			}
-
+			
+			//If move row up button exists convert it to the JQuery-ui button
+			if (oMoveRowUpButton != null) {
+				if (properties.oMoveRowUpButtonOptions != null) {
+					oMoveRowUpButton.button(properties.oMoveRowUpButtonOptions);
+				}
+			}
+			
+			//If move row down button exists convert it to the JQuery-ui button
+			if (oMoveRowDownButton != null) {
+				if (properties.oMoveRowDownButtonOptions != null) {
+					oMoveRowDownButton.button(properties.oMoveRowDownButtonOptions);
+				}
+			}
+			
 			//If form ok button exists convert it to the JQuery-ui button
 			if (oConfirmRowAddingButton != null) {
 				if (properties.oAddNewRowOkButtonOptions != null) {
@@ -1616,6 +1745,14 @@ returns true if plugin should continue with sending AJAX request, false will abo
 						if (oEditRowButton != null) {
 							fnDisableEditButton();
 						}
+						
+						if (oMoveRowUpButton != null) {
+							fnDisableMoveRowUpButton();
+						}
+						
+						if (oMoveRowDownButton != null) {
+							fnDisableMoveRowDownButton();
+						}
 					} else {
 						$(oTable.fnSettings().aoData).each(function () {
 							$(this.nTr).removeClass(properties.sSelectedRowClass);
@@ -1627,6 +1764,14 @@ returns true if plugin should continue with sending AJAX request, false will abo
 
 						if (oEditRowButton != null) {
 							fnEnableEditButton();
+						}
+						
+						if (oMoveRowUpButton != null) {
+							fnEnableMoveRowUpButton();
+						}
+						
+						if (oMoveRowDownButton != null) {
+							fnEnableMoveRowDownButton();
 						}
 					}
 				});
