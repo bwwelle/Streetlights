@@ -525,10 +525,11 @@ $(document).ready(function () {
 	});
 
 	$("#btnAddMediaGroup").on("click", function (e) {
-		//IntializeMediaGroupItemDropDownBoxes();
+		FillIndexTextBox();
+		
 		$("#formAddMediaGroup input[name=mediaGroupId]").val("");
 		$("#formAddMediaGroup input[name=mediaGroupTitleAdd]").val("");
-		$("#formAddMediaGroup input[name=mediaGroupIndexAdd]").val("");
+		
 		$("#formAddMediaGroup input[name=mediaGroupDetailAdd]").val("");
 		$("#formAddMediaGroup input[name=mediaGroupImageURLAdd]").val("");
 		$("#formAddMediaGroup select[name=mediaGroupProducerAdd]").selectedIndex = 0;
@@ -542,6 +543,17 @@ $(document).ready(function () {
 		$("#mediaGroupButtons").show();
 		$("#formAddMediaGroup").show();
 	});
+	
+	function FillIndexTextBox()
+	{
+		$.ajax({
+			url : "/mediagroup/lastindex"
+		}).done(function (data) {
+			var lastIndex = parseInt(data) + 1;
+			
+			$("#formAddMediaGroup input[name=mediaGroupIndexAdd]").val(lastIndex);		
+		});
+	}
 
 	function IntializeCreditDropDownBoxes() {
 		$.ajax({

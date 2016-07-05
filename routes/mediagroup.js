@@ -93,13 +93,25 @@ var urlencodedParser = bodyParser.urlencoded({
 		});
 	});
 
+	
+router.get('/lastindex', function (req, res) {
+	var MediaGroup = Parse.Object.extend("MediaGroup");
+	var mediaGroup = new MediaGroup();	
+	var query = new Parse.Query(MediaGroup);
+	
+	query.descending("index");
+	
+	query.first().then(function(result){
+		res.json(result.get("index"));
+	});	
+});
+
 router.post('/update', urlencodedParser, function (req, res) {
 	var MediaGroup = Parse.Object.extend("MediaGroup");
-	var mediaGroup = new MediaGroup();
-
+	var mediaGroup = new MediaGroup();	
+	var query = new Parse.Query(MediaGroup);
+	
 	mediaGroup.id = req.body.mediaGroupId;
-
-	mediaGroup.set("index", req.body.index);
 	mediaGroup.set("title", req.body.title);
 	mediaGroup.set("detail", req.body.detail);
 	mediaGroup.set("imageURL", req.body.imageURL);
@@ -118,21 +130,75 @@ router.post('/update', urlencodedParser, function (req, res) {
 	mediaGroup.unset("artists");
 	mediaGroup.addUnique("artists", artist);
 
-	mediaGroup.save(null, {
-		success : function (mediaGroup) {
-			res.json("Successful Save!");
-		},
-		error : function (mediaGroup, error) {
-			res.json("Save Error!");
-		}
+	mediaGroup.save().then(function(result)
+	{
+		query.get(req.body.mediaGroupId, {
+				success : function (mediaGroup) {
+					if (mediaGroup.get("index") < parseInt(req.body.index))
+					{
+						var indexUpQuery = new Parse.Query(MediaGroup);
+			
+						indexUpQuery.lessThanOrEqualTo("index", parseInt(req.body.index));
+						indexUpQuery.greaterThanOrEqualTo("index", parseInt(mediaGroup.get("index")));
+						indexUpQuery.notEqualTo("objectId", mediaGroup.id);	
+						
+						indexUpQuery.find().then(
+							function (results) {
+								var list = [];
+								
+								results.forEach(function(indexRecord){					
+									indexRecord.increment("index", -1);
+									list.push(indexRecord);
+								});
+								
+								Parse.Object.saveAll(list).then(function(results){								
+									mediaGroup.set("index", parseInt(req.body.index));
+								
+									mediaGroup.save().then(function(result){								
+										res.json("Successful Save!");
+									});
+								});
+							});
+					}
+					else if(mediaGroup.get("index") > parseInt(req.body.index))
+					{
+						var indexDownQuery = new Parse.Query(MediaGroup);
+			
+						indexDownQuery.greaterThanOrEqualTo("index", parseInt(req.body.index));
+						indexDownQuery.lessThanOrEqualTo("index", parseInt(mediaGroup.get("index")));
+						indexDownQuery.notEqualTo("objectId", mediaGroup.id);
+						
+						indexDownQuery.find().then(
+							function (results) {
+								var list = [];
+								
+								results.forEach(function(indexRecord){					
+									indexRecord.increment("index");
+									list.push(indexRecord);
+								});
+								
+								Parse.Object.saveAll(list).then(function(results){								
+									mediaGroup.set("index", parseInt(req.body.index));
+								
+									mediaGroup.save().then(function(result){								
+										res.json("Successful Save!");
+									});
+								});
+							});
+					}
+				},
+				error : function (object, error) {
+					res.json("Deletion Error: " + error);
+				}
+			});
 	});
 });
 
 router.post('/add', urlencodedParser, function (req, res) {
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var mediaGroup = new MediaGroup();
+	var query = new Parse.Query(MediaGroup);
 
-	mediaGroup.set("index", req.body.index);
 	mediaGroup.set("title", req.body.title);
 	mediaGroup.set("detail", req.body.detail);
 	mediaGroup.set("imageURL", req.body.imageURL);
@@ -151,7 +217,39 @@ router.post('/add', urlencodedParser, function (req, res) {
 
 	mediaGroup.save(null, {
 		success : function (mediaGroup) {
-			res.json(mediaGroup.id);
+			query.descending("index");
+			query.first().then(function(result){
+				if(result.get("index") > parseInt(req.body.index))
+				{
+					var indexDownQuery = new Parse.Query(MediaGroup);
+			
+					indexDownQuery.greaterThanOrEqualTo("index", parseInt(req.body.index));
+					
+					indexDownQuery.find().then(
+						function (results) {
+							var list = [];
+							
+							results.forEach(function(indexRecord){					
+								indexRecord.increment("index");
+								list.push(indexRecord);
+							});
+							
+							Parse.Object.saveAll(list).then(function(results){								
+								mediaGroup.set("index", parseInt(req.body.index));
+							
+								mediaGroup.save().then(function(result){								
+									res.json(mediaGroup.id);
+								});
+							});
+						});				
+				}
+				else
+				{
+					mediaGroup.set("index", parseInt(req.body.index));
+					mediaGroup.save();
+					res.json(mediaGroup.id);
+				}
+			});			
 		},
 		error : function (mediaGroup, error) {
 			res.json("Save Error!");
