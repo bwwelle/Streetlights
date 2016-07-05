@@ -277,9 +277,14 @@ $(document).ready(function () {
 			],
 			"sPaginationType" : "full_numbers",
 			"iDisplayLength" : 10,
-			"iDisplayStart" : 0,
 			"bFilter" : false,
-			"deferLoading" : 10
+			"bStateSave": true
+			// "fnStateSave": function (oSettings, oData) {
+            // localStorage.setItem(oMediaGroupTable, JSON.stringify(oData));
+			// },
+			// "fnStateLoad": function (oSettings) {
+				// return JSON.parse(localStorage.getItem(oMediaGroupTable));
+			// }
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
 				oMediaItemTable.fnDraw();
@@ -509,6 +514,7 @@ $(document).ready(function () {
 	oMediaGroupItemTable.fnDraw();
 	oCreditTable.fnDraw();
 	oMediaGroupTable.fnDraw();
+	
 	oMediaItemTable.fnDraw();
 
 	$("#btnEditMediaGroup").on("click", function (e) {
@@ -872,7 +878,8 @@ $(document).ready(function () {
 			},
 			url : "/mediagroup/moveup",
 			success : function () {
-				oMediaGroupTable.fnDraw();
+				var oSettings = oMediaGroupTable.fnSettings();				
+				oMediaGroupTable.fnDraw(oSettings);
 				
 				$("#btnMoveAlbumUp").removeClass('ui-state-focus');
 			}
@@ -887,7 +894,8 @@ $(document).ready(function () {
 			},
 			url : "/mediagroup/movedown",
 			success : function () {
-				oMediaGroupTable.fnDraw();	
+				var oSettings = oMediaGroupTable.fnSettings();				
+				oMediaGroupTable.fnDraw(oSettings);
 				
 				$("#btnMoveAlbumDown").removeClass('ui-state-focus');
 			}
