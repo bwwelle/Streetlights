@@ -27,7 +27,7 @@ router.get('/', function (req, res) {
         tableDataQuery.include("producers");
 		tableDataQuery.include("artists");
 
-		tableDataQuery.descending("name");
+		tableDataQuery.ascending("name");
 		tableDataQuery.limit(parseInt(displayLength));
 
 		if (parseInt(displayStart) != 0)
@@ -75,6 +75,84 @@ router.get('/', function (req, res) {
 						DT_RowId : mediaItem.id
 					};
 				}
+				
+				data =  data.sort(function (a, b) {
+						return a["name"].toLowerCase().localeCompare(b["name"].toLowerCase());
+					});
+
+				res.json({
+					aaData : data,
+					iTotalRecords : count,
+					iTotalDisplayRecords : count,
+					sEcho : echo
+				});
+			}
+		});
+	})
+});
+
+router.get('/dropdown', function (req, res) {
+	var searchText = req.query.sSearch;
+	displayStart = req.query.iDisplayStart;
+	var displayLength = req.query.iDisplayLength;
+	echo = req.query.sEcho;
+
+	var MediaItem = Parse.Object.extend("MediaItem");
+	var countQuery = new Parse.Query(MediaItem);
+
+	countQuery.count().then(function (count) {
+		var tableDataQuery = new Parse.Query(MediaItem);
+        tableDataQuery.include("producers");
+		tableDataQuery.include("artists");
+
+		tableDataQuery.ascending("name");
+
+		tableDataQuery.find({
+			success : function (mediaItems) {
+				var data = [];
+				for (var
+					i = 0; i < mediaItems.length; i++) {
+					var mediaItem = mediaItems[i];
+                    var mediaItemProducer = '';
+					var mediaItemProducerId = '';
+					var mediaItemArtist = '';
+					var mediaItemArtistId = '';
+					var mediaItemName = '';
+					var mediaItemDuration = '';
+					var mediaItemContentURL = '';
+                    
+                    if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
+						if (mediaItem.get("producers")[0] !== null && mediaItem.get("producers")[0] !== undefined)
+							mediaItemProducer = mediaItem.get("producers")[0].get("name");
+					}
+
+					if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined) {
+						if (mediaItem.get("artists")[0] !== null && mediaItem.get("artists")[0] !== undefined)
+							mediaItemArtist = mediaItem.get("artists")[0].get("name");
+					}
+
+					if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
+						mediaItemName = mediaItem.get("name");
+
+					if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
+						mediaItemDuration = ConvertDurationTime(mediaItem.get("duration"));
+
+					if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
+						mediaItemContentURL = mediaItem.get("contentURL");				
+					
+					data[i] = {
+						name : mediaItemName,
+						duration : mediaItemDuration,
+						contentURL : mediaItemContentURL,
+                        producer : mediaItemProducer,
+						artist : mediaItemArtist,
+						DT_RowId : mediaItem.id
+					};
+				}
+				
+				data =  data.sort(function (a, b) {
+								return a["name"].toLowerCase().localeCompare(b["name"].toLowerCase());
+							});
 
 				res.json({
 					aaData : data,

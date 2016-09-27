@@ -563,7 +563,7 @@ $(document).ready(function () {
 
 	function IntializeCreditDropDownBoxes() {
 		$.ajax({
-			url : "/credit"
+			url : "/credit/dropdown"
 		}).done(function (data) {
 			var creditData = data.aaData;
 
@@ -601,7 +601,7 @@ $(document).ready(function () {
 
 	function IntializeMediaGroupItemDropDownBoxes() {
 		$.ajax({
-			url : "/mediaitem"
+			url : "/mediaitem/dropdown"
 		}).done(function (data) {
 			var mediaItemData = data.aaData;
 			$('#mediaGroupItemNameAdd').empty();
