@@ -201,6 +201,11 @@ function pad(num, size) {
 router.get('/edit', urlencodedParser, function (req, res) {
 	var MediaItem = Parse.Object.extend("MediaItem");
 	var mediaItem = new MediaItem();
+	
+	var Bible = Parse.Object.extend("Bible");
+	var bible = new Bible();
+	bible.id = "eL7PbRMeBv";
+	
 	var duration = req.query["durationEdit"].split(":");
 
 	var durationInSeconds = ConvertDurationForSave(duration[0], duration[1], duration[2]);
@@ -209,6 +214,10 @@ router.get('/edit', urlencodedParser, function (req, res) {
 	mediaItem.set("name", req.query["nameEdit"]);
 	mediaItem.set("duration", parseInt(durationInSeconds));
 	mediaItem.set("contentURL", req.query["contentURLEdit"]);
+	mediaItem.set("shareURL", req.query["contentURLEdit"]);
+	mediaItem.set("version", bible);
+	mediaItem.set("language","eng");
+	mediaItem.set("type", "song");
 
 	var producerId = req.query["producerEdit"];
     var Producer = Parse.Object.extend("Credit");
@@ -237,6 +246,11 @@ router.get('/edit', urlencodedParser, function (req, res) {
 router.post('/add', urlencodedParser, function (req, res) {
 	var MediaItem = Parse.Object.extend("MediaItem");
 	var mediaItem = new MediaItem();
+	
+	var Bible = Parse.Object.extend("Bible");
+	var bible = new Bible();
+	bible.id = "eL7PbRMeBv";
+	
 	var duration = req.body.duration.split(":");
 
 	var durationInSeconds = ConvertDurationForSave(duration[0], duration[1], duration[2]);
@@ -244,6 +258,10 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaItem.set("name", req.body.name);
 	mediaItem.set("duration", parseInt(durationInSeconds));
 	mediaItem.set("contentURL", req.body.contentURL);
+	mediaItem.set("shareURL", req.body.contentURL);
+	mediaItem.set("type", "song");
+	mediaItem.set("version", bible);
+	mediaItem.set("language", "eng");
     mediaItem.unset("producers");
 	mediaItem.unset("artists");
     
