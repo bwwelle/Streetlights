@@ -98,21 +98,25 @@ $(document).ready(function () {
 				$(nRow).on('click', function () {
 					var objectId = $(nRow).attr("id");
 					var name = $('td:eq(0)', nRow).text();
-					var duration = $('td:eq(1)', nRow).text();
-					var contentURL = $('td:eq(2)', nRow).text();
-					var producer = $('td:eq(3)', nRow).text();
-					var artist = $('td:eq(4)', nRow).text();
+					var type = $('td:eq(1)', nRow).text();
+					var duration = $('td:eq(2)', nRow).text();
+					var contentURL = $('td:eq(3)', nRow).text();
+					var producer = $('td:eq(4)', nRow).text();
+					var artist = $('td:eq(5)', nRow).text();
 
 					$('#mediaItemEditId').val(objectId);
 					$('#nameEdit').val(name);
 					$('#durationEdit').val(duration);
 					$('#contentURLEdit').val(contentURL);
-					$('#mediaitemproducer').val(producer);
-					$('#mediaitemartist').val(artist);
+					$('#typeEdit').val(type);
 
 					$('#durationEdit').mask("00:00:00", {
 						placeholder : "__:__:__"
 					});
+					
+					$("#formEditMediaItem select[name=typeEdit] option").filter(function () {
+						return $(this).text() == type;
+					}).prop('selected', true);
 
 					$("#formEditMediaItem select[name=producerEdit] option").filter(function () {
 						return $(this).text() == producer;
@@ -139,6 +143,8 @@ $(document).ready(function () {
 			],
 			"aoColumns" : [{
 					"mDataProp" : "name"
+				}, {
+					"mDataProp" : "type"
 				}, {
 					"mDataProp" : "duration"
 				}, {
@@ -225,10 +231,11 @@ $(document).ready(function () {
 					var objectId = $(nRow).attr("id");
 					var index = $('td:eq(0)', nRow).text();
 					var title = $('td:eq(1)', nRow).text();
-					var detail = $('td:eq(2)', nRow).text();
-					var imageURL = $('td:eq(3)', nRow).text();
-					var producer = $('td:eq(4)', nRow).text();
-					var artist = $('td:eq(5)', nRow).text();
+					var type = $('td:eq(2)', nRow).text();
+					var detail = $('td:eq(3)', nRow).text();
+					var imageURL = $('td:eq(4)', nRow).text();
+					var producer = $('td:eq(5)', nRow).text();
+					var artist = $('td:eq(6)', nRow).text();
 
 					$('#formEditMediaGroup input[name=mediaGroupId]').val(objectId);
 					$('#formAddMediaGroup input[name=mediaGroupId]').val(objectId);
@@ -236,6 +243,10 @@ $(document).ready(function () {
 					$('#mediaGroupIndexEdit').val(index);
 					$('#mediaGroupDetailEdit').val(detail);
 					$('#mediaGroupImageURLEdit').val(imageURL);
+					
+					$("#formEditMediaGroup select[name=mediaGroupTypeEdit] option").filter(function () {
+						return $(this).text() == type;
+					}).prop('selected', true);
 
 					$("#formEditMediaGroup select[name=mediaGroupProducerEdit] option").filter(function () {
 						return $(this).text() == producer;
@@ -265,6 +276,8 @@ $(document).ready(function () {
 					"mDataProp" : "index"
 				}, {
 					"mDataProp" : "title"
+				}, {
+					"mDataProp" : "type"
 				}, {
 					"mDataProp" : "detail"
 				}, {
@@ -430,7 +443,12 @@ $(document).ready(function () {
 
 	var oMediaGroupItemTable = $('#mediagroupitem').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				if(selectedRowId == aData['DT_RowId']){
+					$(nRow).addClass('row_selected');   
+				} 
+				
 				$(nRow).on('click', function () {
+					selectedRowId = $(nRow).attr("id");
 					$("#formAddMediaGroupItem input[name=mediaGroupItemId]").val($(nRow).attr("id"));
 				});
 			},
@@ -449,6 +467,8 @@ $(document).ready(function () {
 			],
 			"aoColumns" : [{
 					"mDataProp" : "name"
+				}, {
+					"mDataProp" : "type"
 				}, {
 					"mDataProp" : "duration"
 				}, {
@@ -491,6 +511,7 @@ $(document).ready(function () {
 			sAddNewRowButtonId : "btnAddMediaGroupItem",
 			sAddNewRowOkButtonId : "btnAddMediaGroupItemOk",
 			sDeleteRowButtonId : "btnDeleteMediaGroupItem",
+			sSelectedRowClass : "row_selected",
 			oAddNewRowButtonOptions : {
 				label : "Add",
 				icons : {
@@ -538,6 +559,7 @@ $(document).ready(function () {
 		
 		$("#formAddMediaGroup input[name=mediaGroupDetailAdd]").val("");
 		$("#formAddMediaGroup input[name=mediaGroupImageURLAdd]").val("");
+		$("#formAddMediaGroup select[name=mediaGroupTypeAdd]").selectedIndex = 0;
 		$("#formAddMediaGroup select[name=mediaGroupProducerAdd]").selectedIndex = 0;
 		$("#formAddMediaGroup select[name=mediaGroupArtistAdd]").selectedIndex = 0;
 
@@ -566,7 +588,7 @@ $(document).ready(function () {
 			url : "/credit/dropdown"
 		}).done(function (data) {
 			var creditData = data.aaData;
-
+			
 			$('#formEditMediaItem select[name=producerEdit').empty();
 			$('#formAddMediaItem select[name=mediaitemproducer').empty();
 			$('#formEditMediaGroup select[name=mediaGroupProducerEdit]').empty();
@@ -657,6 +679,7 @@ $(document).ready(function () {
 		if ($("#formEditMediaGroup input[name=mediaGroupId]").val() == "" || $("#formEditMediaGroup input[name=mediaGroupId]").val() == null) {
 			data = {
 				title : $('#mediaGroupTitleAdd').val(),
+				type : $('#mediaGroupTypeAdd').val(),
 				index : $('#mediaGroupIndexAdd').val(),
 				detail : $('#mediaGroupDetailAdd').val(),
 				imageURL : $('#mediaGroupImageURLAdd').val(),
@@ -668,6 +691,7 @@ $(document).ready(function () {
 		} else {
 			data = {
 				title : $('#mediaGroupTitleEdit').val(),
+				type : $('#mediaGroupTypeEdit').val(),
 				index : $('#mediaGroupIndexEdit').val(),
 				detail : $('#mediaGroupDetailEdit').val(),
 				imageURL : $('#mediaGroupImageURLEdit').val(),
@@ -698,6 +722,7 @@ $(document).ready(function () {
 			type : "POST",
 			data : {
 				"title" : opts.title,
+				"type" : opts.type,
 				"index" : opts.index,
 				"detail" : opts.detail,
 				"imageURL" : opts.imageURL,
@@ -715,6 +740,7 @@ $(document).ready(function () {
 				$("#formEditMediaGroup").show();
 
 				$('#mediaGroupTitleEdit').val(opts.title);
+				$('#mediaGroupTypeEdit').val(opts.type);
 				$('#mediaGroupIndexEdit').val(opts.index);
 				$('#mediaGroupDetailEdit').val(opts.detail);
 				$('#mediaGroupImageURLEdit').val(opts.imageURL);
@@ -735,6 +761,7 @@ $(document).ready(function () {
 			data : {
 				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val(),
 				"title" : opts.title,
+				"type" : opts.type,
 				"index" : opts.index,
 				"detail" : opts.detail,
 				"imageURL" : opts.imageURL,
@@ -860,8 +887,10 @@ $(document).ready(function () {
 				var contentURL = res.mediaGroupItemContentURLAdd;
 				var producer = res.mediaGroupItemProducerAdd;
 				var artist = res.mediaGroupItemArtistAdd;
+				var type = res.mediaGroupItemTypeAdd;
 
 				$('#mediaGroupItemId').val(objectId);
+				$('#mediaGroupItemTypeAdd').val(type);
 				$('#mediaGroupItemDurationAdd').val(duration);
 				$('#mediaGroupItemContentURLAdd').val(contentURL);
 				$('#mediaGroupItemProducerAdd').val(producer);

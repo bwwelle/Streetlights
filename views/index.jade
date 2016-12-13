@@ -81,12 +81,12 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                 | Music
               ul
                 li
-                  a#viewCredit(href='#creditdiv' headertext='Credit (Producers/Artists)') Credit (Producers/Artists)
+                  a#viewCredit(href='#creditdiv' headertext='Credit (Producers/Artists)') Credit<br />(Producers/Artists)
                 li
-                  a#viewMediaGroup(href='#mediagroupdiv' headertext='Media Groups (Albums)') Media Groups (Albums)
+                  a#viewMediaGroup(href='#mediagroupdiv' headertext='Media Groups (Albums/Experiences)') Media Groups<br />(Albums/Experiences)
                 // Add class "current" to sub menu items also
                 li
-                  a#viewMediaItem.current(href='#mediaitemdiv' headertext='Media Items (Tracks)') Media Items (Tracks)
+                  a#viewMediaItem.current(href='#mediaitemdiv' headertext='Media Items (Tracks/Videos)') Media Items<br />(Tracks/Videos)
              li
               a.nav-top-item(href='#')
                 // Add the class "current" to current menu item
@@ -195,28 +195,36 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#name.required(type='text', name='name', style='width:500px;', rel='0')
                             br
                             br
+                            label(for='mediaitemtype') Media Item Type
+                            br
+                            br
+                            select#mediaitemtype(name='mediaitemtype', style='width:300px;', rel='1')
+                                option(value=song) song
+                                option(value=experience) experience
+                            br
+                            br
                             label(for='duration') Duration (HH:MM:SS)    
                             br
                             br
-                            input#duration.required(type='text', name='duration', style='width:75px;', rel='1')
+                            input#duration.required(type='text', name='duration', style='width:75px;', rel='2')
                             br
                             br
                             label(for='contentURL') contentURL          
                             br
                             br
-                            input#contentURL.required(type='text', name='contentURL', style='width:500px;', rel='2')
+                            input#contentURL.required(type='text', name='contentURL', style='width:500px;', rel='3')
                             br
                             br
                             label(for='mediaitemproducer') Media Item Producer
                             br
                             br
-                            select#mediaitemproducer(name='mediaitemproducer', style='width:300px;', rel='3')
+                            select#mediaitemproducer(name='mediaitemproducer', style='width:300px;', rel='4')
                             br
                             br
                             label(for='mediaitemartist') Media Item Artist
                             br
                             br
-                            select#mediaitemartist(name='mediaitemartist', style='width:300px;', rel='4')
+                            select#mediaitemartist(name='mediaitemartist', style='width:300px;', rel='5')
                           form#formEditMediaItem
                             label(for='name') Name
                             br
@@ -224,28 +232,36 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#nameEdit.required(type='text', name='nameEdit', style='width:500px;', rel='0')
                             br
                             br
+                            label Media Item Type
+                            br
+                            br
+                            select#typeEdit(name='typeEdit', style='width:300px;', rel='1')
+                                option(value=song) song
+                                option(value=experience) experience
+                            br
+                            br
                             label(for='durationEdit') Duration (HH:MM:SS)
                             br
                             br
-                            input#durationEdit.required(type='text', name='durationEdit', style='width:75px;', rel='1')
+                            input#durationEdit.required(type='text', name='durationEdit', style='width:75px;', rel='2')
                             br
                             br
                             label(for='contentURLEdit') contentURL
                             br
                             br
-                            input#contentURLEdit.required(type='text', name='contentURLEdit', style='width:500px;', rel='2')
+                            input#contentURLEdit.required(type='text', name='contentURLEdit', style='width:500px;', rel='3')
                             br
                             br
                             label(for='producerEdit') Media Item Producer
                             br
                             br
-                            select#producerEdit(name='producerEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='3')
+                            select#producerEdit(name='producerEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='4')
                             br
                             br
                             label(for='artistEdit') Media Item Artist
                             br
                             br
-                            select#artistEdit(name='artistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='4')
+                            select#artistEdit(name='artistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='5')
                             input#mediaItemEditId(type='hidden', name='mediaItemEditId')
                           <button id="btnAddMediaItem"></button>
                           <button id="btnEditMediaItem"></button>
@@ -254,6 +270,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             thead
                               tr
                                 th name
+                                th type
                                 th duration (HH:MM:SS)
                                 th contentURL
                                 th producer
@@ -261,6 +278,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             tfoot
                               tr
                                 th name
+                                th type
                                 th duration (HH:MM:SS)
                                 th contentURL
                                 th producer
@@ -311,6 +329,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                               tr
                                 th index
                                 th title
+                                th type
                                 th detail
                                 th imageURL
                                 th producer
@@ -319,6 +338,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                               tr
                                 th index
                                 th title
+                                th type
                                 th detail
                                 th imageURL
                                 th producer
@@ -338,34 +358,42 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#mediaGroupTitleAdd.required(type='text', name='mediaGroupTitleAdd', style='width:500px;', rel='0')
                             br
                             br
+                            label(for='mediaGroupTypeAdd') Type
+                            br
+                            br
+                            select#mediaGroupTypeAdd(name='mediaGroupTypeAdd', style='width:300px;', rel='1')
+                                option(value=album) album
+                                option(value=experience) experience
+                            br
+                            br
                             label(for='mediaGroupIndexAdd') Index (Number in Album Order)
                             br
                             br
-                            input#mediaGroupIndexAdd(type='text', name='mediaGroupIndexAdd', style='width:500px;', rel='1')
+                            input#mediaGroupIndexAdd(type='text', name='mediaGroupIndexAdd', style='width:500px;', rel='2')
                             br
                             br
                             label(for='mediaGroupDetailAdd') Detail
                             br
                             br
-                            input#mediaGroupDetailAdd(type='text', name='mediaGroupDetailAdd', style='width:500px;', rel='2')
+                            input#mediaGroupDetailAdd(type='text', name='mediaGroupDetailAdd', style='width:500px;', rel='3')
                             br
                             br
                             label(for='mediaGroupImageURLAdd') ImageURL
                             br
                             br
-                            input#mediaGroupImageURLAdd(type='text', name='mediaGroupImageURLAdd', style='width:500px;', rel='3')
+                            input#mediaGroupImageURLAdd(type='text', name='mediaGroupImageURLAdd', style='width:500px;', rel='4')
                             br
                             br
                             label(for='mediaGroupProducerAdd') Group Producer
                             br
                             br
-                            select#mediaGroupProducerAdd(name='mediaGroupProducerAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='4')
+                            select#mediaGroupProducerAdd(name='mediaGroupProducerAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='5')
                             br
                             br
                             label(for='mediaGroupArtistAdd') Group Artist
                             br
                             br
-                            select#mediaGroupArtistAdd(name='mediaGroupArtistAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='5')
+                            select#mediaGroupArtistAdd(name='mediaGroupArtistAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='6')
                           form#formEditMediaGroup(style='width:100%;')
                             label(for='mediaGroupTitleEdit') Title
                             br
@@ -373,34 +401,42 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#mediaGroupTitleEdit.required(type='text', name='mediaGroupTitleEdit', style='width:500px;', rel='0')
                             br
                             br
+                            label(for='mediaGroupTypeEdit') Type
+                            br
+                            br
+                            select#mediaGroupTypeEdit(name='mediaGroupTypeEdit', style='width:300px;', rel='1')
+                                option(value="album") album
+                                option(value="experience") experience
+                            br
+                            br
                             label(for='mediaGroupIndexEdit') Index (Number in Album Order)
                             br
                             br
-                            input#mediaGroupIndexEdit(type='text', name='mediaGroupIndexEdit', style='width:500px;', rel='1')
+                            input#mediaGroupIndexEdit(type='text', name='mediaGroupIndexEdit', style='width:500px;', rel='2')
                             br
                             br
                             label(for='mediaGroupDetailEdit') Detail
                             br
                             br
-                            input#mediaGroupDetailEdit(type='text', name='mediaGroupDetailEdit', style='width:500px;', rel='2')
+                            input#mediaGroupDetailEdit(type='text', name='mediaGroupDetailEdit', style='width:500px;', rel='3')
                             br
                             br
                             label(for='mediaGroupImageURLEdit') ImageURL
                             br
                             br
-                            input#mediaGroupImageURLEdit(type='text', name='mediaGroupImageURLEdit', style='width:500px;', rel='3')
+                            input#mediaGroupImageURLEdit(type='text', name='mediaGroupImageURLEdit', style='width:500px;', rel='4')
                             br
                             br
                             label(for='mediaGroupProducerEdit') Media Group Producer
                             br
                             br
-                            select#mediaGroupProducerEdit(name='mediaGroupProducerEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='4')
+                            select#mediaGroupProducerEdit(name='mediaGroupProducerEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='5')
                             br
                             br
                             label(for='mediaGroupArtistEdit') Media Group Artist
                             br
                             br
-                            select#mediaGroupArtistEdit(name='mediaGroupArtistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='5')
+                            select#mediaGroupArtistEdit(name='mediaGroupArtistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='6')
                             input#mediaGroupId(type='hidden', name='mediaGroupId')
                           form#formAddMediaGroupItem
                             label(for='mediaGroupItemNameAdd') Name
@@ -409,28 +445,34 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             select#mediaGroupItemNameAdd(name='mediaGroupItemNameAdd', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='0')                            
                             br
                             br
+                            label(for='mediaGroupItemTypeAdd') Media Item Type
+                            br
+                            br
+                            input#mediaGroupItemTypeAdd(type='text', name='mediaGroupItemTypeAdd', style='width:500px;', rel='1', readonly='')
+                            br
+                            br
                             label(for='mediaGroupItemDurationAdd') Duration (HH:MM:SS)
                             br
                             br
-                            input#mediaGroupItemDurationAdd(type='text', name='mediaGroupItemDurationAdd', style='width:75px;', rel='1', readonly='')
+                            input#mediaGroupItemDurationAdd(type='text', name='mediaGroupItemDurationAdd', style='width:75px;', rel='2', readonly='')
                             br
                             br
                             label(for='mediaGroupItemContentURLAdd') contentURL
                             br
                             br
-                            input#mediaGroupItemContentURLAdd(type='text', name='mediaGroupItemContentURLAdd', style='width:500px;', rel='2', readonly='')
+                            input#mediaGroupItemContentURLAdd(type='text', name='mediaGroupItemContentURLAdd', style='width:500px;', rel='3', readonly='')
                             br
                             br
                             label(for='mediaGroupItemProducerAdd') Media Group Item Producer
                             br
                             br
-                            input#mediaGroupItemProducerAdd(type='text', name='mediaGroupItemProducerAdd', style='width:500px;', rel='3', readonly='')       
+                            input#mediaGroupItemProducerAdd(type='text', name='mediaGroupItemProducerAdd', style='width:500px;', rel='4', readonly='')       
                             br
                             br
                             label(for='mediaGroupItemArtistAdd') Media Group Item Artist
                             br
                             br
-                            input#mediaGroupItemArtistAdd(type='text', name='mediaGroupItemArtistAdd', style='width:500px;', rel='4', readonly='')                            
+                            input#mediaGroupItemArtistAdd(type='text', name='mediaGroupItemArtistAdd', style='width:500px;', rel='5', readonly='')                            
                             input#mediaGroupItemId(type='hidden', name='mediaGroupItemId')
                             input#mediaGroupId(type='hidden', name='mediaGroupId')
               #mediaGroupItemContentHeader.content-box-header(style='display:none')
@@ -447,6 +489,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                               thead
                                 tr
                                   th name
+                                  th type
                                   th duration (HH:MM:SS)
                                   th contentURL
                                   th producer
@@ -454,6 +497,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                               tfoot
                                 tr
                                   th name
+                                  th type
                                   th duration (HH:MM:SS)
                                   th contentURL
                                   th producer     

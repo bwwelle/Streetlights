@@ -46,6 +46,7 @@ router.get('/', function (req, res) {
 					var mediaItemName = '';
 					var mediaItemDuration = '';
 					var mediaItemContentURL = '';
+					var mediaItemType = '';
                     
                     if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
 						if (mediaItem.get("producers")[0] !== null && mediaItem.get("producers")[0] !== undefined)
@@ -59,6 +60,9 @@ router.get('/', function (req, res) {
 
 					if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
 						mediaItemName = mediaItem.get("name");
+					
+					if (mediaItem.get("type") !== null && mediaItem.get("type") !== undefined)
+						mediaItemType = mediaItem.get("type");
 
 					if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
 						mediaItemDuration = ConvertDurationTime(mediaItem.get("duration"));
@@ -68,6 +72,7 @@ router.get('/', function (req, res) {
 
 					data[i] = {
 						name : mediaItemName,
+						type : mediaItemType,
 						duration : mediaItemDuration,
 						contentURL : mediaItemContentURL,
                         producer : mediaItemProducer,
@@ -120,6 +125,7 @@ router.get('/dropdown', function (req, res) {
 					var mediaItemName = '';
 					var mediaItemDuration = '';
 					var mediaItemContentURL = '';
+					var mediaItemType = '';
                     
                     if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
 						if (mediaItem.get("producers")[0] !== null && mediaItem.get("producers")[0] !== undefined)
@@ -133,6 +139,9 @@ router.get('/dropdown', function (req, res) {
 
 					if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
 						mediaItemName = mediaItem.get("name");
+					
+					if (mediaItem.get("type") !== null && mediaItem.get("type") !== undefined)
+						mediaItemType = mediaItem.get("type");
 
 					if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
 						mediaItemDuration = ConvertDurationTime(mediaItem.get("duration"));
@@ -142,6 +151,7 @@ router.get('/dropdown', function (req, res) {
 					
 					data[i] = {
 						name : mediaItemName,
+						type : mediaItemType,
 						duration : mediaItemDuration,
 						contentURL : mediaItemContentURL,
                         producer : mediaItemProducer,
@@ -217,7 +227,7 @@ router.get('/edit', urlencodedParser, function (req, res) {
 	mediaItem.set("shareURL", req.query["contentURLEdit"]);
 	mediaItem.set("version", bible);
 	mediaItem.set("language","eng");
-	mediaItem.set("type", "song");
+	mediaItem.set("type", req.query["typeEdit"]);
 
 	var producerId = req.query["producerEdit"];
     var Producer = Parse.Object.extend("Credit");
@@ -259,7 +269,7 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaItem.set("duration", parseInt(durationInSeconds));
 	mediaItem.set("contentURL", req.body.contentURL);
 	mediaItem.set("shareURL", req.body.contentURL);
-	mediaItem.set("type", "song");
+	mediaItem.set("type", req.body.type);
 	mediaItem.set("version", bible);
 	mediaItem.set("language", "eng");
     mediaItem.unset("producers");

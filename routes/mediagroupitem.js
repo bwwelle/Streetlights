@@ -39,6 +39,7 @@ var urlencodedParser = bodyParser.urlencoded({
 							var mediaItemName = '';
 							var mediaItemDuration = '';
 							var mediaItemContentURL = '';
+							var mediaItemType = '';
                             
                             if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
 								if (mediaItem.get("producers")[0] !== null && mediaItem.get("producers")[0] !== undefined)
@@ -52,6 +53,9 @@ var urlencodedParser = bodyParser.urlencoded({
 
 							if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
 								mediaItemName = mediaItem.get("name");
+							
+							if (mediaItem.get("type") !== null && mediaItem.get("type") !== undefined)
+								mediaItemType = mediaItem.get("type");
 
 							if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
 								mediaItemDuration = ConvertDurationTime(mediaItem.get("duration"));
@@ -61,6 +65,7 @@ var urlencodedParser = bodyParser.urlencoded({
 
 							data[recordCount] = {
 								name : mediaItemName,
+								type : mediaItemType,
 								duration : mediaItemDuration,
 								contentURL : mediaItemContentURL,
                                 producer: mediaItemProducer,
@@ -91,6 +96,7 @@ var urlencodedParser = bodyParser.urlencoded({
 			mediaItemQuery.get(mediaItemId, {
 				success : function (mediaItem) {
 					var mediaItemName = '';
+					var mediaItemType = '';
 					var mediaItemDuration = '';
 					var mediaItemContentURL = '';
                     var mediaItemProducer = '';
@@ -108,6 +114,9 @@ var urlencodedParser = bodyParser.urlencoded({
 
 					if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
 						mediaItemName = mediaItem.get("name");
+					
+					if (mediaItem.get("type") !== null && mediaItem.get("type") !== undefined)
+						mediaItemType = mediaItem.get("type");
 
 					if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
 						mediaItemDuration = ConvertDurationTime(mediaItem.get("duration"));
@@ -117,6 +126,7 @@ var urlencodedParser = bodyParser.urlencoded({
 
 					res.json({
 						"mediaGroupItemId" : mediaItemId,
+						"mediaGroupItemTypeAdd" : mediaItemType,
 						"mediaGroupItemDurationAdd" : mediaItemDuration,
 						"mediaGroupItemContentURLAdd" : mediaItemContentURL,
                         "mediaGroupItemProducerAdd" : mediaItemProducer,
@@ -133,6 +143,7 @@ var urlencodedParser = bodyParser.urlencoded({
 
 			data[0] = {
 				name : null,
+				type : null,
 				duration : null,
 				contentURL : null,
                 producer : null,

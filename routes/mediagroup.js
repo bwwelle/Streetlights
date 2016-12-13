@@ -44,12 +44,16 @@ var urlencodedParser = bodyParser.urlencoded({
 							var mediaGroupImageURL = "";
 							var mediaGroupProducer = "";
 							var mediaGroupArtist = "";
+							var mediaGroupType = "";
 
 							if (mediaGroup.get("index") !== null && mediaGroup.get("index") !== undefined)
 								mediaGroupIndex = mediaGroup.get("index");
 
 							if (mediaGroup.get("title") !== null && mediaGroup.get("title") !== undefined)
 								mediaGroupTitle = mediaGroup.get("title");
+							
+							if (mediaGroup.get("type") !== null && mediaGroup.get("type") !== undefined)
+								mediaGroupType = mediaGroup.get("type");
 
 							if (mediaGroup.get("detail") !== null && mediaGroup.get("detail") !== undefined)
 								mediaGroupDetail = mediaGroup.get("detail");
@@ -69,6 +73,7 @@ var urlencodedParser = bodyParser.urlencoded({
 
 							data[i] = {
 								title : mediaGroupTitle,
+								type : mediaGroupType,
 								index : mediaGroupIndex,
 								detail : mediaGroupDetail,
 								imageURL : mediaGroupImageURL,
@@ -113,6 +118,7 @@ router.post('/update', urlencodedParser, function (req, res) {
 	
 	mediaGroup.id = req.body.mediaGroupId;
 	mediaGroup.set("title", req.body.title);
+	mediaGroup.set("type", req.body.type);
 	mediaGroup.set("detail", req.body.detail);
 	mediaGroup.set("imageURL", req.body.imageURL);
 
@@ -186,9 +192,11 @@ router.post('/update', urlencodedParser, function (req, res) {
 								});
 							});
 					}
+					else
+						res.json("Successful Save!");
 				},
 				error : function (object, error) {
-					res.json("Deletion Error: " + error);
+					res.json("Save Error: " + error);
 				}
 			});
 	});
@@ -200,6 +208,7 @@ router.post('/add', urlencodedParser, function (req, res) {
 	var query = new Parse.Query(MediaGroup);
 
 	mediaGroup.set("title", req.body.title);
+	mediaGroup.set("type", req.body.type);
 	mediaGroup.set("detail", req.body.detail);
 	mediaGroup.set("imageURL", req.body.imageURL);
 
