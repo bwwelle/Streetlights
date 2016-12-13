@@ -898,6 +898,26 @@ $(document).ready(function () {
 			}
 		});
 	};
+	
+	$("#mediaGroupTypeAdd").on("change", function () {
+		var selected = $(this).val();
+		mediaGroupTypeAddAjaxCall(selected);
+	});
+
+	function mediaGroupTypeAddAjaxCall(opts) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"type" : opts
+			},
+			url : "/mediagroup/lastindexpertype",
+			success : function (res) {
+				var lastIndex = parseInt(res.lastIndex) + 1;
+			
+				$("#formAddMediaGroup input[name=mediaGroupIndexAdd]").val(lastIndex);
+			}
+		});
+	};
 
 	$("#btnMoveAlbumUp").on("click", function (e) {
 		$.ajax({

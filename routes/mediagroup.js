@@ -111,6 +111,24 @@ router.get('/lastindex', function (req, res) {
 	});	
 });
 
+router.post('/lastindexpertype', urlencodedParser, function (req, res) {
+	var MediaGroup = Parse.Object.extend("MediaGroup");
+	var mediaGroup = new MediaGroup();	
+	var query = new Parse.Query(MediaGroup);
+	
+	query.descending("index");
+	query.equalTo("type", req.body.type);
+	
+	query.first().then(function(result){
+		if(result == undefined)
+			res.json({
+			"lastIndex" : "0"});
+		else
+			res.json({
+				"lastIndex" : result.get("index")});
+	});
+});
+
 router.post('/update', urlencodedParser, function (req, res) {
 	var MediaGroup = Parse.Object.extend("MediaGroup");
 	var mediaGroup = new MediaGroup();	
@@ -143,7 +161,8 @@ router.post('/update', urlencodedParser, function (req, res) {
 					if (mediaGroup.get("index") < parseInt(req.body.index))
 					{
 						var indexUpQuery = new Parse.Query(MediaGroup);
-			
+						
+						indexUpQuery.equalTo("type", req.body.type);
 						indexUpQuery.lessThanOrEqualTo("index", parseInt(req.body.index));
 						indexUpQuery.greaterThanOrEqualTo("index", parseInt(mediaGroup.get("index")));
 						indexUpQuery.notEqualTo("objectId", mediaGroup.id);	
@@ -169,7 +188,8 @@ router.post('/update', urlencodedParser, function (req, res) {
 					else if(mediaGroup.get("index") > parseInt(req.body.index))
 					{
 						var indexDownQuery = new Parse.Query(MediaGroup);
-			
+						
+						indexDownQuery.equalTo("type", req.body.type);
 						indexDownQuery.greaterThanOrEqualTo("index", parseInt(req.body.index));
 						indexDownQuery.lessThanOrEqualTo("index", parseInt(mediaGroup.get("index")));
 						indexDownQuery.notEqualTo("objectId", mediaGroup.id);
@@ -227,11 +247,14 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaGroup.save(null, {
 		success : function (mediaGroup) {
 			query.descending("index");
+			query.equalTo("type", req.body.type);
+			
 			query.first().then(function(result){
 				if(result.get("index") > parseInt(req.body.index))
 				{
 					var indexDownQuery = new Parse.Query(MediaGroup);
-			
+					
+					indexDownQuery.equalTo("type", req.body.type);
 					indexDownQuery.greaterThanOrEqualTo("index", parseInt(req.body.index));
 					
 					indexDownQuery.find().then(
@@ -294,6 +317,7 @@ router.post('/moveup', urlencodedParser, function (req, res) {
 		success : function (mediaGroup) {
 			var findMediaGrouptoMoveDown = new Parse.Query(MediaGroup);
 			findMediaGrouptoMoveDown.equalTo("index",  mediaGroup.get("index") - 1);
+			findMediaGrouptoMoveUp.equalTo("type", mediaGroup.get("type"));
 			
 			findMediaGrouptoMoveDown.find().then(
 				function (results) {
@@ -332,6 +356,7 @@ router.post('/movedown', urlencodedParser, function (req, res) {
 		success : function (mediaGroup) {
 			var findMediaGrouptoMoveUp = new Parse.Query(MediaGroup);
 			findMediaGrouptoMoveUp.equalTo("index",  mediaGroup.get("index") + 1);
+			findMediaGrouptoMoveUp.equalTo("type", mediaGroup.get("type"));
 			
 			findMediaGrouptoMoveUp.find().then(
 				function (results) {
