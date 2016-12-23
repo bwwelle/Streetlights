@@ -97,16 +97,16 @@ router.get('/', function (req, res) {
 });
 
 router.get('/dropdown', function (req, res) {
-	var searchText = req.query.sSearch;
-	displayStart = req.query.iDisplayStart;
-	var displayLength = req.query.iDisplayLength;
 	echo = req.query.sEcho;
 
 	var MediaItem = Parse.Object.extend("MediaItem");
 	var countQuery = new Parse.Query(MediaItem);
-
+	
+	countQuery.limit = 1000;
+	
 	countQuery.count().then(function (count) {
 		var tableDataQuery = new Parse.Query(MediaItem);
+		tableDataQuery.limit = 1000;
         tableDataQuery.include("producers");
 		tableDataQuery.include("artists");
 
@@ -269,7 +269,7 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaItem.set("duration", parseInt(durationInSeconds));
 	mediaItem.set("contentURL", req.body.contentURL);
 	mediaItem.set("shareURL", req.body.contentURL);
-	mediaItem.set("type", req.body.type);
+	mediaItem.set("type", req.body.mediaitemtype);
 	mediaItem.set("version", bible);
 	mediaItem.set("language", "eng");
     mediaItem.unset("producers");
