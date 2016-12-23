@@ -102,11 +102,11 @@ router.get('/dropdown', function (req, res) {
 	var MediaItem = Parse.Object.extend("MediaItem");
 	var countQuery = new Parse.Query(MediaItem);
 	
-	countQuery.limit = 1000;
+	countQuery.limit(1000);
 	
 	countQuery.count().then(function (count) {
 		var tableDataQuery = new Parse.Query(MediaItem);
-		tableDataQuery.limit = 1000;
+		tableDataQuery.limit(1000);
         tableDataQuery.include("producers");
 		tableDataQuery.include("artists");
 
