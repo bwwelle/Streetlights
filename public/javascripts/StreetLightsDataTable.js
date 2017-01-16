@@ -101,14 +101,21 @@ $(document).ready(function () {
 					var type = $('td:eq(1)', nRow).text();
 					var duration = $('td:eq(2)', nRow).text();
 					var contentURL = $('td:eq(3)', nRow).text();
-					var producer = $('td:eq(4)', nRow).text();
-					var artist = $('td:eq(5)', nRow).text();
+                    var imageURL = $('td:eq(4)', nRow).text();
+					var producer = $('td:eq(5)', nRow).text();
+					var artist = $('td:eq(6)', nRow).text();
 
 					$('#mediaItemEditId').val(objectId);
 					$('#nameEdit').val(name);
 					$('#durationEdit').val(duration);
 					$('#contentURLEdit').val(contentURL);
+                    $('#imageURLEdit').val(imageURL);
 					$('#typeEdit').val(type);
+                    
+                    if (type == 'experience')
+                        $('#imageURLEdit').addClass('required');
+                    else
+                        $('#imageURLEdit').removeClass('required');
 
 					$('#durationEdit').mask("00:00:00", {
 						placeholder : "__:__:__"
@@ -149,6 +156,8 @@ $(document).ready(function () {
 					"mDataProp" : "duration"
 				}, {
 					"mDataProp" : "contentURL"
+				}, {
+					"mDataProp" : "imageURL"
 				}, {
 					"mDataProp" : "producer"
 				}, {
@@ -216,7 +225,30 @@ $(document).ready(function () {
 				hide : "explode",
 				modal : true
 			},
-			sAddDeleteEditToolbarSelector : ".dataTables_length"
+			sAddDeleteEditToolbarSelector : ".dataTables_length",
+            aoColumns: [
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                }
+            ]
 		});
 
 	var oMediaGroupTable = $('#mediagroup')
@@ -346,7 +378,30 @@ $(document).ready(function () {
 					primary : 'ui-icon-trash'
 				}
 			},
-			sAddDeleteEditToolbarSelector : ".dataTables_length"
+			sAddDeleteEditToolbarSelector : ".dataTables_length",
+            aoColumns: [
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                }
+            ]
 		});
 
 	var oCreditTable = $('#credit').dataTable({
@@ -474,6 +529,8 @@ $(document).ready(function () {
 				}, {
 					"mDataProp" : "contentURL"
 				}, {
+					"mDataProp" : "imageURL"
+				}, {
 					"mDataProp" : "producer"
 				}, {
 					"mDataProp" : "artist"
@@ -529,7 +586,30 @@ $(document).ready(function () {
 				hide : "explode",
 				modal : true
 			},
-			sAddDeleteEditToolbarSelector : ".dataTables_length"
+			sAddDeleteEditToolbarSelector : ".dataTables_length",
+            aoColumns: [
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                }
+            ]
 		});
 
 	oMediaGroupItemTable.fnDraw();
@@ -834,6 +914,8 @@ $(document).ready(function () {
 		$('#duration').mask("00:00:00", {
 			placeholder : "__:__:__"
 		});
+        
+        $('#imageURL').removeClass('required');
 	});
 
 	$("#btnEditUser").on("click", function (e) {
@@ -873,6 +955,15 @@ $(document).ready(function () {
 		var selected = $(this).val();
 		mediaGroupItemNameAddAjaxCall(selected);
 	});
+    
+    $("#mediaitemtype").on("change", function () {
+		var selected = $(this).val();
+        
+		if (selected == 'experience')
+            $("#imageURL").addClass('required');
+        else
+            $("#imageURL").removeClass('required');
+	});
 
 	function mediaGroupItemNameAddAjaxCall(opts) {
 		$.ajax({
@@ -885,6 +976,7 @@ $(document).ready(function () {
 				var objectId = res.mediaGroupItemId;
 				var duration = res.mediaGroupItemDurationAdd;
 				var contentURL = res.mediaGroupItemContentURLAdd;
+                var imageURL = res.mediaGroupItemImageURLAdd;
 				var producer = res.mediaGroupItemProducerAdd;
 				var artist = res.mediaGroupItemArtistAdd;
 				var type = res.mediaGroupItemTypeAdd;
@@ -893,6 +985,7 @@ $(document).ready(function () {
 				$('#mediaGroupItemTypeAdd').val(type);
 				$('#mediaGroupItemDurationAdd').val(duration);
 				$('#mediaGroupItemContentURLAdd').val(contentURL);
+                $('#mediaGroupItemImageURLAdd').val(imageURL);
 				$('#mediaGroupItemProducerAdd').val(producer);
 				$('#mediaGroupItemArtistAdd').val(artist);
 			}

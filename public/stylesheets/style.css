@@ -550,7 +550,7 @@ form input[type="radio"] {
                 }
 
 .error {
-                background: #ffcece url('../images/icons/cross_circle.png');
+                /* background: #ffcece url('../images/icons/cross_circle.png'); */
                 border-color: #df8f8f;
                 color: #665252;
                 }

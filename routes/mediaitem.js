@@ -46,6 +46,7 @@ router.get('/', function (req, res) {
 					var mediaItemName = '';
 					var mediaItemDuration = '';
 					var mediaItemContentURL = '';
+                    var mediaItemImageURL = '';
 					var mediaItemType = '';
                     
                     if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
@@ -69,12 +70,16 @@ router.get('/', function (req, res) {
 
 					if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
 						mediaItemContentURL = mediaItem.get("contentURL");
+                    
+                    if (mediaItem.get("imageURL") !== null && mediaItem.get("imageURL") !== undefined)
+						mediaItemImageURL = mediaItem.get("imageURL");                    
 
 					data[i] = {
 						name : mediaItemName,
 						type : mediaItemType,
 						duration : mediaItemDuration,
 						contentURL : mediaItemContentURL,
+                        imageURL : mediaItemImageURL,
                         producer : mediaItemProducer,
 						artist : mediaItemArtist,
 						DT_RowId : mediaItem.id
@@ -125,6 +130,7 @@ router.get('/dropdown', function (req, res) {
 					var mediaItemName = '';
 					var mediaItemDuration = '';
 					var mediaItemContentURL = '';
+                    var mediaItemImageURL = '';
 					var mediaItemType = '';
                     
                     if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
@@ -147,13 +153,17 @@ router.get('/dropdown', function (req, res) {
 						mediaItemDuration = ConvertDurationTime(mediaItem.get("duration"));
 
 					if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
-						mediaItemContentURL = mediaItem.get("contentURL");				
+						mediaItemContentURL = mediaItem.get("contentURL");	
+
+                    if (mediaItem.get("imageURL") !== null && mediaItem.get("imageURL") !== undefined)
+						mediaItemImageURL = mediaItem.get("imageURL");	                    
 					
 					data[i] = {
 						name : mediaItemName,
 						type : mediaItemType,
 						duration : mediaItemDuration,
 						contentURL : mediaItemContentURL,
+                        imageURL : mediaItemImageURL,
                         producer : mediaItemProducer,
 						artist : mediaItemArtist,
 						DT_RowId : mediaItem.id
@@ -224,6 +234,7 @@ router.get('/edit', urlencodedParser, function (req, res) {
 	mediaItem.set("name", req.query["nameEdit"]);
 	mediaItem.set("duration", parseInt(durationInSeconds));
 	mediaItem.set("contentURL", req.query["contentURLEdit"]);
+    mediaItem.set("imageURL", req.query["imageURLEdit"]);
 	mediaItem.set("shareURL", req.query["contentURLEdit"]);
 	mediaItem.set("version", bible);
 	mediaItem.set("language","eng");
@@ -268,6 +279,7 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaItem.set("name", req.body.name);
 	mediaItem.set("duration", parseInt(durationInSeconds));
 	mediaItem.set("contentURL", req.body.contentURL);
+    mediaItem.set("imageURL", req.body.imageURL);
 	mediaItem.set("shareURL", req.body.contentURL);
 	mediaItem.set("type", req.body.mediaitemtype);
 	mediaItem.set("version", bible);

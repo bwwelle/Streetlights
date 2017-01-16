@@ -215,16 +215,22 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#contentURL.required(type='text', name='contentURL', style='width:500px;', rel='3')
                             br
                             br
+                            label(for='imageURL') imageURL          
+                            br
+                            br
+                            input#imageURL(type='text', name='imageURL', style='width:500px;', rel='4')
+                            br
+                            br
                             label(for='mediaitemproducer') Media Item Producer
                             br
                             br
-                            select#mediaitemproducer(name='mediaitemproducer', style='width:300px;', rel='4')
+                            select#mediaitemproducer(name='mediaitemproducer', style='width:300px;', rel='5')
                             br
                             br
                             label(for='mediaitemartist') Media Item Artist
                             br
                             br
-                            select#mediaitemartist(name='mediaitemartist', style='width:300px;', rel='5')
+                            select#mediaitemartist(name='mediaitemartist', style='width:300px;', rel='6')
                           form#formEditMediaItem
                             label(for='name') Name
                             br
@@ -249,19 +255,25 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             label(for='contentURLEdit') contentURL
                             br
                             br
-                            input#contentURLEdit.required(type='text', name='contentURLEdit', style='width:500px;', rel='3')
+                            input#contentURLEdit(type='text', name='contentURLEdit', style='width:500px;', rel='3')
+                            br
+                            br
+                            label(for='imageURLEdit') imageURL
+                            br
+                            br
+                            input#imageURLEdit(type='text', name='imageURLEdit', style='width:500px;', rel='4')
                             br
                             br
                             label(for='producerEdit') Media Item Producer
                             br
                             br
-                            select#producerEdit(name='producerEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='4')
+                            select#producerEdit(name='producerEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='5')
                             br
                             br
                             label(for='artistEdit') Media Item Artist
                             br
                             br
-                            select#artistEdit(name='artistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='5')
+                            select#artistEdit(name='artistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='6')
                             input#mediaItemEditId(type='hidden', name='mediaItemEditId')
                           <button id="btnAddMediaItem"></button>
                           <button id="btnEditMediaItem"></button>
@@ -273,6 +285,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                                 th type
                                 th duration (HH:MM:SS)
                                 th contentURL
+                                th imageURL
                                 th producer
                                 th artist
                             tfoot
@@ -281,6 +294,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                                 th type
                                 th duration (HH:MM:SS)
                                 th contentURL
+                                th imageURL
                                 th producer
                                 th artist
             // End #mediaitemdiv
@@ -463,16 +477,22 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#mediaGroupItemContentURLAdd(type='text', name='mediaGroupItemContentURLAdd', style='width:500px;', rel='3', readonly='')
                             br
                             br
+                            label(for='mediaGroupItemImageURLAdd') imageURL
+                            br
+                            br
+                            input#mediaGroupItemImageURLAdd(type='text', name='mediaGroupItemImageURLAdd', style='width:500px;', rel='4', readonly='')
+                            br
+                            br
                             label(for='mediaGroupItemProducerAdd') Media Group Item Producer
                             br
                             br
-                            input#mediaGroupItemProducerAdd(type='text', name='mediaGroupItemProducerAdd', style='width:500px;', rel='4', readonly='')       
+                            input#mediaGroupItemProducerAdd(type='text', name='mediaGroupItemProducerAdd', style='width:500px;', rel='5', readonly='')       
                             br
                             br
                             label(for='mediaGroupItemArtistAdd') Media Group Item Artist
                             br
                             br
-                            input#mediaGroupItemArtistAdd(type='text', name='mediaGroupItemArtistAdd', style='width:500px;', rel='5', readonly='')                            
+                            input#mediaGroupItemArtistAdd(type='text', name='mediaGroupItemArtistAdd', style='width:500px;', rel='6', readonly='')                            
                             input#mediaGroupItemId(type='hidden', name='mediaGroupItemId')
                             input#mediaGroupId(type='hidden', name='mediaGroupId')
               #mediaGroupItemContentHeader.content-box-header(style='display:none')
@@ -492,6 +512,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                                   th type
                                   th duration (HH:MM:SS)
                                   th contentURL
+                                  th imageURL
                                   th producer
                                   th artist
                               tfoot
@@ -500,6 +521,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                                   th type
                                   th duration (HH:MM:SS)
                                   th contentURL
+                                  th imageURL
                                   th producer     
                                   th artist                                
                               // End .clear

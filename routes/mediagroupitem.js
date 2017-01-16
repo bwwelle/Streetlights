@@ -39,6 +39,7 @@ var urlencodedParser = bodyParser.urlencoded({
 							var mediaItemName = '';
 							var mediaItemDuration = '';
 							var mediaItemContentURL = '';
+                            var mediaItemImageURL = '';
 							var mediaItemType = '';
                             
                             if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
@@ -62,12 +63,16 @@ var urlencodedParser = bodyParser.urlencoded({
 
 							if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
 								mediaItemContentURL = mediaItem.get("contentURL");
+                            
+                            if (mediaItem.get("imageURL") !== null && mediaItem.get("imageURL") !== undefined)
+								mediaItemImageURL = mediaItem.get("imageURL");
 
 							data[recordCount] = {
 								name : mediaItemName,
 								type : mediaItemType,
 								duration : mediaItemDuration,
 								contentURL : mediaItemContentURL,
+                                imageURL : mediaItemImageURL,
                                 producer: mediaItemProducer,
 								artist : mediaItemArtist,
 								DT_RowId : mediaItem.id
@@ -99,6 +104,7 @@ var urlencodedParser = bodyParser.urlencoded({
 					var mediaItemType = '';
 					var mediaItemDuration = '';
 					var mediaItemContentURL = '';
+                    var mediaItemImageURL = '';
                     var mediaItemProducer = '';
 					var mediaItemArtist = '';
                     
@@ -123,12 +129,16 @@ var urlencodedParser = bodyParser.urlencoded({
 
 					if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
 						mediaItemContentURL = mediaItem.get("contentURL");
+                    
+                    if (mediaItem.get("imageURL") !== null && mediaItem.get("imageURL") !== undefined)
+						mediaItemImageURL = mediaItem.get("imageURL");
 
 					res.json({
 						"mediaGroupItemId" : mediaItemId,
 						"mediaGroupItemTypeAdd" : mediaItemType,
 						"mediaGroupItemDurationAdd" : mediaItemDuration,
 						"mediaGroupItemContentURLAdd" : mediaItemContentURL,
+                        "mediaGroupItemImageURLAdd" : mediaItemImageURL,
                         "mediaGroupItemProducerAdd" : mediaItemProducer,
 						"mediaGroupItemArtistAdd" : mediaItemArtist,
 						sEcho : echo
@@ -146,6 +156,7 @@ var urlencodedParser = bodyParser.urlencoded({
 				type : null,
 				duration : null,
 				contentURL : null,
+                imageURL : null,
                 producer : null,
 				artist : null,
 				DT_RowId : 0
