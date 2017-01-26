@@ -53,6 +53,7 @@ app.use(morgan('dev')); // log every request to the console
 app.use(express.static(__dirname + '/public'));
 //app.use(flash()); // use connect-flash for flash messages stored in session
 Parse.initialize(process.env.ParseApplicationID, process.env.ParseJavascriptID);
+Parse.serverURL = process.env.ParseServer;
 
 // Authentication and Authorization Middleware
 var auth = function (req, res, next) {
