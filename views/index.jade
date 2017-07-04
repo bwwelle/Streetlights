@@ -126,6 +126,17 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                   | 					Cancel
         .clear
         // End .clear
+        #adminButtons(style='display:none')
+          ul.shortcut-buttons-set
+            // Replace the icons URL's with your own
+            li
+              a#downloandEmails.shortcut-button(href='/printemails/download')
+                span
+                  img(src='images/1499165169_Upload.png', alt='icon')
+                  br
+                  | 					Download Emails/Ages
+        .clear
+        // End .clear
         #contentHeader.content-box-header
           h3#ContentHeaderLabel Media Items (Tracks)
         .content-box

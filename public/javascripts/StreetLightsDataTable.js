@@ -786,14 +786,22 @@ $(document).ready(function () {
 	$("#viewMediaGroup").on("click", function (e) {
 		$("#mediaGroupButtons").hide();
 		$("#mediaGroupItemContentHeader").hide();
+		$("#adminButtons").hide();
 	});
 
 	$("#viewCredit").on("click", function (e) {
 		$("#mediaGroupButtons").hide();
 		$("#mediaGroupItemContentHeader").hide();
+		$("#adminButtons").hide();
 	});
 
 	$("#viewMediaItem").on("click", function (e) {
+		$("#mediaGroupButtons").hide();
+		$("#adminButtons").hide();
+	});
+	
+	$("#viewUser").on("click", function (e) {
+		$("#adminButtons").show();
 		$("#mediaGroupButtons").hide();
 	});
 
