@@ -1,6 +1,8 @@
 var express = require('express');
 var Parse = require('parse/node').Parse;
 var bodyParser = require('body-parser');
+var excel = require('excel4node');
+var path = require('path');
 var router = express.Router();
 var displayStart = 0;
 var echo = 0;
@@ -25,52 +27,52 @@ router.get('/download', function (req, res, next) {
                 tableDataQuery.ascending("email");
                     
 				tableDataQuery.find({
-					success : function (userEmails) {		
-						var fs = require('fs');
-						var stream = fs.createWriteStream("./routes/emailsandages.txt");
+					success : function (userEmails) {							
+						var workbook = new excel.Workbook();
+						var worksheet = workbook.addWorksheet('Sheet 1');						
+						var printHeader = true;
 						
-						stream.once('open', function(fd) {                        
-							for (var i = 0; i < userEmails.length; i++) {
-								var userEmail = userEmails[i];
-								var email = "";
-								var age = "";
-								var writeValue = "";
-								
-								if(userEmail.get("email") !== null && userEmail.get("email") !== undefined && userEmail.get("email") !== "")
-									email = userEmail.get("email");
-								
-								if(userEmail.get("age") !== null && userEmail.get("age") !== undefined && userEmail.get("age") !== "")
-									age = userEmail.get("age");
-																
-								if (email !== "")
-								{
-									writeValue = email;									
-								}
-								
-								if (age !== "")
-								{
-									writeValue = writeValue + " " + age;
-								}
-								
-								stream.write(writeValue + "\n");
-							}		
+						for (var i = 2; i < userEmails.length + 1; i++) {
+							var userEmail = userEmails[i];
+							var email = "";
+							var age = "";
 							
-							stream.end();						
-						});
-
-						stream.on('finish', function() {
-								var path = require('path');
-								var file = path.join(__dirname, "emailsandages.txt");
+							if(userEmail.get("email") !== null && userEmail.get("email") !== undefined && userEmail.get("email") !== "")
+								email = userEmail.get("email");
+							
+							if(userEmail.get("age") !== null && userEmail.get("age") !== undefined && userEmail.get("age") !== "")
+								age = userEmail.get("age");				
+							
+							if (printHeader)
+							{
+								worksheet.cell(1,1).string('Email');
+								worksheet.cell(1,2).string('Age');
+								printHeader = false;
+							}
+															
+							if (email !== "")
+							{
+								worksheet.cell(i,1).string(email);								
+							}
+							
+							if (age !== "")
+							{
+								worksheet.cell(i,2).string(age);	
+							}
+						}	
 						
-								res.download(file, "emailsandages_" + fileDate + ".txt", function (err) {
-									   if (err) {
-										   console.log("Error");
-										   console.log(err);
-									   } else {
-										   console.log("Success");
-									   }
-								   });
-							});
+						workbook.write('emailsandages.xlsx');
+						
+						var file = path.join(__dirname, "emailsandages.xlsx");
+						
+						res.download(file, "emailsandages_" + fileDate + ".xlsx", function (err) {
+							   if (err) {
+								   console.log("Error");
+								   console.log(err);
+							   } else {
+								   console.log("Success");
+							   }
+						   });
 					}	  
 				});
 			},
