@@ -9,7 +9,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
     link(rel='shortcut icon', type='image/ico', href='http://www.datatables.net/media/images/favicon.ico')
     link(rel='alternate', type='application/rss+xml', title='RSS 2.0', href='http://www.datatables.net/rss.xml')
     link(rel='stylesheet', href='stylesheets/demo_page.css')
-    link(rel='stylesheet', href='stylesheets/chosen.css')
+    link(href='stylesheets/chosen.css', rel='stylesheet', type='text/css')
     link(rel='stylesheet', href='stylesheets/demo_table.css', type='text/css', media='screen')
     link(rel='stylesheet', href='stylesheets/demo_table_jui.css', type='text/css', media='screen')
     link(rel='stylesheet', href='stylesheets/jquery-ui.css', type='text/css', media='screen')
@@ -23,7 +23,6 @@ html(xmlns='http://www.w3.org/1999/xhtml')
     script(src='javascripts/jquery.validate.js', type='text/javascript')
     script(type='text/javascript', src='javascripts/jquery.dataTables.editable_custom.js') 
     script(src='javascripts/StreetLightsDataTable.js', type='text/javascript')        
-    script(type='text/javascript', src='http://www.parsecdn.com/js/parse-1.4.2.min.js')
     script(type='text/javascript', src='javascripts/jquery.wysiwyg.js')
     script(type='text/javascript', class='init')
     meta(http-equiv='Content-Type', content='text/html; charset=iso-8859-1')
@@ -87,7 +86,16 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                 // Add class "current" to sub menu items also
                 li
                   a#viewMediaItem.current(href='#mediaitemdiv' headertext='Media Items (Tracks/Videos)') Media Items<br />(Tracks/Videos)
-             li
+            li
+              a#viewTeaching.nav-top-item(href='#teachingdiv' headertext='Teaching')
+                // Add the class "current" to current menu item
+                | Teaching
+              ul              
+                li
+                  a#viewLesson(href='#lessondiv' headertext='Lessons') Lessons
+                li
+                  a#viewLessonGroup(href='#lessongroupdiv' headertext='Lesson Groups') Lesson Groups                
+            li
               a.nav-top-item(href='#')
                 // Add the class "current" to current menu item
                 | Settings
@@ -141,7 +149,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
           h3#ContentHeaderLabel Media Items (Tracks)
         .content-box
           // Start Content Box
-          .content-box-content
+          .content-box-content            
             #userdiv.tab-content
               // This is the target div. id must match the href of this div's tab
               div(style='margin:10px 0')
@@ -212,36 +220,46 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             select#mediaitemtype(name='mediaitemtype', style='width:300px;', rel='1')
                                 option(value=song) song
                                 option(value=experience) experience
+                                option(value=lessonVideo) lessonVideo
+                                option(value=lessonImage) lessonImage
+                                option(value=lessonAudio) lessonAudio
+                                option(value=lessonText) lessonText
+                            br
+                            br
+                            label(for='mediaitemtext') Media Item Text
+                            br
+                            br
+                            input#text.input-disabled(type='text', name='text', style='width:500px;', rel='2')
                             br
                             br
                             label(for='duration') Duration (HH:MM:SS)    
                             br
                             br
-                            input#duration.required(type='text', name='duration', style='width:75px;', rel='2')
+                            input#duration.required(type='text', name='duration', style='width:75px;', rel='3')
                             br
                             br
                             label(for='contentURL') contentURL          
                             br
                             br
-                            input#contentURL.required(type='text', name='contentURL', style='width:500px;', rel='3')
+                            input#contentURL.required(type='text', name='contentURL', style='width:500px;', rel='4')
                             br
                             br
-                            label(for='imageURL') imageURL          
+                            label(for='imageURL') imageURL       
                             br
                             br
-                            input#imageURL(type='text', name='imageURL', style='width:500px;', rel='4')
+                            input#imageURL.input-disabled(type='text', name='imageURL', style='width:500px;', rel='5')
                             br
                             br
                             label(for='mediaitemproducer') Media Item Producer
                             br
                             br
-                            select#mediaitemproducer(name='mediaitemproducer', style='width:300px;', rel='5')
+                            select#mediaitemproducer.required(name='mediaitemproducer', style='width:300px;', rel='6')
                             br
                             br
                             label(for='mediaitemartist') Media Item Artist
                             br
                             br
-                            select#mediaitemartist(name='mediaitemartist', style='width:300px;', rel='6')
+                            select#mediaitemartist.required(name='mediaitemartist', style='width:300px;', rel='7')
                           form#formEditMediaItem
                             label(for='name') Name
                             br
@@ -255,36 +273,46 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             select#typeEdit(name='typeEdit', style='width:300px;', rel='1')
                                 option(value=song) song
                                 option(value=experience) experience
+                                option(value=lessonVideo) lessonVideo
+                                option(value=lessonImage) lessonImage
+                                option(value=lessonAudio) lessonAudio
+                                option(value=lessonText) lessonText
+                            br
+                            br
+                            label(for='textEdit') Media Item Text
+                            br
+                            br
+                            input#textEdit(type='text', name='textEdit', style='width:500px;', rel='2')
                             br
                             br
                             label(for='durationEdit') Duration (HH:MM:SS)
                             br
                             br
-                            input#durationEdit.required(type='text', name='durationEdit', style='width:75px;', rel='2')
+                            input#durationEdit.required(type='text', name='durationEdit', style='width:75px;', rel='3')
                             br
                             br
                             label(for='contentURLEdit') contentURL
                             br
                             br
-                            input#contentURLEdit(type='text', name='contentURLEdit', style='width:500px;', rel='3')
+                            input#contentURLEdit(type='text', name='contentURLEdit', style='width:500px;', rel='4')
                             br
                             br
                             label(for='imageURLEdit') imageURL
                             br
                             br
-                            input#imageURLEdit(type='text', name='imageURLEdit', style='width:500px;', rel='4')
+                            input#imageURLEdit(type='text', name='imageURLEdit', style='width:500px;', rel='5')
                             br
                             br
                             label(for='producerEdit') Media Item Producer
                             br
                             br
-                            select#producerEdit(name='producerEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='5')
+                            select#producerEdit(name='producerEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='6')
                             br
                             br
                             label(for='artistEdit') Media Item Artist
                             br
                             br
-                            select#artistEdit(name='artistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='6')
+                            select#artistEdit(name='artistEdit', data-placeholder="Type 'C' to view", style='width:300px;', tabindex='11', rel='7')
                             input#mediaItemEditId(type='hidden', name='mediaItemEditId')
                           <button id="btnAddMediaItem"></button>
                           <button id="btnEditMediaItem"></button>
@@ -294,6 +322,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                               tr
                                 th name
                                 th type
+                                th text
                                 th duration (HH:MM:SS)
                                 th contentURL
                                 th imageURL
@@ -303,6 +332,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                               tr
                                 th name
                                 th type
+                                th text
                                 th duration (HH:MM:SS)
                                 th contentURL
                                 th imageURL
@@ -338,6 +368,94 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                                 th name
                 // End .clear
             // End #creditdiv
+            #lessondiv.tab-content
+              // This is the target div. id must match the href of this div's tab
+              div(style='margin:10px 0')
+                  #fw_container
+                      #fw_content
+                        .full_width
+                          <button id="btnAddLesson"></button>
+                          <button id="btnEditLesson"></button>
+                          <button id="btnDeleteLesson"></button>                          
+                          table#lesson.display(cellpadding='0', cellspacing='0', border='0')
+                            thead
+                              tr
+                                th title
+                                th imageURL
+                            tfoot
+                              tr
+                                th title
+                                th imageURL
+             // End #lessondiv
+            #lessoneditadddiv.tab-content
+              // This is the target div. id must match the href of this div's tab
+              div(style='margin:10px 0')
+                  #fw_container
+                      #fw_content
+                        .full_width
+                          form#formAddLesson
+                            label(for='title') Title
+                            br
+                            br
+                            input#title.required(type='text', name='title', style='width:500px;', rel='0')
+                            br
+                            br
+                            label(for='imageURL') imageURL
+                            br
+                            br
+                            input#imageURL.required(type='text', name='imageURL', style='width:500px;', rel='1')
+                          form#formEditLesson(style='width:100%;')
+                            label(for='title') Title
+                            br
+                            br
+                            input#titleEdit.required(type='text', name='titleEdit', style='width:500px;', rel='0')
+                            br
+                            br
+                            label(for='imageURLEdit') imageURL
+                            br
+                            br
+                            input#imageURLEdit.required(type='text', name='imageURLEdit', style='width:500px;', rel='1')    
+                            input#lessonId(type='hidden', name='lessonId')
+                          form#formEditLessonPage(style='width:100%;overflow:visible;height=200px', name='formEditLessonPage')
+                            label(for='lessonPageIdEdit') lessonPageId
+                            br
+                            br
+                            input#lessonPageIdEdit(type='text', name='lessonPageIdEdit', style='width:500px;', rel='0', readonly='')
+                            br
+                            br
+                            label(for='lessonPageItemsEdit') mediaItems
+                            br
+                            br
+                            select#lessonPageItemsEdit(data-placeholder='Select an option...', rel='1', style='width:500px !important;' multiple='')
+                          form#formAddLessonPage
+                            input#lessonId(type='hidden', name='lessonPageIdNew', rel='0')
+                            label(for='lessonPageItemsEdit') mediaItems
+                            br
+                            br
+                            select#lessonPageItems(data-placeholder='Choose a media item...', multiple, name='lessonPageItems', style='width:500px;', rel='1')   
+                            input#lessonPageId(type='hidden', name='lessonPageId')
+              #lessonPageContentHeader.content-box-header(style='display:none')
+                h3#LessonPageContentHeaderLabel Lesson Pages
+              #lessonPageTableDiv.tabcontent(style='display:none')
+                // This is the target div. id must match the href of this div's tab
+                div(style='margin:10px 0')
+                    #fw_container
+                        #fw_content
+                          .full_width
+                            <button id="btnAddLessonPage"></button>
+                            <button id="btnEditLessonPage"></button>
+                            <button id="btnDeleteLessonPage"></button> 
+                            table#lessonpage(cellpadding='0', cellspacing='0', border='0')
+                              thead
+                                tr
+                                  lessonPageId
+                                  mediaItems
+                              tfoot
+                                tr
+                                  lessonPageId
+                                  mediaItems
+                              // End .clear
+              // End #lessondiv
             #mediagroupdiv.tab-content
               // This is the target div. id must match the href of this div's tab
               div(style='margin:10px 0')

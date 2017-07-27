@@ -580,6 +580,8 @@ form input[type="radio"] {
 				margin: 0 0 0 5px;
 				}
 
+.input-disabled{background-color:#EBEBE4;border:1px solid #ABADB3;padding:2px 1px;}
+
 /* Notification for login page */
 
 #login-wrapper #login-content .notification {

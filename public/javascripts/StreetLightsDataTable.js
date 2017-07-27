@@ -1,7 +1,97 @@
+$(document).ready(function () {    
+	var oCreditTable = $('#credit').dataTable({
+			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				$(nRow).on('click', function () {
+					var objectId = $(nRow).attr("id");
+					var name = $('td:eq(0)', nRow).text();
 
-
-$(document).ready(function () {
-	var oUserTable = $('#user').dataTable({
+					$('#creditEditId').val(objectId);
+					$('#creditNameEdit').val(name);
+				});
+			},
+			"bJQueryUI" : true,
+			"bProcessing" : true,
+			"bServerSide" : true,
+			"rowId" : "objectid",
+			"sAjaxSource" : "/credit",
+			"bPaginate" : true,
+			"bSort" : true,
+			"aoColumns" : [{
+					"mDataProp" : "name"
+				}
+			],
+			"aoColumnDefs" : [{
+					"mDataProp" : null,
+					"sDefaultContent" : "&nbsp",
+					"aTargets" : ['_all']
+				}
+			],
+			"sPaginationType" : "full_numbers",
+			"iDisplayLength" : 10,
+			"iDisplayStart" : 0,
+			"bFilter" : false,
+			"fnDrawCallback" : function (oSettings) {
+				IntializeCreditDropDownBoxes();
+			}
+		}).makeEditable({
+			fnOnDeleted : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
+			fnOnEdited : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
+			sEditURL : "/credit/edit",
+			sAddURL : "/credit/add",
+			sEditHttpMethod : "GET",
+			sAddHttpMethod : "POST",
+			sDeleteHttpMethod : "POST",
+			sDeleteURL : "/credit/delete",
+			sAddNewRowFormId : "formAddCredit",
+			sAddNewRowButtonId : "btnAddCredit",
+			sAddNewRowOkButtonId : "btnAddCreditOk",
+			sEditRowFormId : "formEditCredit",
+			sEditRowButtonId : "btnEditCredit",
+			sEditOkButtonId : "btnEditCreditOk",
+			sEditRowCancelButtonId : "btnEditCreditCancel",
+			sDeleteRowButtonId : "btnDeleteCredit",
+			oAddNewRowButtonOptions : {
+				label : "Add",
+				icons : {
+					primary : 'ui-icon-plus'
+				}
+			},
+			oEditRowButtonOptions : {
+				label : "Edit",
+				icons : {
+					primary : 'ui-icon-pencil'
+				}
+			},
+			oDeleteRowButtonOptions : {
+				label : "Remove",
+				icons : {
+					primary : 'ui-icon-trash'
+				}
+			},
+			oAddNewRowFormOptions : {
+				title : 'Add a new credit',
+				show : "blind",
+				hide : "explode",
+				modal : true
+			},
+			oEditRowFormOptions : {
+				title : 'Edit a credit',
+				show : "blind",
+				hide : "explode",
+				modal : true
+			},
+			sAddDeleteEditToolbarSelector : ".dataTables_length"
+		});
+        
+    var oUserTable = $('#user').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				$(nRow).on('click', function () {
 					var objectId = $(nRow).attr("id");
@@ -99,24 +189,59 @@ $(document).ready(function () {
 					var objectId = $(nRow).attr("id");
 					var name = $('td:eq(0)', nRow).text();
 					var type = $('td:eq(1)', nRow).text();
-					var duration = $('td:eq(2)', nRow).text();
-					var contentURL = $('td:eq(3)', nRow).text();
-                    var imageURL = $('td:eq(4)', nRow).text();
-					var producer = $('td:eq(5)', nRow).text();
-					var artist = $('td:eq(6)', nRow).text();
+					var text = $('td:eq(2)', nRow).text();
+					var duration = $('td:eq(3)', nRow).text();
+					var contentURL = $('td:eq(4)', nRow).text();
+                    var imageURL = $('td:eq(5)', nRow).text();
+					var producer = $('td:eq(6)', nRow).text();
+					var artist = $('td:eq(7)', nRow).text();
 
 					$('#mediaItemEditId').val(objectId);
 					$('#nameEdit').val(name);
+					$('#textEdit').val(text);
 					$('#durationEdit').val(duration);
 					$('#contentURLEdit').val(contentURL);
                     $('#imageURLEdit').val(imageURL);
 					$('#typeEdit').val(type);
                     
-                    if (type == 'experience')
-                        $('#imageURLEdit').addClass('required');
-                    else
-                        $('#imageURLEdit').removeClass('required');
-
+                    $("#imageURLEdit").removeClass('required').attr('readonly', true).addClass('input-disabled');
+                    $("#contentURLEdit").removeClass('required').attr('readonly', true).addClass('input-disabled');
+                    $("#durationEdit").removeClass('required').attr('readonly', true).addClass('input-disabled');
+                    $("#textEdit").removeClass('required').attr('readonly', true).addClass('input-disabled');
+                    $("#producerEdit").removeClass('required').addClass('input-disabled').prop('disabled', true);
+                    $("#artistEdit").removeClass('required').addClass('input-disabled').prop('disabled', true);
+                    
+                    switch (type){
+                        case "lessonText":
+                             $("#textEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            break;
+                        case "lessonAudio":
+                            $("#contentURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#durationEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            break;
+                        case "lessonVideo":
+                            $("#imageURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#contentURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#durationEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            break;
+                        case "lessonImage":
+                            $("#imageURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            break;
+                        case "song":
+                            $("#contentURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#durationEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#producerEdit").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                            $("#artistEdit").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                            break;
+                        case "experience":
+                            $("#contentURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#durationEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#imageURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#producerEdit").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                            $("#artistEdit").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                            break;
+                    }
+                    
 					$('#durationEdit').mask("00:00:00", {
 						placeholder : "__:__:__"
 					});
@@ -152,6 +277,8 @@ $(document).ready(function () {
 					"mDataProp" : "name"
 				}, {
 					"mDataProp" : "type"
+				}, {
+					"mDataProp" : "text"
 				}, {
 					"mDataProp" : "duration"
 				}, {
@@ -250,6 +377,203 @@ $(document).ready(function () {
                 }
             ]
 		});
+        
+    var oLessonTable = $('#lesson')
+        .dataTable({
+			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				if(selectedRowId == aData['DT_RowId']){
+					$(nRow).addClass('row_selected');   
+				}   
+				
+				$(nRow).on('click', function () {
+					selectedRowId = $(nRow).attr("id");
+					var objectId = $(nRow).attr("id");
+					var title = $('td:eq(0)', nRow).text();
+					var imageURL = $('td:eq(1)', nRow).text();
+
+					$('#formEditLesson input[name=lessonId]').val(objectId);
+					$('#formAddLesson input[name=lessonId]').val(objectId);
+					$('#titleEdit').val(title);
+					$('#imageURLEdit').val(imageURL);
+                    
+					oLessonPageTable.fnDraw();
+				});
+			},			
+			"bJQueryUI" : true,
+			"bProcessing" : true,
+			"bServerSide" : true,
+			"rowId" : "objectid",
+			"sAjaxSource" : "/lesson",
+			"bPaginate" : true,
+			"bSort" : true,
+			"aoColumnDefs" : [{
+					"mDataProp" : null,
+					"sDefaultContent" : "&nbsp",
+					"aTargets" : ['_all']
+				}
+			],
+			"aoColumns" : [{
+					"mDataProp" : "title"
+				}, {
+					"mDataProp" : "imageURL"
+				}
+			],
+			"sPaginationType" : "full_numbers",
+			"iDisplayLength" : 10,
+			"bFilter" : false,
+			"bStateSave": true
+		}).makeEditable({
+			fnOnDeleted : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oLessonTable.fnDraw();
+				oLessonPageTable.fnDraw();
+			},
+			fnOnEdited : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oLessonTable.fnDraw();
+				oLessonPageTable.fnDraw();
+			},
+			sDeleteHttpMethod : "POST",
+			sDeleteURL : "/lesson/delete",
+			sAddNewRowButtonId : "btnAddLesson",
+			sEditRowButtonId : "btnEditLesson",
+			sDeleteRowButtonId : "btnDeleteLesson",	
+			oAddNewRowButtonOptions : {
+				label : "Add",
+				icons : {
+					primary : 'ui-icon-plus'
+				}
+			},
+			oEditRowButtonOptions : {
+				label : "Edit",
+				icons : {
+					primary : 'ui-icon-pencil'
+				}
+			},
+			oDeleteRowButtonOptions : {
+				label : "Remove",
+				icons : {
+					primary : 'ui-icon-trash'
+				}
+			},
+			sAddDeleteEditToolbarSelector : ".dataTables_length",
+            aoColumns: [
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                }
+            ]
+		});
+    
+    var oLessonPageTable = $('#lessonpage').dataTable({
+			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				if(selectedRowId == aData['DT_RowId']){
+					$(nRow).addClass('row_selected');   
+				} 
+				
+				$(nRow).on('click', function () {
+					selectedRowId = $(nRow).attr("id");
+                    $("#formEditLessonPage input[name=lessonPageIdEdit]").val(selectedRowId)                    
+                    $("#formEditLessonPage input[name=lessonPageId]").val(selectedRowId);
+				});
+			},
+			"bJQueryUI" : true,
+			"bScrollCollapse" : true,
+			"bProcessing" : true,
+			"bServerSide" : true,
+			"rowId" : "objectid",
+			"sAjaxSource" : "/lessonpage",
+			"bPaginate" : true,
+			"bSort" : true,
+			"aoColumnDefs" : [{
+					"mDataProp" : null,
+					"sDefaultContent" : "&nbsp",
+					"aTargets" : ['_all']
+				}
+			],
+			"aoColumns" : [{
+					"mDataProp" : "lessonPageId"
+				}, {
+					"mDataProp" : "mediaItems"
+				}
+			],
+			"iDisplayLength" : 10,
+			"iDisplayStart" : 0,
+			"sPaginationType" : "full_numbers",
+            "fnServerParams" : function (aoData) {
+				aoData.push({
+					"name" : "lessonId",
+					"value" : $('#lessonId').val()
+				});
+			},
+			"bFilter" : false,
+			"deferLoading" : 10
+		}).makeEditable({
+			fnOnDeleted : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oLessonTable.fnDraw();
+				oLessonPageTable.fnDraw();
+			},
+			fnOnEdited : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oLessonTable.fnDraw();
+				oLessonPageTable.fnDraw();
+			},
+			sAddURL : "/lessonpage/add",
+			sAddHttpMethod : "POST",
+			sDeleteHttpMethod : "POST",
+			sDeleteURL : "/lessonpage/delete",
+			sAddNewRowFormId : "formAddLessonPage",
+			sAddNewRowButtonId : "btnAddLessonPage",
+			sAddNewRowOkButtonId : "btnAddLessonPageOk",
+			sAddNewRowCancelButtonId : "btnAddLessonPageCancel",
+			sEditRowFormId : "formEditLessonPage",
+			sEditRowButtonId : "btnEditLessonPage",
+			sEditRowOkButtonId : "btnEditLessonPageOk",
+			sEditRowCancelButtonId : "btnEditLessonPageCancel",
+			sDeleteRowButtonId : "btnDeleteLessonPage",
+			oAddNewRowButtonOptions : {
+				label : "Add",
+				icons : {
+					primary : 'ui-icon-plus'
+				}
+			},
+			oEditRowButtonOptions : {
+				label : "Edit",
+				icons : {
+					primary : 'ui-icon-pencil'
+				}
+			},
+			oDeleteRowButtonOptions : {
+				label : "Remove",
+				icons : {
+					primary : 'ui-icon-trash'
+				}
+			},
+			oAddNewRowFormOptions : {
+				title : 'Add a new lesson page',
+				show : "blind",
+				hide : "explode",
+				modal : true
+			},
+			oEditRowFormOptions : {
+				title : 'Edit a lesson page',
+				show : "blind",
+				hide : "explode",
+				modal : true
+			},
+			sAddDeleteEditToolbarSelector : ".dataTables_length",
+            aoColumns: [
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                }
+            ]
+		});
 
 	var oMediaGroupTable = $('#mediagroup')
 		.dataTable({
@@ -324,12 +648,6 @@ $(document).ready(function () {
 			"iDisplayLength" : 10,
 			"bFilter" : false,
 			"bStateSave": true
-			// "fnStateSave": function (oSettings, oData) {
-            // localStorage.setItem(oMediaGroupTable, JSON.stringify(oData));
-			// },
-			// "fnStateLoad": function (oSettings) {
-				// return JSON.parse(localStorage.getItem(oMediaGroupTable));
-			// }
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
 				oMediaItemTable.fnDraw();
@@ -402,98 +720,6 @@ $(document).ready(function () {
                     placeholder : ""
                 }
             ]
-		});
-
-	var oCreditTable = $('#credit').dataTable({
-			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-				$(nRow).on('click', function () {
-					var objectId = $(nRow).attr("id");
-					var name = $('td:eq(0)', nRow).text();
-
-					$('#creditEditId').val(objectId);
-					$('#creditNameEdit').val(name);
-				});
-			},
-			"bJQueryUI" : true,
-			"bProcessing" : true,
-			"bServerSide" : true,
-			"rowId" : "objectid",
-			"sAjaxSource" : "/credit",
-			"bPaginate" : true,
-			"bSort" : true,
-			"aoColumns" : [{
-					"mDataProp" : "name"
-				}
-			],
-			"aoColumnDefs" : [{
-					"mDataProp" : null,
-					"sDefaultContent" : "&nbsp",
-					"aTargets" : ['_all']
-				}
-			],
-			"sPaginationType" : "full_numbers",
-			"iDisplayLength" : 10,
-			"iDisplayStart" : 0,
-			"bFilter" : false,
-			"fnDrawCallback" : function (oSettings) {
-				IntializeCreditDropDownBoxes();
-			}
-		}).makeEditable({
-			fnOnDeleted : function (value, settings) {
-				oMediaItemTable.fnDraw();
-				oMediaGroupTable.fnDraw();
-				oMediaGroupItemTable.fnDraw();
-			},
-			fnOnEdited : function (value, settings) {
-				oMediaItemTable.fnDraw();
-				oMediaGroupTable.fnDraw();
-				oMediaGroupItemTable.fnDraw();
-			},
-			sEditURL : "/credit/edit",
-			sAddURL : "/credit/add",
-			sEditHttpMethod : "GET",
-			sAddHttpMethod : "POST",
-			sDeleteHttpMethod : "POST",
-			sDeleteURL : "/credit/delete",
-			sAddNewRowFormId : "formAddCredit",
-			sAddNewRowButtonId : "btnAddCredit",
-			sAddNewRowOkButtonId : "btnAddCreditOk",
-			sEditRowFormId : "formEditCredit",
-			sEditRowButtonId : "btnEditCredit",
-			sEditOkButtonId : "btnEditCreditOk",
-			sEditRowCancelButtonId : "btnEditCreditCancel",
-			sDeleteRowButtonId : "btnDeleteCredit",
-			oAddNewRowButtonOptions : {
-				label : "Add",
-				icons : {
-					primary : 'ui-icon-plus'
-				}
-			},
-			oEditRowButtonOptions : {
-				label : "Edit",
-				icons : {
-					primary : 'ui-icon-pencil'
-				}
-			},
-			oDeleteRowButtonOptions : {
-				label : "Remove",
-				icons : {
-					primary : 'ui-icon-trash'
-				}
-			},
-			oAddNewRowFormOptions : {
-				title : 'Add a new credit',
-				show : "blind",
-				hide : "explode",
-				modal : true
-			},
-			oEditRowFormOptions : {
-				title : 'Edit a credit',
-				show : "blind",
-				hide : "explode",
-				modal : true
-			},
-			sAddDeleteEditToolbarSelector : ".dataTables_length"
 		});
 
 	var oMediaGroupItemTable = $('#mediagroupitem').dataTable({
@@ -617,6 +843,9 @@ $(document).ready(function () {
 	oMediaGroupTable.fnDraw();
 	
 	oMediaItemTable.fnDraw();
+    
+    oLessonPageTable.fnDraw();
+    oLessonTable.fnDraw();
 
 	$("#btnEditMediaGroup").on("click", function (e) {
 		$("#mediagroupdiv").hide();
@@ -650,6 +879,35 @@ $(document).ready(function () {
 
 		$("#mediaGroupButtons").show();
 		$("#formAddMediaGroup").show();
+	});
+    
+    $("#btnEditLesson").on("click", function (e) {
+		$("#lessondiv").hide();
+		$("#lessonButtons").show();
+		$("#lessoneditadddiv").show();
+		$("#formAddLesson").hide();
+		$("#formEditLesson").show();
+		$("#lessonPageTableDiv").show();
+		$("#lessonpage").show();
+		$("#btnAddLessonPage").show();
+		$("#btnDeleteLessonPage").show();
+		$("#lessonPageContentHeader").show();
+	});
+
+	$("#btnAddLesson").on("click", function (e) {
+		FillIndexTextBox();
+		
+		$("#formAddLesson input[name=mediaGroupId]").val("");
+		$("#formAddLesson input[name=mediaGroupTitleAdd]").val("");
+		$("#formAddLesson input[name=mediaGroupImageURLAdd]").val("");
+
+		$("#lessondiv").hide();
+		$("#lessoneditadddiv").show();
+		$("#formEditLesson").hide();
+		$("#lessonPageContentHeader").hide();
+
+		$("#lessonButtons").show();
+		$("#formAddLesson").show();
 	});
 	
 	function FillIndexTextBox()
@@ -700,57 +958,64 @@ $(document).ready(function () {
 	$("#btnAddMediaGroupItem").on("click", function (e) {
 		IntializeMediaGroupItemDropDownBoxes();
 	});
-
+    
 	function IntializeMediaGroupItemDropDownBoxes() {
-		$.ajax({
-			url : "/mediaitem/dropdown"
-		}).done(function (data) {
-			var mediaItemData = data.aaData;
-			$('#mediaGroupItemNameAdd').empty();
+        $.ajax({
+			type : "POST",
+			data : {
+				"type" : "mediaGroupItem"
+			},
+			url : "/mediaitem/dropdown",
+			success : function (data) {
+				var mediaItemData = data.aaData;
+                $('#mediaGroupItemNameAdd').empty();
 
-			for (var i = 0; i < mediaItemData.length; i++) {
-				var mediaItemName = mediaItemData[i].name;
-				var mediaItemId = mediaItemData[i].DT_RowId;
-				var optionText = "<option value='" + mediaItemId + "'>" + mediaItemName + "</option>"; ;
+                for (var i = 0; i < mediaItemData.length; i++) {
+                    var mediaItemName = mediaItemData[i].name;
+                    var mediaItemId = mediaItemData[i].DT_RowId;
+                    var optionText = "<option value='" + mediaItemId + "'>" + mediaItemName + "</option>"; ;
 
-				$('#mediaGroupItemNameAdd').append(optionText);
+                    $('#mediaGroupItemNameAdd').append(optionText);
+                }
 			}
 		});
-	}
+	}   
+    
+    $("#btnAddLessonPage").on("click", function (e) {
+		IntializeAddLessonPageItemDropDownBoxes();
+	});
+    
+    $("#btnEditLessonPage").on("click", function (e) {
+		IntializeEditLessonPageItemDropDownBoxes();
+	});
+    
+    function IntializeEditLessonPageItemDropDownBoxes() {
+        $.ajax({
+			type : "POST",
+			data : {
+				"type" : "lessonPageItem"
+			},
+			url : "/mediaitem/dropdown",
+			success : function (data) {
+				var mediaItemData = data.aaData;
+                $('#lessonPageItemsEdit').empty();
+                $("#lessonPageItemsEdit").multiple = true;
+                $("#lessonPageItemsEdit").chosen();                
+                
+                for (var i = 0; i < mediaItemData.length; i++) {
+                    var mediaItemName = mediaItemData[i].name;
+                    var mediaItemId = mediaItemData[i].DT_RowId;
+                    var optionText = "<option value='" + mediaItemId + "'>" + mediaItemName + "</option>"; ;
 
-	function filterCombobox(selectObject, filterValue, autoSelect) {
-		var fullData = selectObject.data("filterdata-values");
-		var emptyValue = selectObject.data("filterdata-emptyvalue");
-
-		// Initialize if first time.
-		if (!fullData) {
-			fullData = selectObject.find("option[data-filter]").detach();
-			selectObject.data("filterdata-values", fullData);
-			emptyValue = selectObject.find("option[data-filter-emptyvalue]").detach();
-			selectObject.data("filterdata-emptyvalue", emptyValue);
-			selectObject.addClass("filtered");
-		} else {
-			// Remove elements from DOM
-			selectObject.find("option[data-filter]").remove();
-			selectObject.find("option[data-filter-emptyvalue]").remove();
-		}
-
-		// Get filtered elements.
-		var toEnable = fullData.filter("option[data-filter][data-filter='" + filterValue + "']");
-
-		// Attach elements to DOM
-		selectObject.append(toEnable);
-
-		// If toEnable is empty, show empty option.
-		if (toEnable.length == 0) {
-			selectObject.append(emptyValue);
-		}
-
-		// Select First Occurrence
-		if (autoSelect) {
-			var obj = selectObject.find("option[selected]");
-			selectObject.val(obj.length == 0 ? toEnable.val() : obj.val());
-		}
+                    $("#lessonPageItemsEdit").append(optionText);                
+                }               
+                
+                $("#lessonPageItemsEdit").trigger("chosen:updated");
+                
+                $("#formEditLessonPage").parent().height(300);
+                $("#formEditLessonPage").height(200);
+			}
+		});
 	}
 
 	$("#saveMediaGroup").on("click", function (e) {
@@ -781,6 +1046,79 @@ $(document).ready(function () {
 
 			mediaGroupUpdateAjaxCall(data);
 		}
+	});
+    
+    $("#saveLesson").on("click", function (e) {
+		var data = [];
+
+		if ($("#formEditLesson input[name=lessonId]").val() == "" || $("#formEditLesson input[name=lessonId]").val() == null) {
+			data = {
+				title : $('#lessonTitleAdd').val(),
+				imageURL : $('#lessonImageURLAdd').val()
+			};
+
+			lessonAddAjaxCall(data);
+		} else {
+			data = {
+				title : $('#lessonTitleEdit').val(),
+				imageURL : $('#lessonImageURLEdit').val()
+			};
+
+			lessonUpdateAjaxCall(data);
+		}
+	});
+    
+    function lessonAddAjaxCall(opts) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"title" : opts.title,
+                "imageURL" : opts.imageURL
+            },
+			url : "/lesson/add",
+			success : function (res) {
+				oLessonTable.fnDraw();
+
+				oLessonItemTable.fnDraw();
+
+				$("#lessonPageTableDiv").show();
+				$("#lessonPageContentHeader").show();
+				$("#formEditLesson").show();
+
+				$('#lessonTitleEdit').val(opts.title);
+				$('#lessonImageURLEdit').val(opts.imageURL);
+
+				$("#formAddLessonPage input[name=lessonId]").val("");
+				$("#formEditLesson input[name=lessonId]").val(res);
+
+				$("#formAddLesson").hide();
+
+				alert("Successfully Saved Lesson");
+			}
+		});
+	};
+	
+	function lessonUpdateAjaxCall(opts) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"lessonId" : $("#formEditLesson input[name=lessonId]").val(),
+				"title" : opts.title,
+				"imageURL" : opts.imageURL
+			},
+			url : "/lesson/update",
+			success : function (res) {
+				oLessonTable.fnDraw();
+
+				alert("Successfully Saved Lesson");
+			}
+		});
+	};
+    
+    $("#viewLesson").on("click", function (e) {
+		$("#lessonButtons").hide();
+		$("#lContentHeader").hide();
+		$("#adminButtons").hide();
 	});
 
 	$("#viewMediaGroup").on("click", function (e) {
@@ -870,17 +1208,17 @@ $(document).ready(function () {
 		return confirm("Are you sure that you want to delete this record?");
 	}
 
-	$("#btnDeleteMediaGroupItem").on("click", function (e) {
+	$("#btnDeleteLessonPage").on("click", function (e) {
 		if (ConfirmDelete) {
 			$.ajax({
 				type : "POST",
 				data : {
-					"mediaGroupId" : $('#formEditMediaGroup input[name=mediaGroupId]').val(),
-					"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
+					"lessonId" : $('#formEditLesson input[name=lessonId]').val(),
+					"lessonPageId" : $("#formAddLessonPage input[name=lessonPageId]").val()
 				},
-				url : "/mediagroupitem/delete",
+				url : "/lessonPage/delete",
 				success : function () {
-					oMediaGroupItemTable.fnDraw();
+					oLessonPageTable.fnDraw();
 				}
 			});
 		}
@@ -917,7 +1255,38 @@ $(document).ready(function () {
 			}
 		});
 	});
+    
+    $("#btnAddLessonPageOk").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"lessonId" : $('#formEditLesson input[name=lessonId]').val(),
+				"lessonPageId" : $("#formAddLessonPage input[name=lessonPageId]").val(),
+                "lessonPageItems": $("#formAddLessonPage select[name=lessonPageItems]").val()
+			},
+			url : "/lessonPage/add",
+			success : function () {
+				$("#formAddLessonPage").dialog('close');
 
+				oLessonPageTable.fnDraw();
+			}
+		});
+	});
+
+      $("#btnEditLessonPageOk").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+                "lessonPageItems": $("#lessonPageItemsEdit").val()
+			},
+			url : "/lessonPage/edit",
+			success : function () {
+				$("#formEditLessonPage").dialog('close');
+
+				oLessonPageTable.fnDraw();
+			}
+		});
+	});
 	$("#btnAddMediaItem").on("click", function (e) {
 		$('#duration').mask("00:00:00", {
 			placeholder : "__:__:__"
@@ -958,6 +1327,20 @@ $(document).ready(function () {
 		$("#mediaGroupButtons").hide();
 		$("#mediaGroupItemContentHeader").hide();
 	});
+    
+    $("#cancelLesson").on("click", function (e) {
+		$("#formAddLessonPage input[name=lessonId]").val("");
+		$("#formEditLesson input[name=lessonId]").val("");
+		$("#lessoneditadddiv").hide();
+		$("#formEditLesson").hide();
+		$("#formAddLesson").hide();
+		$("#lessonPage").hide();
+		$("#btnAddLessonPage").hide();
+		$("#btnDeleteLessonPage").hide();
+		$("#lessondiv").show();
+		$("#lessonButtons").hide();
+		$("#lessonPageContentHeader").hide();
+	});
 
 	$("#mediaGroupItemNameAdd").on("change", function () {
 		var selected = $(this).val();
@@ -967,10 +1350,43 @@ $(document).ready(function () {
     $("#mediaitemtype").on("change", function () {
 		var selected = $(this).val();
         
-		if (selected == 'experience')
-            $("#imageURL").addClass('required');
-        else
-            $("#imageURL").removeClass('required');
+        $("#imageURL").removeClass('required').attr('readonly', true).addClass('input-disabled');
+        $("#contentURL").removeClass('required').attr('readonly', true).addClass('input-disabled');
+        $("#duration").removeClass('required').attr('readonly', true).addClass('input-disabled');
+        $("#text").removeClass('required').attr('readonly', true).addClass('input-disabled');
+        $("#mediaitemproducer").removeClass('required').addClass('input-disabled').prop('disabled', true);
+        $("#mediaitemartist").removeClass('required').addClass('input-disabled').prop('disabled', true);
+        
+		switch (selected){
+            case "lessonText":
+                 $("#text").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                break;
+            case "lessonAudio":
+                $("#contentURL").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                $("#duration").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                break;
+            case "lessonVideo":
+                $("#imageURL").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                $("#contentURL").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                $("#duration").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                break;
+            case "lessonImage":
+                $("#imageURL").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                break;
+            case "song":
+                $("#contentURL").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                $("#duration").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                $("#mediaitemproducer").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                $("#mediaitemartist").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                break;
+            case "experience":
+                $("#contentURL").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                $("#duration").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                $("#imageURL").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                $("#mediaitemproducer").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                $("#mediaitemartist").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                break;
+        }
 	});
 
 	function mediaGroupItemNameAddAjaxCall(opts) {

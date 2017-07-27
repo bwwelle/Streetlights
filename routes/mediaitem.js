@@ -48,6 +48,7 @@ router.get('/', function (req, res) {
 					var mediaItemContentURL = '';
                     var mediaItemImageURL = '';
 					var mediaItemType = '';
+					var mediaItemText = '';
                     
                     if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
 						if (mediaItem.get("producers")[0] !== null && mediaItem.get("producers")[0] !== undefined)
@@ -72,7 +73,10 @@ router.get('/', function (req, res) {
 						mediaItemContentURL = mediaItem.get("contentURL");
                     
                     if (mediaItem.get("imageURL") !== null && mediaItem.get("imageURL") !== undefined)
-						mediaItemImageURL = mediaItem.get("imageURL");                    
+						mediaItemImageURL = mediaItem.get("imageURL");
+
+					if (mediaItem.get("text") !== null && mediaItem.get("text") !== undefined)
+						mediaItemText = mediaItem.get("text");                    
 
 					data[i] = {
 						name : mediaItemName,
@@ -82,6 +86,7 @@ router.get('/', function (req, res) {
                         imageURL : mediaItemImageURL,
                         producer : mediaItemProducer,
 						artist : mediaItemArtist,
+						text : mediaItemText,
 						DT_RowId : mediaItem.id
 					};
 				}
@@ -101,17 +106,33 @@ router.get('/', function (req, res) {
 	})
 });
 
-router.get('/dropdown', function (req, res) {
+router.post('/dropdown', urlencodedParser, function (req, res) {
+    var mediaItemType = req.body.type;
 	echo = req.query.sEcho;
 
 	var MediaItem = Parse.Object.extend("MediaItem");
 	var countQuery = new Parse.Query(MediaItem);
 	
-	countQuery.limit(1000);
+	countQuery.limit(999999999999999);
+    
+    if(mediaItemType == 'lessonPageItem')
+        countQuery.containedIn("type",
+                  ["lessonVideo", "lessonText", "lessonAudio", "lessonImage"]);
+    else
+        countQuery.notContainedIn("playerName",
+                  ["lessonVideo", "lessonText", "lessonAudio", "lessonImage"]);
 	
 	countQuery.count().then(function (count) {
 		var tableDataQuery = new Parse.Query(MediaItem);
-		tableDataQuery.limit(1000);
+		tableDataQuery.limit(999999999999999);
+        
+        if(mediaItemType == 'lessonPageItem')
+            tableDataQuery.containedIn("type",
+                  ["lessonVideo", "lessonText", "lessonAudio", "lessonImage"]);
+        else
+            tableDataQuery.notContainedIn("playerName",
+                  ["lessonVideo", "lessonText", "lessonAudio", "lessonImage"]);
+                  
         tableDataQuery.include("producers");
 		tableDataQuery.include("artists");
 
@@ -132,6 +153,7 @@ router.get('/dropdown', function (req, res) {
 					var mediaItemContentURL = '';
                     var mediaItemImageURL = '';
 					var mediaItemType = '';
+					var mediaItemText = '';
                     
                     if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
 						if (mediaItem.get("producers")[0] !== null && mediaItem.get("producers")[0] !== undefined)
@@ -156,7 +178,10 @@ router.get('/dropdown', function (req, res) {
 						mediaItemContentURL = mediaItem.get("contentURL");	
 
                     if (mediaItem.get("imageURL") !== null && mediaItem.get("imageURL") !== undefined)
-						mediaItemImageURL = mediaItem.get("imageURL");	                    
+						mediaItemImageURL = mediaItem.get("imageURL");	
+
+					if (mediaItem.get("text") !== null && mediaItem.get("text") !== undefined)
+						mediaItemText = mediaItem.get("text");	                    
 					
 					data[i] = {
 						name : mediaItemName,
@@ -166,6 +191,7 @@ router.get('/dropdown', function (req, res) {
                         imageURL : mediaItemImageURL,
                         producer : mediaItemProducer,
 						artist : mediaItemArtist,
+						text : mediaItemText,
 						DT_RowId : mediaItem.id
 					};
 				}
@@ -239,6 +265,7 @@ router.get('/edit', urlencodedParser, function (req, res) {
 	mediaItem.set("version", bible);
 	mediaItem.set("language","eng");
 	mediaItem.set("type", req.query["typeEdit"]);
+	mediaItem.set("text", req.query["textEdit"]);
 
 	var producerId = req.query["producerEdit"];
     var Producer = Parse.Object.extend("Credit");
@@ -280,6 +307,7 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaItem.set("duration", parseInt(durationInSeconds));
 	mediaItem.set("contentURL", req.body.contentURL);
     mediaItem.set("imageURL", req.body.imageURL);
+	mediaItem.set("text", req.body.text);
 	mediaItem.set("shareURL", req.body.contentURL);
 	mediaItem.set("type", req.body.mediaitemtype);
 	mediaItem.set("version", bible);

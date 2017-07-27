@@ -17,6 +17,8 @@ var mediagroupitem = require('./routes/mediagroupitem');
 var credit = require('./routes/credit');
 var user = require('./routes/user');
 var printemails = require('./routes/printemails');
+var lesson = require('./routes/lesson');
+var lessonpage = require('./routes/lessonpage');
 
 var app = express();
 var router = express.Router();
@@ -111,6 +113,8 @@ app.use('/mediagroupitem', mediagroupitem);
 app.use('/credit', credit);
 app.use('/user', user);
 app.use('/printemails', printemails);
+app.use('/lesson', lesson);
+app.use('/lessonpage', lessonpage);
 
 // error handlers
 // catch 404 and forward to error handler
