@@ -69,16 +69,15 @@ var urlencodedParser = bodyParser.urlencoded({
 			lessonPageQuery.get(lessonPageId, {
 				success : function (lessonPage) {
 					var lessonPageId = '';
-                    var lessonPageMediaItems = '';
+                    var lessonPageMediaItems = [];
                     
-                    if (lessonPage.get("mediaItems") !== null && lessonPage.get("mediaItems") !== undefined) {
-                        if (lessonPage.get("mediaItems")[0] !== null && lessonPage.get("mediaItems")[0] !== undefined)
-                            lessonPageMediaItems = lessonPage.get("mediaItems")[0].get("name");
+                    for (var i = 0; i < lessonPage.get("mediaItems").length; i++) {
+                        lessonPageMediaItems.push(lessonPage.get("mediaItems")[i].id);
                     }
                     
 					res.json({
 						"lessonPageId" : lessonPageId,
-						"lessonPageMediaItemAdd" : lessonPageMediaItems,
+						"lessonPageMediaItems" : lessonPageMediaItems,
 						sEcho : echo
 					});
 				},
@@ -131,8 +130,8 @@ router.post('/edit', urlencodedParser, function (req, res) {
 	var LessonPage = Parse.Object.extend("LessonPage");
 	var lessonPage = new LessonPage();
     
-	lessonPage.id = req.body.lessonPageIdEdit;
-    lessonPage.unset("items");
+	lessonPage.id = req.body.lessonPageId;
+    lessonPage.unset("mediaItems");
     
     var lessonPageItems = req.body.lessonPageItems;
     
@@ -142,7 +141,7 @@ router.post('/edit', urlencodedParser, function (req, res) {
         
         mediaItem.id = lessonPageItems[i];
     
-        lessonPage.addUnique("items", mediaItem);
+        lessonPage.addUnique("mediaItems", mediaItem);
     }
 
 	lessonPage.save(null, {

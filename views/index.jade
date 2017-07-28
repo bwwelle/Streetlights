@@ -145,6 +145,23 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                   | 					Download Emails/Ages
         .clear
         // End .clear
+        #lessonButtons(style='display:none')
+          ul.shortcut-buttons-set
+            // Replace the icons URL's with your own
+            li
+              a#saveLesson.shortcut-button
+                span
+                  img(src='images/1461412786_floppy_disk_48.png', alt='icon')
+                  br
+                  | 					Save Lesson
+            li
+              a#cancelLesson.shortcut-button
+                span
+                  img(src='images/1461412996_cancel_48.png', alt='icon')
+                  br
+                  | 					Cancel
+        .clear
+        // End .clear
         #contentHeader.content-box-header
           h3#ContentHeaderLabel Media Items (Tracks)
         .content-box
@@ -394,33 +411,34 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                       #fw_content
                         .full_width
                           form#formAddLesson
-                            label(for='title') Title
+                            label(for='lessonTitleAdd') Title
                             br
                             br
-                            input#title.required(type='text', name='title', style='width:500px;', rel='0')
+                            input#lessonTitleAdd.required(type='text', name='lessonTitleAdd', style='width:500px;', rel='0')
                             br
                             br
                             label(for='imageURL') imageURL
                             br
                             br
-                            input#imageURL.required(type='text', name='imageURL', style='width:500px;', rel='1')
+                            input#lessonImageURLAdd.required(type='text', name='lessonImageURLAdd', style='width:500px;', rel='1')
+                            input#lessonId(type='hidden', name='lessonId')
                           form#formEditLesson(style='width:100%;')
-                            label(for='title') Title
+                            label(for='lessonTitleEdit') Title
                             br
                             br
-                            input#titleEdit.required(type='text', name='titleEdit', style='width:500px;', rel='0')
+                            input#lessonTitleEdit.required(type='text', name='lessonTitleEdit', style='width:500px;', rel='0')
                             br
                             br
-                            label(for='imageURLEdit') imageURL
+                            label(for='lessonImageURLEdit') imageURL
                             br
                             br
-                            input#imageURLEdit.required(type='text', name='imageURLEdit', style='width:500px;', rel='1')    
+                            input#lessonImageURLEdit.required(type='text', name='lessonImageURLEdit', style='width:500px;', rel='1')    
                             input#lessonId(type='hidden', name='lessonId')
                           form#formEditLessonPage(style='width:100%;overflow:visible;height=200px', name='formEditLessonPage')
-                            label(for='lessonPageIdEdit') lessonPageId
+                            label(for='lessonPageEditId') lessonPageId
                             br
                             br
-                            input#lessonPageIdEdit(type='text', name='lessonPageIdEdit', style='width:500px;', rel='0', readonly='')
+                            input#lessonPageEditId(type='text', name='lessonPageEditId', style='width:500px;', rel='0', readonly='')
                             br
                             br
                             label(for='lessonPageItemsEdit') mediaItems
@@ -429,11 +447,10 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             select#lessonPageItemsEdit(data-placeholder='Select an option...', rel='1', style='width:500px !important;' multiple='')
                           form#formAddLessonPage
                             input#lessonId(type='hidden', name='lessonPageIdNew', rel='0')
-                            label(for='lessonPageItemsEdit') mediaItems
+                            label(for='lessonPageItems') mediaItems
                             br
                             br
                             select#lessonPageItems(data-placeholder='Choose a media item...', multiple, name='lessonPageItems', style='width:500px;', rel='1')   
-                            input#lessonPageId(type='hidden', name='lessonPageId')
               #lessonPageContentHeader.content-box-header(style='display:none')
                 h3#LessonPageContentHeaderLabel Lesson Pages
               #lessonPageTableDiv.tabcontent(style='display:none')

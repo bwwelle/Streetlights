@@ -393,8 +393,8 @@ $(document).ready(function () {
 
 					$('#formEditLesson input[name=lessonId]').val(objectId);
 					$('#formAddLesson input[name=lessonId]').val(objectId);
-					$('#titleEdit').val(title);
-					$('#imageURLEdit').val(imageURL);
+					$('#lessonTitleEdit').val(title);
+					$('#lessonImageURLEdit').val(imageURL);
                     
 					oLessonPageTable.fnDraw();
 				});
@@ -474,9 +474,8 @@ $(document).ready(function () {
 				} 
 				
 				$(nRow).on('click', function () {
-					selectedRowId = $(nRow).attr("id");
-                    $("#formEditLessonPage input[name=lessonPageIdEdit]").val(selectedRowId)                    
-                    $("#formEditLessonPage input[name=lessonPageId]").val(selectedRowId);
+					selectedRowId = $(nRow).attr("id");                   
+                    $("#formEditLessonPage input[name=lessonPageEditId]").val(selectedRowId);
 				});
 			},
 			"bJQueryUI" : true,
@@ -518,7 +517,6 @@ $(document).ready(function () {
 			},
 			fnOnEdited : function (value, settings) {
 				oMediaItemTable.fnDraw();
-				oLessonTable.fnDraw();
 				oLessonPageTable.fnDraw();
 			},
 			sAddURL : "/lessonpage/add",
@@ -530,7 +528,7 @@ $(document).ready(function () {
 			sAddNewRowOkButtonId : "btnAddLessonPageOk",
 			sAddNewRowCancelButtonId : "btnAddLessonPageCancel",
 			sEditRowFormId : "formEditLessonPage",
-			sEditRowButtonId : "btnEditLessonPage",
+			sEditRowButtonId : "btnEditLessonPage", 
 			sEditRowOkButtonId : "btnEditLessonPageOk",
 			sEditRowCancelButtonId : "btnEditLessonPageCancel",
 			sDeleteRowButtonId : "btnDeleteLessonPage",
@@ -894,12 +892,16 @@ $(document).ready(function () {
 		$("#lessonPageContentHeader").show();
 	});
 
+    $("#btnEditLessonPage").on("click", function (e) {
+        IntializeEditLessonPageItemDropDownBoxes();
+    });
+    
 	$("#btnAddLesson").on("click", function (e) {
 		FillIndexTextBox();
 		
-		$("#formAddLesson input[name=mediaGroupId]").val("");
-		$("#formAddLesson input[name=mediaGroupTitleAdd]").val("");
-		$("#formAddLesson input[name=mediaGroupImageURLAdd]").val("");
+		$("#formAddLesson input[name=lessonId]").val("");
+		$("#formAddLesson input[name=lessonTitleAdd]").val("");
+		$("#formAddLesson input[name=lessonImageURLAdd]").val("");
 
 		$("#lessondiv").hide();
 		$("#lessoneditadddiv").show();
@@ -920,6 +922,23 @@ $(document).ready(function () {
 			$("#formAddMediaGroup input[name=mediaGroupIndexAdd]").val(lastIndex);		
 		});
 	}
+    
+    function InitializeLessonPageEditItems(lessonPageId){
+        $.ajax({
+			type : "GET",
+			data : {
+				"lessonPageId" : $('#formEditLessonPage input[name=lessonPageEditId]').val()
+			},
+			url : "/lessonpage",
+			success : function (res) {
+                for (var i = 0; i < res.lessonPageMediaItems.length; i++) {                
+                    $('#lessonPageItemsEdit').find('option[value=' + res.lessonPageMediaItems[i] + ']').attr('selected', 'selected');
+                }
+                
+                $('#lessonPageItemsEdit').trigger('chosen:updated');
+            }
+		});
+    }
 
 	function IntializeCreditDropDownBoxes() {
 		$.ajax({
@@ -985,10 +1004,6 @@ $(document).ready(function () {
 		IntializeAddLessonPageItemDropDownBoxes();
 	});
     
-    $("#btnEditLessonPage").on("click", function (e) {
-		IntializeEditLessonPageItemDropDownBoxes();
-	});
-    
     function IntializeEditLessonPageItemDropDownBoxes() {
         $.ajax({
 			type : "POST",
@@ -1014,6 +1029,8 @@ $(document).ready(function () {
                 
                 $("#formEditLessonPage").parent().height(300);
                 $("#formEditLessonPage").height(200);
+                
+                InitializeLessonPageEditItems();
 			}
 		});
 	}
@@ -1078,8 +1095,7 @@ $(document).ready(function () {
 			url : "/lesson/add",
 			success : function (res) {
 				oLessonTable.fnDraw();
-
-				oLessonItemTable.fnDraw();
+                oLessonPageTable.fnDraw();
 
 				$("#lessonPageTableDiv").show();
 				$("#lessonPageContentHeader").show();
@@ -1106,7 +1122,7 @@ $(document).ready(function () {
 				"title" : opts.title,
 				"imageURL" : opts.imageURL
 			},
-			url : "/lesson/update",
+			url : "/lesson/edit",
 			success : function (res) {
 				oLessonTable.fnDraw();
 
@@ -1117,30 +1133,41 @@ $(document).ready(function () {
     
     $("#viewLesson").on("click", function (e) {
 		$("#lessonButtons").hide();
-		$("#lContentHeader").hide();
+		$("#lessonPageContentHeader").hide();
 		$("#adminButtons").hide();
+        $("#mediaGroupButtons").hide();
+		$("#mediaGroupItemContentHeader").hide();
 	});
 
 	$("#viewMediaGroup").on("click", function (e) {
 		$("#mediaGroupButtons").hide();
 		$("#mediaGroupItemContentHeader").hide();
 		$("#adminButtons").hide();
+        $("#lessonButtons").hide();
+        $("#lessonPageContentHeader").hide();
 	});
 
 	$("#viewCredit").on("click", function (e) {
 		$("#mediaGroupButtons").hide();
 		$("#mediaGroupItemContentHeader").hide();
 		$("#adminButtons").hide();
+        $("#lessonButtons").hide();
+        $("#lessonPageContentHeader").hide();
 	});
 
 	$("#viewMediaItem").on("click", function (e) {
 		$("#mediaGroupButtons").hide();
 		$("#adminButtons").hide();
+        $("#lessonButtons").hide();
+        $("#lessonPageContentHeader").hide();
 	});
 	
 	$("#viewUser").on("click", function (e) {
 		$("#adminButtons").show();
 		$("#mediaGroupButtons").hide();
+        $("#mediaGroupItemContentHeader").hide();
+        $("#lessonButtons").hide();
+        $("#lessonPageContentHeader").hide();
 	});
 
 	function mediaGroupAddAjaxCall(opts) {
@@ -1273,14 +1300,15 @@ $(document).ready(function () {
 		});
 	});
 
-      $("#btnEditLessonPageOk").on("click", function (e) {
+     $("#btnEditLessonPageOk").on("click", function (e) {
 		$.ajax({
 			type : "POST",
 			data : {
+                "lessonPageId": $("#formEditLessonPage input[name=lessonPageEditId]").val(),
                 "lessonPageItems": $("#lessonPageItemsEdit").val()
 			},
-			url : "/lessonPage/edit",
-			success : function () {
+			url : "/lessonpage/edit",
+			success : function (res) {
 				$("#formEditLessonPage").dialog('close');
 
 				oLessonPageTable.fnDraw();

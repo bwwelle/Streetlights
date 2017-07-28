@@ -67,13 +67,13 @@ var urlencodedParser = bodyParser.urlencoded({
 		});
 	});
 
-router.get('/edit', urlencodedParser, function (req, res) {
+router.post('/edit', urlencodedParser, function (req, res) {
 	var Lesson = Parse.Object.extend("Lesson");
 	var lesson = new Lesson();
     
-	lesson.id = req.query["lessonEditId"];
-	lesson.set("title", req.query["title"]);
-    lesson.set("imageURL", req.query["imageURLEdit"]);
+	lesson.id = req.body.lessonId;
+	lesson.set("title", req.body.title);
+    lesson.set("imageURL", req.body.imageURL);
 
 	lesson.save(null, {
 		success : function (results) {
