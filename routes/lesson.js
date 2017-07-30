@@ -66,6 +66,44 @@ var urlencodedParser = bodyParser.urlencoded({
 			}
 		});
 	});
+    
+router.get('/dropdown', urlencodedParser, function (req, res) {
+	echo = req.query.sEcho;
+
+	var Lesson = Parse.Object.extend("Lesson");
+	var tableDataQuery = new Parse.Query(Lesson);
+    tableDataQuery.limit(999999999999999);
+
+    tableDataQuery.ascending("title");
+
+    tableDataQuery.find({
+        success : function (lessons) {
+            var data = [];
+            for (var
+                i = 0; i < lessons.length; i++) {
+                var lesson = lessons[i];
+                var title = '';
+                
+                if (lesson.get("title") !== null && lesson.get("title") !== undefined)
+                    title = lesson.get("title");
+                
+                data[i] = {
+                    title : title,
+                    DT_RowId : lesson.id
+                };
+            }
+            
+            data =  data.sort(function (a, b) {
+                            return a["title"].toLowerCase().localeCompare(b["title"].toLowerCase());
+                        });
+
+            res.json({
+                aaData : data,
+                sEcho : echo
+            });
+        }
+    });
+});
 
 router.post('/edit', urlencodedParser, function (req, res) {
 	var Lesson = Parse.Object.extend("Lesson");

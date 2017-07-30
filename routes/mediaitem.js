@@ -106,7 +106,7 @@ router.get('/', function (req, res) {
 	})
 });
 
-router.post('/dropdown', urlencodedParser, function (req, res) {
+router.get('/dropdown', urlencodedParser, function (req, res) {
     var mediaItemType = req.body.type;
 	echo = req.query.sEcho;
 

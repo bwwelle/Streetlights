@@ -11,6 +11,11 @@ $(document).ready(function(){
 				$(this).addClass("current"); // Slide up all sub menus except the one clicked
 				$(this).parent().siblings().find("ul").slideUp("normal"); // Slide up all sub menus except the one clicked
 				$(this).next().slideToggle("normal"); // Slide down the clicked sub menu
+                
+                var currentSubMenu = $(this).attr('href'); // Set variable "currentSubMenu" to the value of href of clicked sub menu
+                $(currentSubMenu).siblings().hide(); // Hide all content divs
+				$(currentSubMenu).show(); // Show the content div with the id equal to the id of clicked sub menu
+                $("#ContentHeaderLabel").text($(this).attr('headertext'));
 				return false;
 			}
 		);

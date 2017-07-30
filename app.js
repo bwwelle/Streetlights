@@ -19,6 +19,8 @@ var user = require('./routes/user');
 var printemails = require('./routes/printemails');
 var lesson = require('./routes/lesson');
 var lessonpage = require('./routes/lessonpage');
+var lessongroup = require('./routes/lessongroup');
+var teaching = require('./routes/teaching');
 
 var app = express();
 var router = express.Router();
@@ -115,35 +117,44 @@ app.use('/user', user);
 app.use('/printemails', printemails);
 app.use('/lesson', lesson);
 app.use('/lessonpage', lessonpage);
+app.use('/lessongroup', lessongroup);
+app.use('/teaching', teaching);
+
+
 
 // error handlers
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-	var err = new Error('Not Found');
-	err.status = 404;
-	next(err);
+  if(err.status !== 404) {
+    return next();
+  }
+ 
+  res.status(404);
+  res.send(err.message);
 });
 
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
 	app.use(function (err, req, res, next) {
-		res.status(err.status || 500);
-		res.render('error', {
-			message : err.message,
-			error : err
-		});
+        if(err.status !== 500) {
+            return next();
+        }
+        
+		res.status(500);
+        res.send(err.message);
 	});
 }
 
 // production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
-	res.status(err.status || 500);
-	res.render('error', {
-		message : err.message,
-		error : {}
-	});
+        if(err.status !== 500) {
+            return next();
+        }
+        
+		res.status(500);
+        res.send(err.message);
 });
 
 module.exports = app;

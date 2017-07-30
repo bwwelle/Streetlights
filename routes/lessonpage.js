@@ -111,14 +111,29 @@ router.post('/add', urlencodedParser, function (req, res) {
 
 	var LessonPage = Parse.Object.extend("LessonPage");
 	var lessonPage = new LessonPage();
-	lessonPage.id = req.body.lessonPageId;
     var lessonPageItems = req.body.lessonPageItems;
+    
+    for (var i = 0; i < lessonPageItems.length; i++) {
+        var MediaItem = Parse.Object.extend("MediaItem");
+        var mediaItem = new MediaItem();
+        
+        mediaItem.id = lessonPageItems[i];
+    
+        lessonPage.addUnique("mediaItems", mediaItem);
+    }
 
-	lesson.addUnique("pages", lessonPage);
-
-	lesson.save(null, {
-		success : function (lesson) {
-			res.json("Successful Save!");
+	lessonPage.save(null, {
+		success : function (newLessonPage) {
+            lesson.addUnique("pages", newLessonPage.id)
+            
+			lesson.save(null, {
+                success : function (lesson) {
+                    res.json("Successful Save!");
+                },
+                error : function (leson, error) {
+                    res.json("Save Error!");
+                }
+            });
 		},
 		error : function (leson, error) {
 			res.json("Save Error!");

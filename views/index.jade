@@ -92,9 +92,9 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                 | Teaching
               ul              
                 li
-                  a#viewLesson(href='#lessondiv' headertext='Lessons') Lessons
+                  a#viewLessonGroup(href='#lessongroupdiv' headertext='Lesson Groups') Lesson Groups    
                 li
-                  a#viewLessonGroup(href='#lessongroupdiv' headertext='Lesson Groups') Lesson Groups                
+                  a#viewLesson(href='#lessondiv' headertext='Lessons') Lessons                            
             li
               a.nav-top-item(href='#')
                 // Add the class "current" to current menu item
@@ -385,6 +385,92 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                                 th name
                 // End .clear
             // End #creditdiv
+            #lessongroupdiv.tab-content
+              // This is the target div. id must match the href of this div's tab
+              div(style='margin:10px 0')
+                  #fw_container
+                      #fw_content
+                        .full_width
+                          form#formAddLessonGroup
+                            label(for='lessonGroupTitle') Title
+                            br
+                            br
+                            input#lessonGroupTitle.required(type='text', name='lessonGroupTitle', style='width:500px;', rel='0')
+                            br
+                            br
+                            label(for='lessonGroupLessonsAdd') Lessons
+                            br
+                            br
+                            select#lessonGroupLessonsAdd(data-placeholder='Choose a lesson...', multiple, name='lessonGroupLessonsAdd', style='width:500px;', rel='1')   
+                          form#formEditLessonGroup
+                            label(for='lessonGroupTitleEdit') Title
+                            br
+                            br
+                            input#lessonGroupTitleEdit.required(type='text', name='lessonGroupTitleEdit', style='width:500px;', rel='0')
+                            br
+                            br
+                            label(for='lessonGroupLessonsEdit') Lessons
+                            br
+                            br
+                            select#lessonGroupLessonsEdit(data-placeholder='Choose a lesson...', multiple, name='lessonGroupLessonsEdit', style='width:500px;', rel='1')   
+                            input#lessonGroupEditId(type='hidden', name='lessonGroupEditId') 
+                          <button id="btnAddLessonGroup"></button>                          
+                          <button id="btnEditLessonGroup"></button>   
+                          <button id="btnDeleteLessonGroup"></button>
+                          table#lessongroup.display(cellpadding='0', cellspacing='0', border='0')
+                            thead
+                              tr
+                                th title
+                                th lessons
+                            tfoot
+                              tr
+                                th title
+                                th lessons
+                // End .clear
+            // End #lessongroupdiv
+            #teachingdiv.tab-content
+              // This is the target div. id must match the href of this div's tab
+              div(style='margin:10px 0')
+                  #fw_container
+                      #fw_content
+                        .full_width
+                          form#formAddTeaching
+                            label(for='teachingTitle') Title
+                            br
+                            br
+                            input#teachingTitle.required(type='text', name='teachingTitle', style='width:500px;', rel='0')
+                            br
+                            br
+                            label(for='teachingLessonGroupsAdd') Lesson Groups
+                            br
+                            br
+                            select#teachingLessonGroupsAdd(data-placeholder='Choose a lesson group...', multiple, name='teachingLessonGroupsAdd', style='width:500px;', rel='1')   
+                          form#formEditTeaching
+                            label(for='teachingTitleEdit') Title
+                            br
+                            br
+                            input#teachingTitleEdit.required(type='text', name='teachingTitleEdit', style='width:500px;', rel='0')
+                            br
+                            br
+                            label(for='teachingLessonGroupsEdit') Lesson Groups
+                            br
+                            br
+                            select#teachingLessonGroupsEdit(data-placeholder='Choose a lesson group...', multiple, name='teachingLessonGroupsEdit', style='width:500px;', rel='1')   
+                            input#teachingEditId(type='hidden', name='teachingEditId') 
+                          <button id="btnAddTeaching"></button>                          
+                          <button id="btnEditTeaching"></button>   
+                          <button id="btnDeleteTeaching"></button>
+                          table#teaching.display(cellpadding='0', cellspacing='0', border='0')
+                            thead
+                              tr
+                                th title
+                                th lessongroups
+                            tfoot
+                              tr
+                                th title
+                                th lessongroups
+                // End .clear
+            // End #teachingdiv
             #lessondiv.tab-content
               // This is the target div. id must match the href of this div's tab
               div(style='margin:10px 0')
@@ -447,10 +533,10 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             select#lessonPageItemsEdit(data-placeholder='Select an option...', rel='1', style='width:500px !important;' multiple='')
                           form#formAddLessonPage
                             input#lessonId(type='hidden', name='lessonPageIdNew', rel='0')
-                            label(for='lessonPageItems') mediaItems
+                            label(for='lessonPageItemsAdd') mediaItems
                             br
                             br
-                            select#lessonPageItems(data-placeholder='Choose a media item...', multiple, name='lessonPageItems', style='width:500px;', rel='1')   
+                            select#lessonPageItemsAdd(data-placeholder='Choose a media item...', multiple, name='lessonPageItemsAdd', style='width:500px;', rel='1')   
               #lessonPageContentHeader.content-box-header(style='display:none')
                 h3#LessonPageContentHeaderLabel Lesson Pages
               #lessonPageTableDiv.tabcontent(style='display:none')

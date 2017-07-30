@@ -17,117 +17,87 @@ var urlencodedParser = bodyParser.urlencoded({
 		echo = req.query.sEcho;
 		if (searchText != null && searchText != "") {}
 
-		var MediaGroup = Parse.Object.extend("MediaGroup");
-		var countQuery = new Parse.Query(MediaGroup);
+		var Teaching = Parse.Object.extend("Teaching");
+		var countQuery = new Parse.Query(Teaching);
+        
+        var teachingId = req.query["teachingId"];
 
-		countQuery.count({
-			success : function (count) {
-				var tableDataQuery = new Parse.Query(MediaGroup);
-				tableDataQuery.include("producers");
-				tableDataQuery.include("artists");
+        if(teachingId == undefined || teachingId == "" || teachingId == null){
+            countQuery.count({
+                success : function (count) {
+                    var tableDataQuery = new Parse.Query(Teaching);
+                    tableDataQuery.include("lessonGroups");
+                    
+                    tableDataQuery.limit(10);
 
-				tableDataQuery.ascending("index");
-				tableDataQuery.limit(10);
+                    if (parseInt(displayStart) != 0)
+                        tableDataQuery.skip(parseInt(displayStart));
 
-				if (parseInt(displayStart) != 0)
-					tableDataQuery.skip(parseInt(displayStart));
+                    tableDataQuery.find({
+                        success : function (teachings) {
+                            var data = [];
 
-				tableDataQuery.find({
-					success : function (mediaGroups) {
-						var data = [];
+                            for (var i = 0; i < teachings.length; i++) {
+                                var teaching = teachings[i];
+                                var teachingTitle = "";
+                                var teachingLessonGroups = [];
 
-						for (var i = 0; i < mediaGroups.length; i++) {
-							var mediaGroup = mediaGroups[i];
-							var mediaGroupIndex = "";
-							var mediaGroupTitle = "";
-							var mediaGroupDetail = null;
-							var mediaGroupImageURL = "";
-							var mediaGroupProducer = "";
-							var mediaGroupArtist = "";
-							var mediaGroupType = "";
+                                if (teaching.get("title") !== null && teaching.get("title") !== undefined)
+                                    teachingTitle = teaching.get("title");
 
-							if (mediaGroup.get("index") !== null && mediaGroup.get("index") !== undefined)
-								mediaGroupIndex = mediaGroup.get("index");
+                                if (teaching.get("lessonGroups") !== null && teaching.get("lessonGroups") !== undefined) {
+                                    for (var z = 0; z < teaching.get("lessonGroups").length; z++){
+                                        teachingLessonGroups.push(teaching.get("lessonGroups")[z].get("title"));
+                                    }									
+                                }
 
-							if (mediaGroup.get("title") !== null && mediaGroup.get("title") !== undefined)
-								mediaGroupTitle = mediaGroup.get("title");
-							
-							if (mediaGroup.get("type") !== null && mediaGroup.get("type") !== undefined)
-								mediaGroupType = mediaGroup.get("type");
+                                data[i] = {
+                                    title : teachingTitle,
+                                    lessongroups : teachingLessonGroups.join(","),
+                                    DT_RowId : teaching.id
+                                };
+                            }
 
-							if (mediaGroup.get("detail") !== null && mediaGroup.get("detail") !== undefined)
-								mediaGroupDetail = mediaGroup.get("detail");
+                            res.json({
+                                aaData : data,
+                                iTotalRecords : count,
+                                iTotalDisplayRecords : count,
+                                sEcho : echo
+                            });
+                        }
+                    });
+                },
+                error : function (error) {
+                    // The request failed
+                }
+            });
+        }
+        else
+        {
+            var teaching = Parse.Object.extend("Teaching");
+			var teachingQuery = new Parse.Query(teaching);
+			teachingQuery.include("lessonGroups");
+            
+            teachingQuery.get(teachingId, {
+				success : function (teaching) {
+                    var teachingLessonGroups = [];
 
-							if (mediaGroup.get("imageURL") !== null && mediaGroup.get("imageURL") !== undefined)
-								mediaGroupImageURL = mediaGroup.get("imageURL");
-
-							if (mediaGroup.get("producers") !== null && mediaGroup.get("producers") !== undefined) {
-								if (mediaGroup.get("producers")[0] !== null && mediaGroup.get("producers")[0] !== undefined)
-									mediaGroupProducer = mediaGroup.get("producers")[0].get("name");
-							}
-
-							if (mediaGroup.get("artists") !== null && mediaGroup.get("artists") !== undefined) {
-								if (mediaGroup.get("artists")[0] !== null && mediaGroup.get("artists")[0] !== undefined)
-									mediaGroupArtist = mediaGroup.get("artists")[0].get("name");
-							}
-
-							data[i] = {
-								title : mediaGroupTitle,
-								type : mediaGroupType,
-								index : mediaGroupIndex,
-								detail : mediaGroupDetail,
-								imageURL : mediaGroupImageURL,
-								producer : mediaGroupProducer,
-								artist : mediaGroupArtist,
-								DT_RowId : mediaGroup.id
-							};
-						}
-
-						res.json({
-							aaData : data,
-							iTotalRecords : count,
-							iTotalDisplayRecords : count,
-							sEcho : echo
-						});
-					}
-				});
-			},
-			error : function (error) {
-				// The request failed
-			}
-		});
+                    for (var z = 0; z < teaching.get("lessonGroups").length; z++){
+                        teachingLessonGroups.push(teaching.get("lessonGroups")[z].id);
+                    }
+                    
+					res.json({
+						"teachingId" : teachingId,
+						"teachingLessonGroups" : teachingLessonGroups,
+						sEcho : echo
+					});
+				},
+				error : function (error) {
+					// The request failed
+				}
+			});            
+        }
 	});
-
-	
-router.get('/lastindex', function (req, res) {
-	var MediaGroup = Parse.Object.extend("MediaGroup");
-	var mediaGroup = new MediaGroup();	
-	var query = new Parse.Query(MediaGroup);
-	
-	query.descending("index");
-	
-	query.first().then(function(result){
-		res.json(result.get("index"));
-	});	
-});
-
-router.post('/lastindexpertype', urlencodedParser, function (req, res) {
-	var MediaGroup = Parse.Object.extend("MediaGroup");
-	var mediaGroup = new MediaGroup();	
-	var query = new Parse.Query(MediaGroup);
-	
-	query.descending("index");
-	query.equalTo("type", req.body.type);
-	
-	query.first().then(function(result){
-		if(result == undefined)
-			res.json({
-			"lastIndex" : "0"});
-		else
-			res.json({
-				"lastIndex" : result.get("index")});
-	});
-});
 
 router.post('/update', urlencodedParser, function (req, res) {
 	var MediaGroup = Parse.Object.extend("MediaGroup");
