@@ -100,173 +100,67 @@ var urlencodedParser = bodyParser.urlencoded({
 	});
 
 router.post('/update', urlencodedParser, function (req, res) {
-	var MediaGroup = Parse.Object.extend("MediaGroup");
-	var mediaGroup = new MediaGroup();	
-	var query = new Parse.Query(MediaGroup);
-	
-	mediaGroup.id = req.body.mediaGroupId;
-	mediaGroup.set("title", req.body.title);
-	mediaGroup.set("type", req.body.type);
-	mediaGroup.set("detail", req.body.detail);
-	mediaGroup.set("imageURL", req.body.imageURL);
+	var Teaching = Parse.Object.extend("Teaching");
+	var teaching = new Teaching();
+    
+	teaching.id = req.body.teachingId;
+    teaching.unset("lessonGroups");
+    
+    var teachingLessonGroups = req.body.teachingLessonGroups;
+    
+    for (var i = 0; i < teachingLessonGroups.length; i++) {
+        var LessonGroup = Parse.Object.extend("LessonGroup");
+        var lessonGroup = new LessonGroup();
+        
+        lessonGroup.id = teachingLessonGroups[i];
+    
+        teaching.addUnique("lessonGroups", lessonGroup);
+    }
 
-	var Producer = Parse.Object.extend("Credit");
-	var producer = new Producer();
-
-	producer.id = req.body.producer;
-	mediaGroup.unset("producers");
-	mediaGroup.addUnique("producers", producer);
-
-	var Artist = Parse.Object.extend("Credit");
-	var artist = new Artist();
-
-	artist.id = req.body.artist;
-	mediaGroup.unset("artists");
-	mediaGroup.addUnique("artists", artist);
-
-	mediaGroup.save().then(function(result)
-	{
-		query.get(req.body.mediaGroupId, {
-				success : function (mediaGroup) {
-					if (mediaGroup.get("index") < parseInt(req.body.index))
-					{
-						var indexUpQuery = new Parse.Query(MediaGroup);
-						
-						indexUpQuery.equalTo("type", req.body.type);
-						indexUpQuery.lessThanOrEqualTo("index", parseInt(req.body.index));
-						indexUpQuery.greaterThanOrEqualTo("index", parseInt(mediaGroup.get("index")));
-						indexUpQuery.notEqualTo("objectId", mediaGroup.id);	
-						
-						indexUpQuery.find().then(
-							function (results) {
-								var list = [];
-								
-								results.forEach(function(indexRecord){					
-									indexRecord.increment("index", -1);
-									list.push(indexRecord);
-								});
-								
-								Parse.Object.saveAll(list).then(function(results){								
-									mediaGroup.set("index", parseInt(req.body.index));
-								
-									mediaGroup.save().then(function(result){								
-										res.json("Successful Save!");
-									});
-								});
-							});
-					}
-					else if(mediaGroup.get("index") > parseInt(req.body.index))
-					{
-						var indexDownQuery = new Parse.Query(MediaGroup);
-						
-						indexDownQuery.equalTo("type", req.body.type);
-						indexDownQuery.greaterThanOrEqualTo("index", parseInt(req.body.index));
-						indexDownQuery.lessThanOrEqualTo("index", parseInt(mediaGroup.get("index")));
-						indexDownQuery.notEqualTo("objectId", mediaGroup.id);
-						
-						indexDownQuery.find().then(
-							function (results) {
-								var list = [];
-								
-								results.forEach(function(indexRecord){					
-									indexRecord.increment("index");
-									list.push(indexRecord);
-								});
-								
-								Parse.Object.saveAll(list).then(function(results){								
-									mediaGroup.set("index", parseInt(req.body.index));
-								
-									mediaGroup.save().then(function(result){								
-										res.json("Successful Save!");
-									});
-								});
-							});
-					}
-					else
-						res.json("Successful Save!");
-				},
-				error : function (object, error) {
-					res.json("Save Error: " + error);
-				}
-			});
+	teaching.save(null, {
+		success : function (results) {
+			res.json("Teaching Saved!");
+		},
+		error : function (results, error) {
+			res.json("Teaching Save Error!");
+		}
 	});
 });
 
 router.post('/add', urlencodedParser, function (req, res) {
-	var MediaGroup = Parse.Object.extend("MediaGroup");
-	var mediaGroup = new MediaGroup();
-	var query = new Parse.Query(MediaGroup);
+    var Teaching = Parse.Object.extend("Teaching");
+	var teaching = new Teaching();
+	var query = new Parse.Query(teaching);
+    teachingLessonGroups = req.body.teachingLessonGroupsAdd;
+    
+	teaching.set("title", req.body.teachingTitle);
+    
+    for (var i = 0; i < teachingLessonGroups.length; i++) {
+        var LessonGroup = Parse.Object.extend("LessonGroup");
+        var lessonGroup = new LessonGroup();
+        
+        lessonGroup.id = teachingLessonGroups[i];
+    
+        teaching.addUnique("lessonGroups", lessonGroup);
+    }
 
-	mediaGroup.set("title", req.body.title);
-	mediaGroup.set("type", req.body.type);
-	mediaGroup.set("detail", req.body.detail);
-	mediaGroup.set("imageURL", req.body.imageURL);
-
-	var Producer = Parse.Object.extend("Credit");
-	var producer = new Producer();
-
-	producer.id = req.body.producer;
-	mediaGroup.addUnique("producers", producer);
-
-	var Artist = Parse.Object.extend("Credit");
-	var artist = new Artist();
-
-	artist.id = req.body.artist;
-	mediaGroup.addUnique("artists", artist);
-
-	mediaGroup.save(null, {
-		success : function (mediaGroup) {
-			query.descending("index");
-			query.equalTo("type", req.body.type);
-			
-			query.first().then(function(result){
-				if(result.get("index") > parseInt(req.body.index))
-				{
-					var indexDownQuery = new Parse.Query(MediaGroup);
-					
-					indexDownQuery.equalTo("type", req.body.type);
-					indexDownQuery.greaterThanOrEqualTo("index", parseInt(req.body.index));
-					
-					indexDownQuery.find().then(
-						function (results) {
-							var list = [];
-							
-							results.forEach(function(indexRecord){					
-								indexRecord.increment("index");
-								list.push(indexRecord);
-							});
-							
-							Parse.Object.saveAll(list).then(function(results){								
-								mediaGroup.set("index", parseInt(req.body.index));
-							
-								mediaGroup.save().then(function(result){								
-									res.json(mediaGroup.id);
-								});
-							});
-						});				
-				}
-				else
-				{
-					mediaGroup.set("index", parseInt(req.body.index));
-					mediaGroup.save();
-					res.json(mediaGroup.id);
-				}
-			});			
+	teaching.save(null, {
+		success : function (teaching) {
+			res.json("Teaching Saved!");
 		},
-		error : function (mediaGroup, error) {
-			res.json("Save Error!");
+		error : function (teaching, error) {
+			res.json("Teaching Save Error!");
 		}
 	});
-
 });
 
 router.post('/delete', urlencodedParser, function (req, res) {
-	var MediaGroup = Parse.Object.extend("MediaGroup");
-	var query = new Parse.Query(MediaGroup);
+	var Teaching = Parse.Object.extend("Teaching");
+	var query = new Parse.Query(Teaching);
 
-	var mediaGroupID = req.body.id;
+	var teachingID = req.body.teachingId;
 
-	query.get(mediaGroupID, {
+	query.get(teachingID, {
 		success : function (myObj) {
 			// The object was retrieved successfully.
 			myObj.destroy({});
@@ -274,84 +168,6 @@ router.post('/delete', urlencodedParser, function (req, res) {
 		},
 		error : function (object, error) {
 			res.json("Deletion Error: " + error);
-		}
-	});
-});
-
-router.post('/moveup', urlencodedParser, function (req, res) {
-	var MediaGroup = Parse.Object.extend("MediaGroup");
-	var query = new Parse.Query(MediaGroup);
-	var mediaGroupID = req.body.mediaGroupId;
-	
-	query.get(mediaGroupID, {
-		success : function (mediaGroup) {
-			var findMediaGrouptoMoveDown = new Parse.Query(MediaGroup);
-			findMediaGrouptoMoveDown.equalTo("index",  mediaGroup.get("index") - 1);
-			findMediaGrouptoMoveUp.equalTo("type", mediaGroup.get("type"));
-			
-			findMediaGrouptoMoveDown.find().then(
-				function (results) {
-				results[0].increment("index");
-				results[0].save(null, {
-					success : function () {
-						mediaGroup.increment("index", -1);
-
-						mediaGroup.save(null, {
-							success : function () {
-								res.json("Successful Save!");
-							},
-							error : function (mediaGroup, error) {
-								res.json("Save Error!");
-							}
-						});
-					},
-					error : function (mediaGroup, error) {
-						res.json("Save Error!");
-					}
-				});
-			});			
-		},
-		error : function (object, error) {
-			res.json("Move Up Error: " + error);
-		}
-	});
-});
-
-router.post('/movedown', urlencodedParser, function (req, res) {
-	var MediaGroup = Parse.Object.extend("MediaGroup");
-	var query = new Parse.Query(MediaGroup);
-	var mediaGroupID = req.body.mediaGroupId;
-	
-	query.get(mediaGroupID, {
-		success : function (mediaGroup) {
-			var findMediaGrouptoMoveUp = new Parse.Query(MediaGroup);
-			findMediaGrouptoMoveUp.equalTo("index",  mediaGroup.get("index") + 1);
-			findMediaGrouptoMoveUp.equalTo("type", mediaGroup.get("type"));
-			
-			findMediaGrouptoMoveUp.find().then(
-				function (results) {
-				results[0].increment("index", -1);
-				results[0].save(null, {
-					success : function () {
-						mediaGroup.increment("index");
-
-						mediaGroup.save(null, {
-							success : function () {
-								res.json("Successful Save!");
-							},
-							error : function (mediaGroup, error) {
-								res.json("Save Error!");
-							}
-						});
-					},
-					error : function (mediaGroup, error) {
-						res.json("Save Error!");
-					}
-				});
-			});			
-		},
-		error : function (object, error) {
-			res.json("Move Down Error: " + error);
 		}
 	});
 });

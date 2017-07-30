@@ -174,7 +174,12 @@ router.post('/add', urlencodedParser, function (req, res) {
 	lessonGroup.set("title", req.body.title);
     
     for (var i = 0; i < lessonGroupLessons.length; i++) {
+        var Lesson = Parse.Object.extend("Lesson");
+        var lesson = new Lesson();
         
+        lesson.id = lessonGroupLessons[i];
+    
+        lessonGroup.addUnique("lessons", lesson);
     }
 
 	lesson.save(null, {
@@ -187,82 +192,22 @@ router.post('/add', urlencodedParser, function (req, res) {
 	});
 });
 
-router.post('/moveup', urlencodedParser, function (req, res) {
-	var MediaGroup = Parse.Object.extend("MediaGroup");
-	var query = new Parse.Query(MediaGroup);
-	var mediaGroupID = req.body.mediaGroupId;
-	
-	query.get(mediaGroupID, {
-		success : function (mediaGroup) {
-			var findMediaGrouptoMoveDown = new Parse.Query(MediaGroup);
-			findMediaGrouptoMoveDown.equalTo("index",  mediaGroup.get("index") - 1);
-			findMediaGrouptoMoveUp.equalTo("type", mediaGroup.get("type"));
-			
-			findMediaGrouptoMoveDown.find().then(
-				function (results) {
-				results[0].increment("index");
-				results[0].save(null, {
-					success : function () {
-						mediaGroup.increment("index", -1);
 
-						mediaGroup.save(null, {
-							success : function () {
-								res.json("Successful Save!");
-							},
-							error : function (mediaGroup, error) {
-								res.json("Save Error!");
-							}
-						});
-					},
-					error : function (mediaGroup, error) {
-						res.json("Save Error!");
-					}
-				});
-			});			
+router.post('/delete', urlencodedParser, function (req, res) {
+	var LessonGroup = Parse.Object.extend("LessonGroup");
+	var query = new Parse.Query(LessonGroup);
+
+	var lessonGroupID = req.body.id;
+
+	query.get(lessonGroupID, {
+		success : function (myObj) {
+			// The object was retrieved successfully.
+			myObj.destroy({});
+			res.end();
 		},
 		error : function (object, error) {
-			res.json("Move Up Error: " + error);
+			res.json("Deletion Error: " + error);
 		}
 	});
 });
-
-router.post('/movedown', urlencodedParser, function (req, res) {
-	var MediaGroup = Parse.Object.extend("MediaGroup");
-	var query = new Parse.Query(MediaGroup);
-	var mediaGroupID = req.body.mediaGroupId;
-	
-	query.get(mediaGroupID, {
-		success : function (mediaGroup) {
-			var findMediaGrouptoMoveUp = new Parse.Query(MediaGroup);
-			findMediaGrouptoMoveUp.equalTo("index",  mediaGroup.get("index") + 1);
-			findMediaGrouptoMoveUp.equalTo("type", mediaGroup.get("type"));
-			
-			findMediaGrouptoMoveUp.find().then(
-				function (results) {
-				results[0].increment("index", -1);
-				results[0].save(null, {
-					success : function () {
-						mediaGroup.increment("index");
-
-						mediaGroup.save(null, {
-							success : function () {
-								res.json("Successful Save!");
-							},
-							error : function (mediaGroup, error) {
-								res.json("Save Error!");
-							}
-						});
-					},
-					error : function (mediaGroup, error) {
-						res.json("Save Error!");
-					}
-				});
-			});			
-		},
-		error : function (object, error) {
-			res.json("Move Down Error: " + error);
-		}
-	});
-});
-
 module.exports = router;

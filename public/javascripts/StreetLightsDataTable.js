@@ -1446,6 +1446,14 @@ $(document).ready(function () {
 		});
 	};
     
+    $("#viewTeaching").on("click", function (e) {
+		$("#lessonButtons").hide();
+		$("#lessonPageContentHeader").hide();
+		$("#adminButtons").hide();
+        $("#mediaGroupButtons").hide();
+		$("#mediaGroupItemContentHeader").hide();
+	});
+    
     $("#viewLesson").on("click", function (e) {
 		$("#lessonButtons").hide();
 		$("#lessonPageContentHeader").hide();
