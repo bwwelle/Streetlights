@@ -412,8 +412,8 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             label(for='lessonGroupLessonsEdit') Lessons
                             br
                             br
-                            select#lessonGroupLessonsEdit(data-placeholder='Choose a lesson...', multiple, name='lessonGroupLessonsEdit', style='width:500px;', rel='1')   
-                            input#lessonGroupEditId(type='hidden', name='lessonGroupEditId') 
+                            select#lessonGroupLessonsEdit(data-placeholder='Select an option...', rel='1', style='width:500px !important;' multiple='', name='lessonGroupLessonsEdit') 
+                            input#lessonGroupId(type='hidden', name='lessonGroupId') 
                           <button id="btnAddLessonGroup"></button>                          
                           <button id="btnEditLessonGroup"></button>   
                           <button id="btnDeleteLessonGroup"></button>
@@ -444,7 +444,7 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             label(for='teachingLessonGroupsAdd') Lesson Groups
                             br
                             br
-                            select#teachingLessonGroupsAdd(data-placeholder='Choose a lesson group...', multiple, name='teachingLessonGroupsAdd', style='width:500px;', rel='1')   
+                            select#teachingLessonGroupsAdd.required(data-placeholder='Choose a group...', multiple, name='teachingLessonGroupsAdd', style='width:500px;', rel='1')   
                           form#formEditTeaching
                             label(for='teachingTitleEdit') Title
                             br
@@ -521,22 +521,18 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#lessonImageURLEdit.required(type='text', name='lessonImageURLEdit', style='width:500px;', rel='1')    
                             input#lessonId(type='hidden', name='lessonId')
                           form#formEditLessonPage(style='width:100%;overflow:visible;height=200px', name='formEditLessonPage')
-                            label(for='lessonPageEditId') lessonPageId
-                            br
-                            br
-                            input#lessonPageEditId(type='text', name='lessonPageEditId', style='width:500px;', rel='0', readonly='')
-                            br
-                            br
                             label(for='lessonPageItemsEdit') mediaItems
                             br
                             br
-                            select#lessonPageItemsEdit(data-placeholder='Select an option...', rel='1', style='width:500px !important;' multiple='')
+                            select#lessonPageItemsEdit(data-placeholder='Select an option...', rel='0', style='width:500px !important;' multiple='')
+                            input#lessonId(type='hidden', name='lessonId')
+                            input#lessonPageId(type='hidden', name='lessonPageId')
                           form#formAddLessonPage
-                            input#lessonId(type='hidden', name='lessonPageIdNew', rel='0')
                             label(for='lessonPageItemsAdd') mediaItems
                             br
                             br
-                            select#lessonPageItemsAdd(data-placeholder='Choose a media item...', multiple, name='lessonPageItemsAdd', style='width:500px;', rel='1')   
+                            select#lessonPageItemsAdd(data-placeholder='Choose a media item...', multiple, name='lessonPageItemsAdd', style='width:500px;', rel='0')   
+                            input#lessonId(type='hidden', name='lessonId')
               #lessonPageContentHeader.content-box-header(style='display:none')
                 h3#LessonPageContentHeaderLabel Lesson Pages
               #lessonPageTableDiv.tabcontent(style='display:none')
@@ -551,11 +547,9 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             table#lessonpage(cellpadding='0', cellspacing='0', border='0')
                               thead
                                 tr
-                                  lessonPageId
                                   mediaItems
                               tfoot
                                 tr
-                                  lessonPageId
                                   mediaItems
                               // End .clear
               // End #lessondiv

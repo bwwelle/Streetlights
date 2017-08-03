@@ -1,4 +1,5 @@
-$(document).ready(function () {    
+$(document).ready(function () {
+    //Credit
 	var oCreditTable = $('#credit').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				$(nRow).on('click', function () {
@@ -91,6 +92,42 @@ $(document).ready(function () {
 			sAddDeleteEditToolbarSelector : ".dataTables_length"
 		});
         
+    function IntializeCreditDropDownBoxes() {
+		$.ajax({
+			url : "/credit/dropdown"
+		}).done(function (data) {
+			var creditData = data.aaData;
+			
+			$('#formEditMediaItem select[name=producerEdit').empty();
+			$('#formAddMediaItem select[name=mediaitemproducer').empty();
+			$('#formEditMediaGroup select[name=mediaGroupProducerEdit]').empty();
+			$('#formAddMediaGroup select[name=mediaGroupProducerAdd]').empty();
+
+			$('#formEditMediaItem select[name=artistEdit').empty();
+			$('#formAddMediaItem select[name=mediaitemartist').empty();
+			$('#formEditMediaGroup select[name=mediaGroupArtistEdit]').empty();
+			$('#formAddMediaGroup select[name=mediaGroupArtistAdd]').empty();
+
+			for (var i = 0; i < creditData.length; i++) {
+				var credit = creditData[i].name;
+				var creditId = creditData[i].DT_RowId;
+				var optionText = "<option value='" + creditId + "'>" + credit + "</option>";
+
+				$('#formEditMediaItem select[name=producerEdit').append(optionText);
+				$('#formAddMediaItem select[name=mediaitemproducer').append(optionText);
+				$('#formEditMediaGroup select[name=mediaGroupProducerEdit]').append(optionText);
+				$('#formAddMediaGroup select[name=mediaGroupProducerAdd]').append(optionText);
+
+				$('#formEditMediaItem select[name=artistEdit').append(optionText);
+				$('#formAddMediaItem select[name=mediaitemartist').append(optionText);
+				$('#formEditMediaGroup select[name=mediaGroupArtistEdit]').append(optionText);
+				$('#formAddMediaGroup select[name=mediaGroupArtistAdd]').append(optionText);
+			}
+		});
+	}
+     
+
+    //User
     var oUserTable = $('#user').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				$(nRow).on('click', function () {
@@ -182,7 +219,27 @@ $(document).ready(function () {
 			},
 			sAddDeleteEditToolbarSelector : ".dataTables_length"
 		});
+    
+    $("#btnEditUser").on("click", function (e) {
+		$.ajax({
+			type : "GET",
+			data : {
+				"userId" : $('#userEditId').val()
+			},
+			url : "/user",
+			success : function (res) {
+				var objectId = res.userId;
+				var userName = res.userName;
+				var email = res.email;
 
+				$('#userEditId').val(objectId);
+				$('#userNameEdit').val(userName);
+				$('#emailEdit').val(email);
+			}
+		});
+	});
+    
+    //Media Item
 	var oMediaItemTable = $('#mediaitem').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				$(nRow).on('click', function () {
@@ -295,10 +352,7 @@ $(document).ready(function () {
 			"iDisplayStart" : 0,
 			"sPaginationType" : "full_numbers",
 			"bFilter" : false,
-			"deferLoading" : 10,
-            "fnDrawCallback" : function (oSettings) {
-                IntializeLessonPageItemDropDownBoxes();
-			}
+			"deferLoading" : 10
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
 				oMediaItemTable.fnDraw();
@@ -379,13 +433,22 @@ $(document).ready(function () {
                     placeholder : ""
                 }
             ]
+		});    
+    
+	$("#btnAddMediaItem").on("click", function (e) {
+		$('#duration').mask("00:00:00", {
+			placeholder : "__:__:__"
 		});
         
+        $('#imageURL').removeClass('required');
+	});
+    
+    //Lesson
     var oLessonTable = $('#lesson')
         .dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				if(selectedRowId == aData['DT_RowId']){
-					$(nRow).addClass('row_selected');   
+					$(nRow).addClass('row_selected');
 				}   
 				
 				$(nRow).on('click', function () {
@@ -395,9 +458,10 @@ $(document).ready(function () {
 					var imageURL = $('td:eq(1)', nRow).text();
 
 					$('#formEditLesson input[name=lessonId]').val(objectId);
-					$('#formAddLesson input[name=lessonId]').val(objectId);
 					$('#lessonTitleEdit').val(title);
 					$('#lessonImageURLEdit').val(imageURL);
+                    $('#formEditLessonPage input[name=lessonId]').val(objectId);
+                    $('#formAddLessonPage input[name=lessonId]').val(objectId);
                     
 					oLessonPageTable.fnDraw();
 				});
@@ -472,7 +536,123 @@ $(document).ready(function () {
                 }
             ]
 		});
+        
+    $("#saveLesson").on("click", function (e) {
+		var data = [];
+
+		if ($("#formEditLesson input[name=lessonId]").val() == "" || $("#formEditLesson input[name=lessonId]").val() == null) {
+			data = {
+				title : $('#lessonTitleAdd').val(),
+				imageURL : $('#lessonImageURLAdd').val()
+			};
+
+			lessonAddAjaxCall(data);
+		} else {
+			data = {
+				title : $('#lessonTitleEdit').val(),
+				imageURL : $('#lessonImageURLEdit').val()
+			};
+
+			lessonUpdateAjaxCall(data);
+		}
+	});
     
+    function lessonAddAjaxCall(opts) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"title" : opts.title,
+                "imageURL" : opts.imageURL
+            },
+			url : "/lesson/add",
+			success : function (res) {
+                if (res.Outcome == "Failure")
+                    alert("Lesson Save Failure");
+                else
+                {
+                    oLessonTable.fnDraw();
+                    oLessonPageTable.fnDraw();
+
+                    $("#lessonPageTableDiv").show();
+                    $("#lessonPageContentHeader").show();
+                    $("#formEditLesson").show();
+
+                    $('#lessonTitleEdit').val(opts.title);
+                    $('#lessonImageURLEdit').val(opts.imageURL);
+
+                    $("#formAddLessonPage input[name=lessonId]").val(res.LessonId);
+                    $("#formEditLesson input[name=lessonId]").val(res.LessonId);
+                    $("#formEditLessonPage input[name=lessonId]").val(res.LessonId);
+                    
+                    $("#formAddLesson").hide();
+
+                    alert("Successfully Saved Lesson");
+                }
+			}
+		});
+	};
+	
+	function lessonUpdateAjaxCall(opts) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"lessonId" : $("#formEditLesson input[name=lessonId]").val(),
+				"title" : opts.title,
+				"imageURL" : opts.imageURL
+			},
+			url : "/lesson/edit",
+			success : function (res) {
+				oLessonTable.fnDraw();
+
+				alert("Successfully Saved Lesson");
+			}
+		});
+	};
+    
+    $("#cancelLesson").on("click", function (e) {
+		$("#formAddLessonPage input[name=lessonId]").val("");
+		$("#formEditLesson input[name=lessonId]").val("");
+		$("#lessoneditadddiv").hide();
+		$("#formEditLesson").hide();
+		$("#formAddLesson").hide();
+		$("#lessonPage").hide();
+		$("#btnAddLessonPage").hide();
+		$("#btnDeleteLessonPage").hide();
+		$("#lessondiv").show();
+		$("#lessonButtons").hide();
+		$("#lessonPageContentHeader").hide();
+	});
+        
+     $("#btnEditLesson").on("click", function (e) {
+		$("#lessondiv").hide();
+		$("#lessonButtons").show();
+		$("#lessoneditadddiv").show();
+		$("#formAddLesson").hide();
+		$("#formEditLesson").show();
+		$("#lessonPageTableDiv").show();
+		$("#lessonpage").show();
+		$("#btnAddLessonPage").show();
+		$("#btnDeleteLessonPage").show();
+		$("#lessonPageContentHeader").show();
+	});
+    
+	$("#btnAddLesson").on("click", function (e) {
+		$("#formAddLesson input[name=lessonId]").val("");
+		$("#formAddLesson input[name=lessonTitleAdd]").val("");
+		$("#formAddLesson input[name=lessonImageURLAdd]").val("");
+
+		$("#lessondiv").hide();
+		$("#lessoneditadddiv").show();
+		$("#formEditLesson").hide();
+		$("#lessonPageContentHeader").hide();
+
+		$("#lessonButtons").show();
+		$("#formAddLesson").show();
+        
+        $("#lessonPageTableDiv").hide();
+	});
+    
+    //Lesson Page
     var oLessonPageTable = $('#lessonpage').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				if(selectedRowId == aData['DT_RowId']){
@@ -481,7 +661,9 @@ $(document).ready(function () {
 				
 				$(nRow).on('click', function () {
 					selectedRowId = $(nRow).attr("id");                   
-                    $("#formEditLessonPage input[name=lessonPageEditId]").val(selectedRowId);
+                    $("#formEditLessonPage input[name=lessonPageId]").val(selectedRowId);
+                    
+                    IntializeLessonPageItemDropDownBoxes();
 				});
 			},
 			"bJQueryUI" : true,
@@ -499,8 +681,6 @@ $(document).ready(function () {
 				}
 			],
 			"aoColumns" : [{
-					"mDataProp" : "lessonPageId"
-				}, {
 					"mDataProp" : "mediaItems"
 				}
 			],
@@ -510,7 +690,7 @@ $(document).ready(function () {
             "fnServerParams" : function (aoData) {
 				aoData.push({
 					"name" : "lessonId",
-					"value" : $('#lessonId').val()
+					"value" : $('#formEditLesson input[name=lessonId]').val()
 				});
 			},
 			"bFilter" : false,
@@ -524,9 +704,7 @@ $(document).ready(function () {
 			fnOnEdited : function (value, settings) {
 				oMediaItemTable.fnDraw();
 				oLessonPageTable.fnDraw();
-			},
-			sAddURL : "/lessonpage/add",
-			sAddHttpMethod : "POST",
+			},			
 			sDeleteHttpMethod : "POST",
 			sDeleteURL : "/lessonpage/delete",
 			sAddNewRowFormId : "formAddLessonPage",
@@ -572,13 +750,124 @@ $(document).ready(function () {
             aoColumns: [
                 {
                     placeholder : ""
-                },
-                {
-                    placeholder : ""
                 }
             ]
 		});
+        
+	$("#btnDeleteLessonPage").on("click", function (e) {
+		if (ConfirmDelete) {
+			$.ajax({
+				type : "POST",
+				data : {
+					"lessonId" : $('#formEditLessonPage input[name=lessonId]').val(),
+					"lessonPageId" : $("#formEditLessonPage input[name=lessonPageId]").val()
+				},
+				url : "/lessonPage/delete",
+				success : function () {
+					oLessonPageTable.fnDraw();
+				}
+			});
+		}
+	});
+    
+    $("#btnAddLessonPage").on("click", function (e) {
+		$("#formAddLessonPage").parent().height(300);
+        $("#formAddLessonPage").height(200);
+        
+        IntializeLessonPageItemDropDownBoxes();
+	});
 
+    $("#btnEditLessonPage").on("click", function (e) {
+        $("#formEditLessonPage").parent().height(300);
+        $("#formEditLessonPage").height(200);
+        
+        InitializeLessonPageEditItems();
+    });
+    
+    function IntializeLessonPageItemDropDownBoxes() {
+        $.ajax({
+			type : "GET",
+			data : {
+				"type" : "lessonPageItem"
+			},
+			url : "/mediaitem/dropdown",
+			success : function (data) {
+				var mediaItemData = data.aaData;
+                $('#lessonPageItemsEdit').empty();
+                $("#lessonPageItemsEdit").multiple = true;
+                $("#lessonPageItemsEdit").chosen({ width: '100%' });      
+
+                $('#lessonPageItemsAdd').empty();
+                $("#lessonPageItemsAdd").multiple = true;
+                $("#lessonPageItemsAdd").chosen({ width: '100%' });                  
+                
+                for (var i = 0; i < mediaItemData.length; i++) {
+                    var mediaItemName = mediaItemData[i].name;
+                    var mediaItemId = mediaItemData[i].DT_RowId;
+                    var optionText = "<option value='" + mediaItemId + "'>" + mediaItemName + "</option>"; ;
+
+                    $("#lessonPageItemsEdit").append(optionText);       
+                    $("#lessonPageItemsAdd").append(optionText);                        
+                }               
+                
+                $("#lessonPageItemsEdit").trigger("chosen:updated");
+                $("#lessonPageItemsAdd").trigger("chosen:updated");
+			}
+		});
+	};
+    
+    function InitializeLessonPageEditItems(){
+        $.ajax({
+			type : "GET",
+			data : {
+				"lessonPageId" : $('#formEditLessonPage input[name=lessonPageId]').val()
+			},
+			url : "/lessonpage",
+			success : function (res) {
+                $('#lessonPageItemsEdit').children().prop('selected', false);
+                 
+                for (var i = 0; i < res.lessonPageMediaItems.length; i++) {                
+                    $('#lessonPageItemsEdit').find('option[value=' + res.lessonPageMediaItems[i] + ']').attr('selected', 'selected');
+                }
+                
+                $('#lessonPageItemsEdit').trigger('chosen:updated');
+            }
+		});
+    };  
+    
+    $("#btnAddLessonPageOk").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"lessonId" : $('#formAddLessonPage input[name=lessonId]').val(),
+                "lessonPageItems": $("#formAddLessonPage select[name=lessonPageItemsAdd]").val()
+			},
+			url : "/lessonPage/add",
+			success : function () {
+				$("#formAddLessonPage").dialog('close');
+
+				oLessonPageTable.fnDraw();
+			}
+		});
+	});
+
+    $("#btnEditLessonPageOk").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+                "lessonPageId": $("#formEditLessonPage input[name=lessonPageId]").val(),
+                "lessonPageItems": $("#lessonPageItemsEdit").val()
+			},
+			url : "/lessonpage/edit",
+			success : function (res) {
+				$("#formEditLessonPage").dialog('close');
+
+				oLessonPageTable.fnDraw();
+			}
+		});
+	});
+    
+    //Media Group
 	var oMediaGroupTable = $('#mediagroup')
 		.dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -725,7 +1014,201 @@ $(document).ready(function () {
                 }
             ]
 		});
+        
+    $("#saveMediaGroup").on("click", function (e) {
+		var data = [];
+
+		if ($("#formEditMediaGroup input[name=mediaGroupId]").val() == "" || $("#formEditMediaGroup input[name=mediaGroupId]").val() == null) {
+			data = {
+				title : $('#mediaGroupTitleAdd').val(),
+				type : $('#mediaGroupTypeAdd').val(),
+				index : $('#mediaGroupIndexAdd').val(),
+				detail : $('#mediaGroupDetailAdd').val(),
+				imageURL : $('#mediaGroupImageURLAdd').val(),
+				producer : $('#mediaGroupProducerAdd').val(),
+				artist : $('#mediaGroupArtistAdd').val()
+			};
+
+			mediaGroupAddAjaxCall(data);
+		} else {
+			data = {
+				title : $('#mediaGroupTitleEdit').val(),
+				type : $('#mediaGroupTypeEdit').val(),
+				index : $('#mediaGroupIndexEdit').val(),
+				detail : $('#mediaGroupDetailEdit').val(),
+				imageURL : $('#mediaGroupImageURLEdit').val(),
+				producer : $('#mediaGroupProducerEdit').val(),
+				artist : $('#mediaGroupArtistEdit').val()
+			};
+
+			mediaGroupUpdateAjaxCall(data);
+		}
+	});
+        
+    function mediaGroupAddAjaxCall(opts) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"title" : opts.title,
+				"type" : opts.type,
+				"index" : opts.index,
+				"detail" : opts.detail,
+				"imageURL" : opts.imageURL,
+				"producer" : opts.producer,
+				"artist" : opts.artist
+			},
+			url : "/mediagroup/add",
+			success : function (res) {
+				oMediaGroupTable.fnDraw();
+
+				oMediaGroupItemTable.fnDraw();
+
+				$("#mediaGroupItemTableDiv").show();
+				$("#mediaGroupItemContentHeader").show();
+				$("#formEditMediaGroup").show();
+
+				$('#mediaGroupTitleEdit').val(opts.title);
+				$('#mediaGroupTypeEdit').val(opts.type);
+				$('#mediaGroupIndexEdit').val(opts.index);
+				$('#mediaGroupDetailEdit').val(opts.detail);
+				$('#mediaGroupImageURLEdit').val(opts.imageURL);
+
+				$("#formAddMediaGroupItem input[name=mediaGroupId]").val("");
+				$("#formEditMediaGroup input[name=mediaGroupId]").val(res);
+
+				$("#formAddMediaGroup").hide();
+
+				alert("Successfully Saved Media Group");
+			}
+		});
+	};
+	
+	function mediaGroupUpdateAjaxCall(opts) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val(),
+				"title" : opts.title,
+				"type" : opts.type,
+				"index" : opts.index,
+				"detail" : opts.detail,
+				"imageURL" : opts.imageURL,
+				"producer" : opts.producer,
+				"artist" : opts.artist
+			},
+			url : "/mediagroup/update",
+			success : function (res) {
+				oMediaGroupTable.fnDraw();
+
+				//bDestroy for mediagroupitem table?
+				alert("Successfully Saved Media Group");
+			}
+		});
+	};
     
+    $("#mediaGroupTypeAdd").on("change", function () {
+		var selected = $(this).val();
+		mediaGroupTypeAddAjaxCall(selected);
+	});
+    
+	$("#cancelMediaGroup").on("click", function (e) {
+		$("#formAddMediaGroupItem input[name=mediaGroupId]").val("");
+		$("#formEditMediaGroup input[name=mediaGroupId]").val("");
+		$("#mediagroupeditadddiv").hide();
+		$("#formEditMediaGroup").hide();
+		$("#formAddMediaGroup").hide();
+		$("#mediagroupitem").hide();
+		$("#btnAddMediaGroupItem").hide();
+		$("#btnDeleteMediaGroupItem").hide();
+		$("#mediagroupdiv").show();
+		$("#mediaGroupButtons").hide();
+		$("#mediaGroupItemContentHeader").hide();
+	});
+
+	function mediaGroupTypeAddAjaxCall(opts) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"type" : opts
+			},
+			url : "/mediagroup/lastindexpertype",
+			success : function (res) {
+				var lastIndex = parseInt(res.lastIndex) + 1;
+			
+				$("#formAddMediaGroup input[name=mediaGroupIndexAdd]").val(lastIndex);
+			}
+		});
+	};
+
+	$("#btnMoveAlbumUp").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val()
+			},
+			url : "/mediagroup/moveup",
+			success : function () {
+				var oSettings = oMediaGroupTable.fnSettings();				
+				oMediaGroupTable.fnDraw(oSettings);
+				
+				$("#btnMoveAlbumUp").removeClass('ui-state-focus');
+			}
+		});
+	});
+    
+	var selectedRowId = "";
+    
+	$("#btnMoveAlbumDown").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val()
+			},
+			url : "/mediagroup/movedown",
+			success : function () {
+				var oSettings = oMediaGroupTable.fnSettings();				
+				oMediaGroupTable.fnDraw(oSettings);
+				
+				$("#btnMoveAlbumDown").removeClass('ui-state-focus');
+			}
+		});
+	});	
+    
+    $("#btnEditMediaGroup").on("click", function (e) {
+		$("#mediagroupdiv").hide();
+		$("#mediaGroupButtons").show();
+		$("#mediagroupeditadddiv").show();
+		$("#formAddMediaGroup").hide();
+		$("#formEditMediaGroup").show();
+		$("#mediaGroupItemTableDiv").show();
+		$("#mediagroupitem").show();
+		$("#btnAddMediaGroupItem").show();
+		$("#btnDeleteMediaGroupItem").show();
+		$("#mediaGroupItemContentHeader").show();
+	});
+
+	$("#btnAddMediaGroup").on("click", function (e) {
+		FillIndexTextBox();
+		
+		$("#formAddMediaGroup input[name=mediaGroupId]").val("");
+		$("#formAddMediaGroup input[name=mediaGroupTitleAdd]").val("");
+		
+		$("#formAddMediaGroup input[name=mediaGroupDetailAdd]").val("");
+		$("#formAddMediaGroup input[name=mediaGroupImageURLAdd]").val("");
+		$("#formAddMediaGroup select[name=mediaGroupTypeAdd]").selectedIndex = 0;
+		$("#formAddMediaGroup select[name=mediaGroupProducerAdd]").selectedIndex = 0;
+		$("#formAddMediaGroup select[name=mediaGroupArtistAdd]").selectedIndex = 0;
+
+		$("#mediagroupdiv").hide();
+		$("#mediagroupeditadddiv").show();
+		$("#formEditMediaGroup").hide();
+		$("#mediaGroupItemContentHeader").hide();
+
+		$("#mediaGroupButtons").show();
+		$("#formAddMediaGroup").show();
+	});
+    
+    //Lesson Group
     var oLessonGroupTable = $('#lessongroup')
 		.dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -739,10 +1222,11 @@ $(document).ready(function () {
 					var title = $('td:eq(0)', nRow).text();
 					var lessons = $('td:eq(1)', nRow).text();
 
-					$('#formEditLessonGroup input[name=lessonGroupEditId]').val(objectId);
+					$('#formEditLessonGroup input[name=lessonGroupId]').val(objectId);
 					$('#formAddLessonGroup input[name=lessonGroupId]').val(objectId);
 					$('#lessonGroupTitleEdit').val(title);
-					$('#lessonGroupLessonsEdit').val(lessons);
+					
+                    IntializeLessonGroupLessonsDropDownBoxes();
 				});
 			},			
 			"bJQueryUI" : true,
@@ -775,14 +1259,7 @@ $(document).ready(function () {
 			fnOnDeleted : function (value, settings) {
 				oLessonGroupTable.fnDraw();
 			},
-			fnOnEdited : function (value, settings) {
-				oLessonGroupTable.fnDraw();
-			},
-			sAddURL : "/lessongroup/add",
-			sAddHttpMethod : "POST",
-			sEditHttpMethod : "GET",
 			sDeleteHttpMethod : "POST",
-			sEditURL : "/lessongroup/edit",
 			sDeleteURL : "/lessongroup/delete",
 			sAddNewRowFormId : "formAddLessonGroup",
 			sAddNewRowButtonId : "btnAddLessonGroup",
@@ -821,7 +1298,102 @@ $(document).ready(function () {
                 }
             ]
 		});
+    
+    $("#btnEditLessonGroup").on("click", function (e) {
+		$("#formEditLessonGroup").parent().height(300);
+        $("#formEditLessonGroup").height(200);
+        
+        InitializeLessonGroupEditLessons();
+	});
+    
+    $("#btnAddLessonGroup").on("click", function (e) {
+		$("#formAddLessonGroup").parent().height(300);
+        $("#formAddLessonGroup").height(200);
+        
+        IntializeTeachingLessonGroupsDropDownBoxes();
+	});
+    
+    $("#btnEditLessonGroupOk").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+                "lessonGroupId": $("#formEditLessonGroup input[name=lessonGroupId]").val(),
+                "lessonGroupLessonsEdit": $("#formEditLessonGroup select[name=lessonGroupLessonsEdit]").val(),
+			},
+			url : "/lessongroup/update",
+			success : function (res) {
+				$("#formEditLessonGroup").dialog('close');
 
+				oLessonGroupTable.fnDraw();
+			}
+		});
+	});
+    
+    $("#btnAddLessonGroupOk").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+                "title" : $("#formAddLessonGroup input[name=lessonGroupTitle]").val(),
+                "lessons": $("#formAddLessonGroup select[name=lessonGroupLessonsAdd]").val()
+			},
+			url : "/lessonGroup/add",
+			success : function () {
+				$("#formAddLessonGroup").dialog('close');
+
+				oLessonGroupTable.fnDraw();
+			}
+		});
+	});
+    
+    function IntializeLessonGroupLessonsDropDownBoxes() {
+        $.ajax({
+			type : "GET",
+			url : "/lesson/dropdown",
+			success : function (data) {
+				var lessonData = data.aaData;
+                $("#lessonGroupLessonsEdit").empty();
+                $("#lessonGroupLessonsEdit").multiple = true;                
+                $("#lessonGroupLessonsEdit").chosen({ width: '100%' });     
+
+                $("#lessonGroupLessonsAdd").empty();
+                $("#lessonGroupLessonsAdd").multiple = true;
+                $("#lessonGroupLessonsAdd").chosen({ width: '100%' });                   
+                
+                for (var i = 0; i < lessonData.length; i++) {
+                    var title = lessonData[i].title;
+                    var lessonId = lessonData[i].DT_RowId;
+                    var optionText = "<option value='" + lessonId + "'>" + title + "</option>";
+
+                    $("#lessonGroupLessonsEdit").append(optionText);    
+                    $("#lessonGroupLessonsAdd").append(optionText);                        
+                }               
+                
+                $("#lessonGroupLessonsEdit").trigger("chosen:updated");
+                $("#lessonGroupLessonsAdd").trigger("chosen:updated");                
+			}
+		});
+	}
+    
+    function InitializeLessonGroupEditLessons(){
+        $.ajax({
+			type : "GET",
+			data : {
+				"lessonGroupId" : $('#formEditLessonGroup input[name=lessonGroupId]').val()
+			},
+			url : "/lessongroup",
+			success : function (res) {
+                $('#lessonGroupLessonsEdit').children().prop('selected', false);
+                
+                for (var i = 0; i < res.lessonGroupLessons.length; i++) {                
+                    $('#lessonGroupLessonsEdit').find('option[value=' + res.lessonGroupLessons[i] + ']').attr('selected', 'selected');
+                }
+                
+                $('#lessonGroupLessonsEdit').trigger('chosen:updated');
+            }
+		});
+    }
+
+    //Teaching
     var oTeachingTable = $('#teaching')
 		.dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -913,6 +1485,65 @@ $(document).ready(function () {
             ]
 		});
         
+    $("#btnEditTeaching").on("click", function (e) {
+		$("#formEditTeaching").parent().height(300);
+        $("#formEditTeaching").height(200);
+        
+        InitializeTeachingEditLessonGroups();
+	});
+    
+    $("#btnAddTeaching").on("click", function (e) {
+		$("#formAddTeaching").parent().height(300);
+        $("#formAddTeaching").height(200);
+	});
+    
+    function IntializeTeachingLessonGroupsDropDownBoxes() {
+        $.ajax({
+			type : "GET",
+			url : "/lessonGroup/dropdown",
+			success : function (data) {
+				var lessonGroupData = data.aaData;
+                $("#teachingLessonGroupsEdit").empty();
+                $("#teachingLessonGroupsEdit").multiple = true;
+                $("#teachingLessonGroupsEdit").chosen({ width: '100%' });                
+                
+                $("#teachingLessonGroupsAdd").empty();
+                $("#teachingLessonGroupsAdd").multiple = true;
+                $("#teachingLessonGroupsAdd").chosen({ width: '100%' });    
+                
+                for (var i = 0; i < lessonGroupData.length; i++) {
+                    var title = lessonGroupData[i].title;
+                    var teachingId = lessonGroupData[i].DT_RowId;
+                    var optionText = "<option value='" + teachingId + "'>" + title + "</option>"; ;
+
+                    $("#teachingLessonGroupsEdit").append(optionText);  
+                    $("#teachingLessonGroupsAdd").append(optionText);                    
+                }               
+                
+                $("#teachingLessonGroupsEdit").trigger("chosen:updated");
+                $("#teachingLessonGroupsAdd").trigger("chosen:updated");
+			}
+		});
+	}
+    
+    function InitializeTeachingEditLessonGroups(){
+        $.ajax({
+			type : "GET",
+			data : {
+				"teachingId" : $('#formEditTeaching input[name=teachingEditId]').val()
+			},
+			url : "/teaching",
+			success : function (res) {
+                for (var i = 0; i < res.teachingLessonGroups.length; i++) {                
+                    $('#teachingLessonGroupsEdit').find('option[value=' + res.teachingLessonGroups[i] + ']').attr('selected', 'selected');
+                }
+                
+                $('#teachingLessonGroupsEdit').trigger('chosen:updated');
+            }
+		});
+    }
+    
+    //Media Group Item
 	var oMediaGroupItemTable = $('#mediagroupitem').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				if(selectedRowId == aData['DT_RowId']){
@@ -1028,553 +1659,8 @@ $(document).ready(function () {
                 }
             ]
 		});
-
-	oMediaGroupItemTable.fnDraw();
-	oCreditTable.fnDraw();
-	oMediaGroupTable.fnDraw();
-	
-	oMediaItemTable.fnDraw();
-    
-    oLessonPageTable.fnDraw();
-    oLessonTable.fnDraw();
-    oLessonGroupTable.fnDraw();
-
-	$("#btnEditMediaGroup").on("click", function (e) {
-		$("#mediagroupdiv").hide();
-		$("#mediaGroupButtons").show();
-		$("#mediagroupeditadddiv").show();
-		$("#formAddMediaGroup").hide();
-		$("#formEditMediaGroup").show();
-		$("#mediaGroupItemTableDiv").show();
-		$("#mediagroupitem").show();
-		$("#btnAddMediaGroupItem").show();
-		$("#btnDeleteMediaGroupItem").show();
-		$("#mediaGroupItemContentHeader").show();
-	});
-
-	$("#btnAddMediaGroup").on("click", function (e) {
-		FillIndexTextBox();
-		
-		$("#formAddMediaGroup input[name=mediaGroupId]").val("");
-		$("#formAddMediaGroup input[name=mediaGroupTitleAdd]").val("");
-		
-		$("#formAddMediaGroup input[name=mediaGroupDetailAdd]").val("");
-		$("#formAddMediaGroup input[name=mediaGroupImageURLAdd]").val("");
-		$("#formAddMediaGroup select[name=mediaGroupTypeAdd]").selectedIndex = 0;
-		$("#formAddMediaGroup select[name=mediaGroupProducerAdd]").selectedIndex = 0;
-		$("#formAddMediaGroup select[name=mediaGroupArtistAdd]").selectedIndex = 0;
-
-		$("#mediagroupdiv").hide();
-		$("#mediagroupeditadddiv").show();
-		$("#formEditMediaGroup").hide();
-		$("#mediaGroupItemContentHeader").hide();
-
-		$("#mediaGroupButtons").show();
-		$("#formAddMediaGroup").show();
-	});
-    
-    $("#btnEditLesson").on("click", function (e) {
-		$("#lessondiv").hide();
-		$("#lessonButtons").show();
-		$("#lessoneditadddiv").show();
-		$("#formAddLesson").hide();
-		$("#formEditLesson").show();
-		$("#lessonPageTableDiv").show();
-		$("#lessonpage").show();
-		$("#btnAddLessonPage").show();
-		$("#btnDeleteLessonPage").show();
-		$("#lessonPageContentHeader").show();
-	});
-    
-	$("#btnAddLesson").on("click", function (e) {
-		FillIndexTextBox();
-		
-		$("#formAddLesson input[name=lessonId]").val("");
-		$("#formAddLesson input[name=lessonTitleAdd]").val("");
-		$("#formAddLesson input[name=lessonImageURLAdd]").val("");
-
-		$("#lessondiv").hide();
-		$("#lessoneditadddiv").show();
-		$("#formEditLesson").hide();
-		$("#lessonPageContentHeader").hide();
-
-		$("#lessonButtons").show();
-		$("#formAddLesson").show();
-	});
-	
-	function FillIndexTextBox()
-	{
-		$.ajax({
-			url : "/mediagroup/lastindex"
-		}).done(function (data) {
-			var lastIndex = parseInt(data) + 1;
-			
-			$("#formAddMediaGroup input[name=mediaGroupIndexAdd]").val(lastIndex);		
-		});
-	} 
-
-	function IntializeCreditDropDownBoxes() {
-		$.ajax({
-			url : "/credit/dropdown"
-		}).done(function (data) {
-			var creditData = data.aaData;
-			
-			$('#formEditMediaItem select[name=producerEdit').empty();
-			$('#formAddMediaItem select[name=mediaitemproducer').empty();
-			$('#formEditMediaGroup select[name=mediaGroupProducerEdit]').empty();
-			$('#formAddMediaGroup select[name=mediaGroupProducerAdd]').empty();
-
-			$('#formEditMediaItem select[name=artistEdit').empty();
-			$('#formAddMediaItem select[name=mediaitemartist').empty();
-			$('#formEditMediaGroup select[name=mediaGroupArtistEdit]').empty();
-			$('#formAddMediaGroup select[name=mediaGroupArtistAdd]').empty();
-
-			for (var i = 0; i < creditData.length; i++) {
-				var credit = creditData[i].name;
-				var creditId = creditData[i].DT_RowId;
-				var optionText = "<option value='" + creditId + "'>" + credit + "</option>";
-
-				$('#formEditMediaItem select[name=producerEdit').append(optionText);
-				$('#formAddMediaItem select[name=mediaitemproducer').append(optionText);
-				$('#formEditMediaGroup select[name=mediaGroupProducerEdit]').append(optionText);
-				$('#formAddMediaGroup select[name=mediaGroupProducerAdd]').append(optionText);
-
-				$('#formEditMediaItem select[name=artistEdit').append(optionText);
-				$('#formAddMediaItem select[name=mediaitemartist').append(optionText);
-				$('#formEditMediaGroup select[name=mediaGroupArtistEdit]').append(optionText);
-				$('#formAddMediaGroup select[name=mediaGroupArtistAdd]').append(optionText);
-			}
-		});
-	}
-
-	$("#btnAddMediaGroupItem").on("click", function (e) {
-		IntializeMediaGroupItemDropDownBoxes();
-	});
-    
-	function IntializeMediaGroupItemDropDownBoxes() {
-        $.ajax({
-			type : "GET",
-			data : {
-				"type" : "mediaGroupItem"
-			},
-			url : "/mediaitem/dropdown",
-			success : function (data) {
-				var mediaItemData = data.aaData;
-                $('#mediaGroupItemNameAdd').empty();
-
-                for (var i = 0; i < mediaItemData.length; i++) {
-                    var mediaItemName = mediaItemData[i].name;
-                    var mediaItemId = mediaItemData[i].DT_RowId;
-                    var optionText = "<option value='" + mediaItemId + "'>" + mediaItemName + "</option>"; ;
-
-                    $('#mediaGroupItemNameAdd').append(optionText);
-                }
-			}
-		});
-	}   
-    
-    $("#btnAddLessonPage").on("click", function (e) {
-		$("#formAddLessonPage").parent().height(300);
-        $("#formAddLessonPage").height(200);
-	});
-
-    $("#btnEditLessonPage").on("click", function (e) {
-        $("#formEditLessonPage").parent().height(300);
-        $("#formEditLessonPage").height(200);
         
-        InitializeLessonPageEditItems();
-    });
-    
-    function IntializeLessonPageItemDropDownBoxes() {
-        $.ajax({
-			type : "GET",
-			data : {
-				"type" : "lessonPageItem"
-			},
-			url : "/mediaitem/dropdown",
-			success : function (data) {
-				var mediaItemData = data.aaData;
-                $('#lessonPageItemsEdit').empty();
-                $("#lessonPageItemsEdit").multiple = true;
-                $("#lessonPageItemsEdit").chosen({ width: '100%' });      
-
-                $('#lessonPageItemsAdd').empty();
-                $("#lessonPageItemsAdd").multiple = true;
-                $("#lessonPageItemsAdd").chosen({ width: '100%' });                  
-                
-                for (var i = 0; i < mediaItemData.length; i++) {
-                    var mediaItemName = mediaItemData[i].name;
-                    var mediaItemId = mediaItemData[i].DT_RowId;
-                    var optionText = "<option value='" + mediaItemId + "'>" + mediaItemName + "</option>"; ;
-
-                    $("#lessonPageItemsEdit").append(optionText);       
-                    $("#lessonPageItemsAdd").append(optionText);                        
-                }               
-                
-                $("#lessonPageItemsEdit").trigger("chosen:updated");
-                $("#lessonPageItemsAdd").trigger("chosen:updated");
-			}
-		});
-	}
-    
-    function InitializeLessonPageEditItems(){
-        $.ajax({
-			type : "GET",
-			data : {
-				"lessonPageId" : $('#formEditLessonPage input[name=lessonPageEditId]').val()
-			},
-			url : "/lessonpage",
-			success : function (res) {
-                for (var i = 0; i < res.lessonPageMediaItems.length; i++) {                
-                    $('#lessonPageItemsEdit').find('option[value=' + res.lessonPageMediaItems[i] + ']').attr('selected', 'selected');
-                }
-                
-                $('#lessonPageItemsEdit').trigger('chosen:updated');
-            }
-		});
-    }       
-    
-    $("#btnEditTeaching").on("click", function (e) {
-		$("#formEditTeaching").parent().height(300);
-        $("#formEditTeaching").height(200);
-        
-        InitializeTeachingEditLessonGroups();
-	});
-    
-    $("#btnAddTeaching").on("click", function (e) {
-		$("#formAddTeaching").parent().height(300);
-        $("#formAddTeaching").height(200);
-	});
-    
-    function IntializeTeachingLessonGroupsDropDownBoxes() {
-        $.ajax({
-			type : "GET",
-			url : "/lessonGroup/dropdown",
-			success : function (data) {
-				var lessonGroupData = data.aaData;
-                $("#teachingLessonGroupsEdit").empty();
-                $("#teachingLessonGroupsEdit").multiple = true;
-                $("#teachingLessonGroupsEdit").chosen({ width: '100%' });                
-                
-                $("#teachingLessonGroupsAdd").empty();
-                $("#teachingLessonGroupsAdd").multiple = true;
-                $("#teachingLessonGroupsAdd").chosen({ width: '100%' });    
-                
-                for (var i = 0; i < lessonGroupData.length; i++) {
-                    var title = lessonGroupData[i].title;
-                    var teachingId = lessonGroupData[i].DT_RowId;
-                    var optionText = "<option value='" + teachingId + "'>" + title + "</option>"; ;
-
-                    $("#teachingLessonGroupsEdit").append(optionText);  
-                    $("#teachingLessonGroupsAdd").append(optionText);                    
-                }               
-                
-                $("#teachingLessonGroupsEdit").trigger("chosen:updated");
-                $("#teachingLessonGroupsAdd").trigger("chosen:updated");
-			}
-		});
-	}
-    
-    function InitializeTeachingEditLessonGroups(){
-        $.ajax({
-			type : "GET",
-			data : {
-				"teachingId" : $('#formEditTeaching input[name=teachingEditId]').val()
-			},
-			url : "/teaching",
-			success : function (res) {
-                for (var i = 0; i < res.teachingLessonGroups.length; i++) {                
-                    $('#teachingLessonGroupsEdit').find('option[value=' + res.teachingLessonGroups[i] + ']').attr('selected', 'selected');
-                }
-                
-                $('#teachingLessonGroupsEdit').trigger('chosen:updated');
-            }
-		});
-    }
-    
-    $("#btnEditLessonGroup").on("click", function (e) {
-		$("#formEditLessonGroup").parent().height(300);
-        $("#formEditLessonGroup").height(200);
-        
-        InitializeLessonGroupEditLessons();
-	});
-    
-    $("#btnAddLessonGroup").on("click", function (e) {
-		$("#formAddLessonGroup").parent().height(300);
-        $("#formAddLessonGroup").height(200);
-	});
-    
-    function IntializeLessonGroupLessonsDropDownBoxes() {
-        $.ajax({
-			type : "GET",
-			url : "/lesson/dropdown",
-			success : function (data) {
-				var lessonData = data.aaData;
-                $("#lessonGroupLessonsEdit").empty();
-                $("#lessonGroupLessonsEdit").multiple = true;                
-                $("#lessonGroupLessonsEdit").chosen({ width: '100%' });     
-
-                $("#lessonGroupLessonsAdd").empty();
-                $("#lessonGroupLessonsAdd").multiple = true;
-                $("#lessonGroupLessonsAdd").chosen({ width: '100%' });                   
-                
-                for (var i = 0; i < lessonData.length; i++) {
-                    var title = lessonData[i].title;
-                    var lessonId = lessonData[i].DT_RowId;
-                    var optionText = "<option value='" + lessonId + "'>" + title + "</option>";
-
-                    $("#lessonGroupLessonsEdit").append(optionText);    
-                    $("#lessonGroupLessonsAdd").append(optionText);                        
-                }               
-                
-                $("#lessonGroupLessonsEdit").trigger("chosen:updated");
-                $("#lessonGroupLessonsAdd").trigger("chosen:updated");                
-			}
-		});
-	}
-    
-    function InitializeLessonGroupEditLessons(){
-        $.ajax({
-			type : "GET",
-			data : {
-				"lessonGroupId" : $('#formEditLessonGroup input[name=lessonGroupEditId]').val()
-			},
-			url : "/lessongroup",
-			success : function (res) {
-                for (var i = 0; i < res.lessonGroupLessons.length; i++) {                
-                    $('#lessonGroupLessonsEdit').find('option[value=' + res.lessonGroupLessons[i] + ']').attr('selected', 'selected');
-                }
-                
-                $('#lessonGroupLessonsEdit').trigger('chosen:updated');
-            }
-		});
-    }
-
-	$("#saveMediaGroup").on("click", function (e) {
-		var data = [];
-
-		if ($("#formEditMediaGroup input[name=mediaGroupId]").val() == "" || $("#formEditMediaGroup input[name=mediaGroupId]").val() == null) {
-			data = {
-				title : $('#mediaGroupTitleAdd').val(),
-				type : $('#mediaGroupTypeAdd').val(),
-				index : $('#mediaGroupIndexAdd').val(),
-				detail : $('#mediaGroupDetailAdd').val(),
-				imageURL : $('#mediaGroupImageURLAdd').val(),
-				producer : $('#mediaGroupProducerAdd').val(),
-				artist : $('#mediaGroupArtistAdd').val()
-			};
-
-			mediaGroupAddAjaxCall(data);
-		} else {
-			data = {
-				title : $('#mediaGroupTitleEdit').val(),
-				type : $('#mediaGroupTypeEdit').val(),
-				index : $('#mediaGroupIndexEdit').val(),
-				detail : $('#mediaGroupDetailEdit').val(),
-				imageURL : $('#mediaGroupImageURLEdit').val(),
-				producer : $('#mediaGroupProducerEdit').val(),
-				artist : $('#mediaGroupArtistEdit').val()
-			};
-
-			mediaGroupUpdateAjaxCall(data);
-		}
-	});
-    
-    $("#saveLesson").on("click", function (e) {
-		var data = [];
-
-		if ($("#formEditLesson input[name=lessonId]").val() == "" || $("#formEditLesson input[name=lessonId]").val() == null) {
-			data = {
-				title : $('#lessonTitleAdd').val(),
-				imageURL : $('#lessonImageURLAdd').val()
-			};
-
-			lessonAddAjaxCall(data);
-		} else {
-			data = {
-				title : $('#lessonTitleEdit').val(),
-				imageURL : $('#lessonImageURLEdit').val()
-			};
-
-			lessonUpdateAjaxCall(data);
-		}
-	});
-    
-    function lessonAddAjaxCall(opts) {
-		$.ajax({
-			type : "POST",
-			data : {
-				"title" : opts.title,
-                "imageURL" : opts.imageURL
-            },
-			url : "/lesson/add",
-			success : function (res) {
-				oLessonTable.fnDraw();
-                oLessonPageTable.fnDraw();
-
-				$("#lessonPageTableDiv").show();
-				$("#lessonPageContentHeader").show();
-				$("#formEditLesson").show();
-
-				$('#lessonTitleEdit').val(opts.title);
-				$('#lessonImageURLEdit').val(opts.imageURL);
-
-				$("#formAddLessonPage input[name=lessonId]").val("");
-				$("#formEditLesson input[name=lessonId]").val(res);
-
-				$("#formAddLesson").hide();
-
-				alert("Successfully Saved Lesson");
-			}
-		});
-	};
-	
-	function lessonUpdateAjaxCall(opts) {
-		$.ajax({
-			type : "POST",
-			data : {
-				"lessonId" : $("#formEditLesson input[name=lessonId]").val(),
-				"title" : opts.title,
-				"imageURL" : opts.imageURL
-			},
-			url : "/lesson/edit",
-			success : function (res) {
-				oLessonTable.fnDraw();
-
-				alert("Successfully Saved Lesson");
-			}
-		});
-	};
-    
-    $("#viewTeaching").on("click", function (e) {
-		$("#lessonButtons").hide();
-		$("#lessonPageContentHeader").hide();
-		$("#adminButtons").hide();
-        $("#mediaGroupButtons").hide();
-		$("#mediaGroupItemContentHeader").hide();
-	});
-    
-    $("#viewLesson").on("click", function (e) {
-		$("#lessonButtons").hide();
-		$("#lessonPageContentHeader").hide();
-		$("#adminButtons").hide();
-        $("#mediaGroupButtons").hide();
-		$("#mediaGroupItemContentHeader").hide();
-	});
-
-	$("#viewMediaGroup").on("click", function (e) {
-		$("#mediaGroupButtons").hide();
-		$("#mediaGroupItemContentHeader").hide();
-		$("#adminButtons").hide();
-        $("#lessonButtons").hide();
-        $("#lessonPageContentHeader").hide();
-	});
-
-	$("#viewCredit").on("click", function (e) {
-		$("#mediaGroupButtons").hide();
-		$("#mediaGroupItemContentHeader").hide();
-		$("#adminButtons").hide();
-        $("#lessonButtons").hide();
-        $("#lessonPageContentHeader").hide();
-	});
-
-	$("#viewMediaItem").on("click", function (e) {
-		$("#mediaGroupButtons").hide();
-		$("#adminButtons").hide();
-        $("#lessonButtons").hide();
-        $("#lessonPageContentHeader").hide();
-	});
-	
-	$("#viewUser").on("click", function (e) {
-		$("#adminButtons").show();
-		$("#mediaGroupButtons").hide();
-        $("#mediaGroupItemContentHeader").hide();
-        $("#lessonButtons").hide();
-        $("#lessonPageContentHeader").hide();
-	});
-
-	function mediaGroupAddAjaxCall(opts) {
-		$.ajax({
-			type : "POST",
-			data : {
-				"title" : opts.title,
-				"type" : opts.type,
-				"index" : opts.index,
-				"detail" : opts.detail,
-				"imageURL" : opts.imageURL,
-				"producer" : opts.producer,
-				"artist" : opts.artist
-			},
-			url : "/mediagroup/add",
-			success : function (res) {
-				oMediaGroupTable.fnDraw();
-
-				oMediaGroupItemTable.fnDraw();
-
-				$("#mediaGroupItemTableDiv").show();
-				$("#mediaGroupItemContentHeader").show();
-				$("#formEditMediaGroup").show();
-
-				$('#mediaGroupTitleEdit').val(opts.title);
-				$('#mediaGroupTypeEdit').val(opts.type);
-				$('#mediaGroupIndexEdit').val(opts.index);
-				$('#mediaGroupDetailEdit').val(opts.detail);
-				$('#mediaGroupImageURLEdit').val(opts.imageURL);
-
-				$("#formAddMediaGroupItem input[name=mediaGroupId]").val("");
-				$("#formEditMediaGroup input[name=mediaGroupId]").val(res);
-
-				$("#formAddMediaGroup").hide();
-
-				alert("Successfully Saved Media Group");
-			}
-		});
-	};
-	
-	function mediaGroupUpdateAjaxCall(opts) {
-		$.ajax({
-			type : "POST",
-			data : {
-				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val(),
-				"title" : opts.title,
-				"type" : opts.type,
-				"index" : opts.index,
-				"detail" : opts.detail,
-				"imageURL" : opts.imageURL,
-				"producer" : opts.producer,
-				"artist" : opts.artist
-			},
-			url : "/mediagroup/update",
-			success : function (res) {
-				oMediaGroupTable.fnDraw();
-
-				//bDestroy for mediagroupitem table?
-				alert("Successfully Saved Media Group");
-			}
-		});
-	};
-
-	function ConfirmDelete() {
-		return confirm("Are you sure that you want to delete this record?");
-	}
-
-	$("#btnDeleteLessonPage").on("click", function (e) {
-		if (ConfirmDelete) {
-			$.ajax({
-				type : "POST",
-				data : {
-					"lessonId" : $('#formEditLesson input[name=lessonId]').val(),
-					"lessonPageId" : $("#formAddLessonPage input[name=lessonPageId]").val()
-				},
-				url : "/lessonPage/delete",
-				success : function () {
-					oLessonPageTable.fnDraw();
-				}
-			});
-		}
-	});
-
-	$("#btnDeleteMediaGroupItem").on("click", function (e) {
+    $("#btnDeleteMediaGroupItem").on("click", function (e) {
 		if (ConfirmDelete) {
 			$.ajax({
 				type : "POST",
@@ -1606,94 +1692,11 @@ $(document).ready(function () {
 		});
 	});
     
-    $("#btnAddLessonPageOk").on("click", function (e) {
-		$.ajax({
-			type : "POST",
-			data : {
-				"lessonId" : $('#formEditLesson input[name=lessonId]').val(),
-				"lessonPageId" : $("#formAddLessonPage input[name=lessonPageId]").val(),
-                "lessonPageItems": $("#formAddLessonPage select[name=lessonPageItems]").val()
-			},
-			url : "/lessonPage/add",
-			success : function () {
-				$("#formAddLessonPage").dialog('close');
-
-				oLessonPageTable.fnDraw();
-			}
-		});
-	});
-
-     $("#btnEditLessonPageOk").on("click", function (e) {
-		$.ajax({
-			type : "POST",
-			data : {
-                "lessonPageId": $("#formEditLessonPage input[name=lessonPageEditId]").val(),
-                "lessonPageItems": $("#lessonPageItemsEdit").val()
-			},
-			url : "/lessonpage/edit",
-			success : function (res) {
-				$("#formEditLessonPage").dialog('close');
-
-				oLessonPageTable.fnDraw();
-			}
-		});
-	});
-	$("#btnAddMediaItem").on("click", function (e) {
-		$('#duration').mask("00:00:00", {
-			placeholder : "__:__:__"
-		});
-        
-        $('#imageURL').removeClass('required');
-	});
-
-	$("#btnEditUser").on("click", function (e) {
-		$.ajax({
-			type : "GET",
-			data : {
-				"userId" : $('#userEditId').val()
-			},
-			url : "/user",
-			success : function (res) {
-				var objectId = res.userId;
-				var userName = res.userName;
-				var email = res.email;
-
-				$('#userEditId').val(objectId);
-				$('#userNameEdit').val(userName);
-				$('#emailEdit').val(email);
-			}
-		});
-	});
-
-	$("#cancelMediaGroup").on("click", function (e) {
-		$("#formAddMediaGroupItem input[name=mediaGroupId]").val("");
-		$("#formEditMediaGroup input[name=mediaGroupId]").val("");
-		$("#mediagroupeditadddiv").hide();
-		$("#formEditMediaGroup").hide();
-		$("#formAddMediaGroup").hide();
-		$("#mediagroupitem").hide();
-		$("#btnAddMediaGroupItem").hide();
-		$("#btnDeleteMediaGroupItem").hide();
-		$("#mediagroupdiv").show();
-		$("#mediaGroupButtons").hide();
-		$("#mediaGroupItemContentHeader").hide();
+    $("#btnAddMediaGroupItem").on("click", function (e) {
+		IntializeMediaGroupItemDropDownBoxes();
 	});
     
-    $("#cancelLesson").on("click", function (e) {
-		$("#formAddLessonPage input[name=lessonId]").val("");
-		$("#formEditLesson input[name=lessonId]").val("");
-		$("#lessoneditadddiv").hide();
-		$("#formEditLesson").hide();
-		$("#formAddLesson").hide();
-		$("#lessonPage").hide();
-		$("#btnAddLessonPage").hide();
-		$("#btnDeleteLessonPage").hide();
-		$("#lessondiv").show();
-		$("#lessonButtons").hide();
-		$("#lessonPageContentHeader").hide();
-	});
-
-	$("#mediaGroupItemNameAdd").on("change", function () {
+    $("#mediaGroupItemNameAdd").on("change", function () {
 		var selected = $(this).val();
 		mediaGroupItemNameAddAjaxCall(selected);
 	});
@@ -1766,56 +1769,101 @@ $(document).ready(function () {
 			}
 		});
 	};
+    
+    function IntializeMediaGroupItemDropDownBoxes() {
+        $.ajax({
+			type : "GET",
+			data : {
+				"type" : "mediaGroupItem"
+			},
+			url : "/mediaitem/dropdown",
+			success : function (data) {
+				var mediaItemData = data.aaData;
+                $('#mediaGroupItemNameAdd').empty();
+
+                for (var i = 0; i < mediaItemData.length; i++) {
+                    var mediaItemName = mediaItemData[i].name;
+                    var mediaItemId = mediaItemData[i].DT_RowId;
+                    var optionText = "<option value='" + mediaItemId + "'>" + mediaItemName + "</option>"; ;
+
+                    $('#mediaGroupItemNameAdd').append(optionText);
+                }
+			}
+		});
+	}   
+
+	oMediaGroupItemTable.fnDraw();
+	oCreditTable.fnDraw();
+	oMediaGroupTable.fnDraw();
 	
-	$("#mediaGroupTypeAdd").on("change", function () {
-		var selected = $(this).val();
-		mediaGroupTypeAddAjaxCall(selected);
-	});
-
-	function mediaGroupTypeAddAjaxCall(opts) {
+	oMediaItemTable.fnDraw();
+    
+    oLessonPageTable.fnDraw();
+    oLessonTable.fnDraw();
+    oLessonGroupTable.fnDraw();   
+   
+	
+	function FillIndexTextBox()
+	{
 		$.ajax({
-			type : "POST",
-			data : {
-				"type" : opts
-			},
-			url : "/mediagroup/lastindexpertype",
-			success : function (res) {
-				var lastIndex = parseInt(res.lastIndex) + 1;
+			url : "/mediagroup/lastindex"
+		}).done(function (data) {
+			var lastIndex = parseInt(data) + 1;
 			
-				$("#formAddMediaGroup input[name=mediaGroupIndexAdd]").val(lastIndex);
-			}
+			$("#formAddMediaGroup input[name=mediaGroupIndexAdd]").val(lastIndex);		
 		});
-	};
-
-	$("#btnMoveAlbumUp").on("click", function (e) {
-		$.ajax({
-			type : "POST",
-			data : {
-				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val()
-			},
-			url : "/mediagroup/moveup",
-			success : function () {
-				var oSettings = oMediaGroupTable.fnSettings();				
-				oMediaGroupTable.fnDraw(oSettings);
-				
-				$("#btnMoveAlbumUp").removeClass('ui-state-focus');
-			}
-		});
+	} 	
+    
+    $("#viewTeaching").on("click", function (e) {
+		$("#lessonButtons").hide();
+		$("#lessonPageContentHeader").hide();
+		$("#adminButtons").hide();
+        $("#mediaGroupButtons").hide();
+		$("#mediaGroupItemContentHeader").hide();
 	});
-	var selectedRowId = "";
-	$("#btnMoveAlbumDown").on("click", function (e) {
-		$.ajax({
-			type : "POST",
-			data : {
-				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val()
-			},
-			url : "/mediagroup/movedown",
-			success : function () {
-				var oSettings = oMediaGroupTable.fnSettings();				
-				oMediaGroupTable.fnDraw(oSettings);
-				
-				$("#btnMoveAlbumDown").removeClass('ui-state-focus');
-			}
-		});
-	});	
+    
+    $("#viewLesson").on("click", function (e) {
+		$("#lessonButtons").hide();
+		$("#lessonPageContentHeader").hide();
+		$("#adminButtons").hide();
+        $("#mediaGroupButtons").hide();
+		$("#mediaGroupItemContentHeader").hide();
+	});
+
+	$("#viewMediaGroup").on("click", function (e) {
+		$("#mediaGroupButtons").hide();
+		$("#mediaGroupItemContentHeader").hide();
+		$("#adminButtons").hide();
+        $("#lessonButtons").hide();
+        $("#lessonPageContentHeader").hide();
+	});
+
+	$("#viewCredit").on("click", function (e) {
+		$("#mediaGroupButtons").hide();
+		$("#mediaGroupItemContentHeader").hide();
+		$("#adminButtons").hide();
+        $("#lessonButtons").hide();
+        $("#lessonPageContentHeader").hide();
+	});
+
+	$("#viewMediaItem").on("click", function (e) {
+		$("#mediaGroupButtons").hide();
+		$("#adminButtons").hide();
+        $("#lessonButtons").hide();
+        $("#lessonPageContentHeader").hide();
+	});
+	
+	$("#viewUser").on("click", function (e) {
+		$("#adminButtons").show();
+		$("#mediaGroupButtons").hide();
+        $("#mediaGroupItemContentHeader").hide();
+        $("#lessonButtons").hide();
+        $("#lessonPageContentHeader").hide();
+	});
+
+	
+
+	function ConfirmDelete() {
+		return confirm("Are you sure that you want to delete this record?");
+	};
 });

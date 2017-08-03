@@ -144,7 +144,7 @@ router.post('/update', urlencodedParser, function (req, res) {
 	lessonGroup.id = req.body.lessonGroupId;
     lessonGroup.unset("lessons");
     
-    var lessonGroupLessons = req.body.lessonGroupLessons;
+    var lessonGroupLessons = req.body.lessonGroupLessonsEdit;
     
     for (var i = 0; i < lessonGroupLessons.length; i++) {
         var Lesson = Parse.Object.extend("Lesson");
@@ -182,12 +182,12 @@ router.post('/add', urlencodedParser, function (req, res) {
         lessonGroup.addUnique("lessons", lesson);
     }
 
-	lesson.save(null, {
-		success : function (lesson) {
-			res.json("Lesson Saved!");
+	lessonGroup.save(null, {
+		success : function (lessonGroup) {
+			res.json("Lesson Group Saved!");
 		},
-		error : function (lesson, error) {
-			res.json("Lesson Save Error!");
+		error : function (lessonGroup, error) {
+			res.json("Lesson Group Save Error!");
 		}
 	});
 });

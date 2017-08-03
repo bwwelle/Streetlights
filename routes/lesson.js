@@ -124,6 +124,7 @@ router.post('/edit', urlencodedParser, function (req, res) {
 });
 
 router.post('/add', urlencodedParser, function (req, res) {
+    echo = req.query.sEcho;
 	var Lesson = Parse.Object.extend("Lesson");
 	var lesson = new Lesson();
 	var query = new Parse.Query(lesson);
@@ -133,10 +134,19 @@ router.post('/add', urlencodedParser, function (req, res) {
 
 	lesson.save(null, {
 		success : function (lesson) {
-			res.json("Lesson Saved!");
+            
+			res.json({
+                Outcome : "Success",
+                LessonId : lesson.id,
+                sEcho : echo
+            });
 		},
 		error : function (lesson, error) {
-			res.json("Lesson Save Error!");
+			res.json({
+                Outcome : "Failure",
+                LessonId : null,
+                sEcho : echo
+            });
 		}
 	});
 });

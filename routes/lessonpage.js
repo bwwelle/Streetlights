@@ -33,7 +33,6 @@ var urlencodedParser = bodyParser.urlencoded({
 					for (var i = parseInt(displayStart); i < totalRecordsToView && i < lesson.get("pages").length; i++) {
 						if (lesson.get("pages")[i] !== null && lesson.get("pages")[i] !== undefined) {
 							var lessonPage = lesson.get("pages")[i];
-                            var lessonPageId = '';
                             var lessonPageMediaItems = '';
                             
                             if (lessonPage.get("mediaItems") !== null && lessonPage.get("mediaItems") !== undefined) {
@@ -42,7 +41,6 @@ var urlencodedParser = bodyParser.urlencoded({
 							}
 
 							data[recordCount] = {
-								lessonPageId : lessonPage.id,
 								mediaItems : lessonPageMediaItems + "...",
 								DT_RowId : lessonPage.id
 							};
@@ -111,20 +109,23 @@ router.post('/add', urlencodedParser, function (req, res) {
 
 	var LessonPage = Parse.Object.extend("LessonPage");
 	var lessonPage = new LessonPage();
-    var lessonPageItems = req.body.lessonPageItems;
+    var lessonPageItems = req.body.lessonPageItems;    
     
-    for (var i = 0; i < lessonPageItems.length; i++) {
-        var MediaItem = Parse.Object.extend("MediaItem");
-        var mediaItem = new MediaItem();
-        
-        mediaItem.id = lessonPageItems[i];
-    
-        lessonPage.addUnique("mediaItems", mediaItem);
+    if (lessonPageItems !== null && lessonPageItems !== "" && lessonPageItems !== undefined)
+    {
+        for (var i = 0; i < lessonPageItems.length; i++) {
+            var MediaItem = Parse.Object.extend("MediaItem");
+            var mediaItem = new MediaItem();
+            
+            mediaItem.id = lessonPageItems[i];
+
+            lessonPage.addUnique("mediaItems", mediaItem);
+        }
     }
 
 	lessonPage.save(null, {
-		success : function (newLessonPage) {
-            lesson.addUnique("pages", newLessonPage.id)
+		success : function (results) {
+            lesson.addUnique("pages", results);
             
 			lesson.save(null, {
                 success : function (lesson) {
