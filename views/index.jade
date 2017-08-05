@@ -397,11 +397,17 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             br
                             input#lessonGroupTitle.required(type='text', name='lessonGroupTitle', style='width:500px;', rel='0')
                             br
+                            br                            
+                            label(for='lessonGroupImageURL') imageURL
+                            br
+                            br
+                            input#lessonGroupImageURL.required(type='text', name='lessonGroupImageURL', style='width:500px;', rel='1')
+                            br
                             br
                             label(for='lessonGroupLessonsAdd') Lessons
                             br
                             br
-                            select#lessonGroupLessonsAdd(data-placeholder='Choose a lesson...', multiple, name='lessonGroupLessonsAdd', style='width:500px;', rel='1')   
+                            select#lessonGroupLessonsAdd(data-placeholder='Choose a lesson...', multiple, name='lessonGroupLessonsAdd', style='width:500px;', rel='2')   
                           form#formEditLessonGroup
                             label(for='lessonGroupTitleEdit') Title
                             br
@@ -409,10 +415,16 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                             input#lessonGroupTitleEdit.required(type='text', name='lessonGroupTitleEdit', style='width:500px;', rel='0')
                             br
                             br
+                            label(for='lessonGroupImageURLEdit') imageURL
+                            br
+                            br
+                            input#lessonGroupImageURLEdit.required(type='text', name='lessonGroupImageURLEdit', style='width:500px;', rel='1')
+                            br
+                            br
                             label(for='lessonGroupLessonsEdit') Lessons
                             br
                             br
-                            select#lessonGroupLessonsEdit(data-placeholder='Select an option...', rel='1', style='width:500px !important;' multiple='', name='lessonGroupLessonsEdit') 
+                            select#lessonGroupLessonsEdit(data-placeholder='Select an option...', rel='2', style='width:500px !important;' multiple='', name='lessonGroupLessonsEdit') 
                             input#lessonGroupId(type='hidden', name='lessonGroupId') 
                           <button id="btnAddLessonGroup"></button>                          
                           <button id="btnEditLessonGroup"></button>   
@@ -420,11 +432,13 @@ html(xmlns='http://www.w3.org/1999/xhtml')
                           table#lessongroup.display(cellpadding='0', cellspacing='0', border='0')
                             thead
                               tr
-                                th title
+                                th title                                
+                                th imageURL
                                 th lessons
                             tfoot
                               tr
                                 th title
+                                th imageURL
                                 th lessons
                 // End .clear
             // End #lessongroupdiv

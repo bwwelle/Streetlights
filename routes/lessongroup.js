@@ -40,10 +40,14 @@ var urlencodedParser = bodyParser.urlencoded({
                             for (var i = 0; i < lessonGroups.length; i++) {
                                 var lessonGroup = lessonGroups[i];
                                 var lessonGroupTitle = "";
+                                var lessonGroupImageURL = "";
                                 var lessonGroupLessons = [];
 
                                 if (lessonGroup.get("title") !== null && lessonGroup.get("title") !== undefined)
                                     lessonGroupTitle = lessonGroup.get("title");
+                                
+                                if (lessonGroup.get("imageURL") !== null && lessonGroup.get("imageURL") !== undefined)
+                                    lessonGroupImageURL = lessonGroup.get("imageURL");
 
                                 if (lessonGroup.get("lessons") !== null && lessonGroup.get("lessons") !== undefined) {
                                     for (var z = 0; z < lessonGroup.get("lessons").length; z++){
@@ -53,6 +57,7 @@ var urlencodedParser = bodyParser.urlencoded({
 
                                 data[i] = {
                                     lessonGroupTitle : lessonGroupTitle,
+                                    lessonGroupImageURL : lessonGroupImageURL,
                                     lessons : lessonGroupLessons.join(","),
                                     DT_RowId : lessonGroup.id
                                 };
@@ -115,12 +120,17 @@ router.get('/dropdown', urlencodedParser, function (req, res) {
                 i = 0; i < lessonGroups.length; i++) {
                 var lessonGroup = lessonGroups[i];
                 var title = '';
+                var imageURL = '';
                 
                 if (lessonGroup.get("title") !== null && lessonGroup.get("title") !== undefined)
                     title = lessonGroup.get("title");
                 
+                if (lessonGroup.get("imageURL") !== null && lessonGroup.get("imageURL") !== undefined)
+                    imageURL = lessonGroup.get("imageURL");
+                
                 data[i] = {
                     title : title,
+                    imageURL : imageURL,
                     DT_RowId : lessonGroup.id
                 };
             }
@@ -171,7 +181,8 @@ router.post('/add', urlencodedParser, function (req, res) {
 	var query = new Parse.Query(lessonGroup);
     lessonGroupLessons = req.body.lessons;
     
-	lessonGroup.set("title", req.body.title);
+	lessonGroup.set("title", req.body.title);    
+	lessonGroup.set("imageURL", req.body.imageURL);
     
     for (var i = 0; i < lessonGroupLessons.length; i++) {
         var Lesson = Parse.Object.extend("Lesson");

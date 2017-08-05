@@ -1220,11 +1220,13 @@ $(document).ready(function () {
 					selectedRowId = $(nRow).attr("id");
 					var objectId = $(nRow).attr("id");
 					var title = $('td:eq(0)', nRow).text();
-					var lessons = $('td:eq(1)', nRow).text();
+                    var imageURL = $('td:eq(1)', nRow).text();
+					var lessons = $('td:eq(2)', nRow).text();
 
 					$('#formEditLessonGroup input[name=lessonGroupId]').val(objectId);
 					$('#formAddLessonGroup input[name=lessonGroupId]').val(objectId);
 					$('#lessonGroupTitleEdit').val(title);
+                    $('#lessonGroupImageURLEdit').val(imageURL);
 					
                     IntializeLessonGroupLessonsDropDownBoxes();
 				});
@@ -1244,7 +1246,11 @@ $(document).ready(function () {
 			],
 			"aoColumns" : [{
 					"mDataProp" : "lessonGroupTitle"
-				}, {
+				},
+                {
+					"mDataProp" : "lessonGroupImageURL"
+				},
+                {
 					"mDataProp" : "lessons"
 				}
 			],
@@ -1295,6 +1301,9 @@ $(document).ready(function () {
                 },
                 {
                     placeholder : ""
+                },
+                {
+                    placeholder : ""
                 }
             ]
 		});
@@ -1334,6 +1343,7 @@ $(document).ready(function () {
 			type : "POST",
 			data : {
                 "title" : $("#formAddLessonGroup input[name=lessonGroupTitle]").val(),
+                "imageURL" : $("#formAddLessonGroup input[name=lessonGroupImageURL]").val(),
                 "lessons": $("#formAddLessonGroup select[name=lessonGroupLessonsAdd]").val()
 			},
 			url : "/lessonGroup/add",
