@@ -88,6 +88,7 @@ var urlencodedParser = bodyParser.urlencoded({
                     
 					res.json({
 						"teachingId" : teachingId,
+                        "teachingTitle" : teaching.get("title"),
 						"teachingLessonGroups" : teachingLessonGroups,
 						sEcho : echo
 					});
@@ -116,6 +117,8 @@ router.post('/update', urlencodedParser, function (req, res) {
     
         teaching.addUnique("lessonGroups", lessonGroup);
     }
+    
+    teaching.set("title", req.body.teachingTitle);
 
 	teaching.save(null, {
 		success : function (results) {

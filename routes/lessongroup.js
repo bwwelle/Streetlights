@@ -93,6 +93,8 @@ var urlencodedParser = bodyParser.urlencoded({
                     
 					res.json({
 						"lessonGroupId" : lessonGroupId,
+                        "lessonGroupTitle" : lessonGroup.get("title"),
+                        "lessonGroupURL" : lessonGroup.get("imageURL"),
 						"lessonGroupLessons" : lessonGroupLessons,
 						sEcho : echo
 					});
@@ -164,6 +166,9 @@ router.post('/update', urlencodedParser, function (req, res) {
     
         lessonGroup.addUnique("lessons", lesson);
     }
+    
+    lessonGroup.set("title", req.body.lessonGroupTitle);
+    lessonGroup.set("imageURL", req.body.lessonGroupImageURL);
 
 	lessonGroup.save(null, {
 		success : function (results) {

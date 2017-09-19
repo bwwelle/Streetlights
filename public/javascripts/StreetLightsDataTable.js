@@ -1267,6 +1267,8 @@ $(document).ready(function () {
 			},
 			sDeleteHttpMethod : "POST",
 			sDeleteURL : "/lessongroup/delete",
+            sEditHttpMethod : "GET",
+            sEditURL : "/lessongroup",
 			sAddNewRowFormId : "formAddLessonGroup",
 			sAddNewRowButtonId : "btnAddLessonGroup",
 			sAddNewRowOkButtonId : "btnAddLessonGroupOk",
@@ -1312,7 +1314,7 @@ $(document).ready(function () {
 		$("#formEditLessonGroup").parent().height(300);
         $("#formEditLessonGroup").height(200);
         
-        InitializeLessonGroupEditLessons();
+        InitializeLessonGroupEditFields();
 	});
     
     $("#btnAddLessonGroup").on("click", function (e) {
@@ -1327,7 +1329,9 @@ $(document).ready(function () {
 			type : "POST",
 			data : {
                 "lessonGroupId": $("#formEditLessonGroup input[name=lessonGroupId]").val(),
-                "lessonGroupLessonsEdit": $("#formEditLessonGroup select[name=lessonGroupLessonsEdit]").val(),
+                "lessonGroupTitle" : $("#formEditLessonGroup input[name=lessonGroupTitleEdit]").val(),
+                "lessonGroupImageURL" : $("#formEditLessonGroup input[name=lessonGroupImageURLEdit]").val(),
+                "lessonGroupLessonsEdit": $("#formEditLessonGroup select[name=lessonGroupLessonsEdit]").val()
 			},
 			url : "/lessongroup/update",
 			success : function (res) {
@@ -1384,7 +1388,7 @@ $(document).ready(function () {
 		});
 	}
     
-    function InitializeLessonGroupEditLessons(){
+    function InitializeLessonGroupEditFields(){
         $.ajax({
 			type : "GET",
 			data : {
@@ -1399,6 +1403,9 @@ $(document).ready(function () {
                 }
                 
                 $('#lessonGroupLessonsEdit').trigger('chosen:updated');
+                
+                $('#formEditLessonGroup input[name=lessonGroupTitleEdit]').val(res.lessonGroupTitle);
+                $('#formEditLessonGroup input[name=lessonGroupImageURLEdit]').val(res.lessonGroupURL);
             }
 		});
     }
@@ -1418,7 +1425,7 @@ $(document).ready(function () {
 					var teachingGroups = $('td:eq(1)', nRow).text();
 
 					$('#formEditTeaching input[name=teachingEditId]').val(objectId);
-					$('#teachingTitleEdit').val(title);
+                    $('#formEditTeaching input[name=teachingTitleEdit]').val(title);
 				});
 			},			
 			"bJQueryUI" : true,
@@ -1440,6 +1447,9 @@ $(document).ready(function () {
 					"mDataProp" : "lessongroups"
 				}
 			],
+            "fnDrawCallback" : function (oSettings) {
+                IntializeTeachingLessonGroupsDropDownBoxes();
+			},
 			"sPaginationType" : "full_numbers",
 			"iDisplayLength" : 10,
 			"bFilter" : false,
@@ -1448,14 +1458,11 @@ $(document).ready(function () {
 			fnOnDeleted : function (value, settings) {
 				oTeachingTable.fnDraw();
 			},
-			fnOnEdited : function (value, settings) {
-				oTeachingTable.fnDraw();
-			},
 			sAddURL : "/teaching/add",
 			sAddHttpMethod : "POST",
-			sEditHttpMethod : "GET",
+            sEditHttpMethod : "GET",
+            sEditURL : "/teaching",
 			sDeleteHttpMethod : "POST",
-			sEditURL : "/teaching/edit",
 			sDeleteURL : "/teaching/delete",
 			sAddNewRowFormId : "formAddTeaching",
 			sAddNewRowButtonId : "btnAddTeaching",
@@ -1499,7 +1506,7 @@ $(document).ready(function () {
 		$("#formEditTeaching").parent().height(300);
         $("#formEditTeaching").height(200);
         
-        InitializeTeachingEditLessonGroups();
+        InitializeTeachingEditFields();
 	});
     
     $("#btnAddTeaching").on("click", function (e) {
@@ -1536,7 +1543,7 @@ $(document).ready(function () {
 		});
 	}
     
-    function InitializeTeachingEditLessonGroups(){
+    function InitializeTeachingEditFields(){
         $.ajax({
 			type : "GET",
 			data : {
@@ -1544,14 +1551,35 @@ $(document).ready(function () {
 			},
 			url : "/teaching",
 			success : function (res) {
+                $('#teachingLessonGroupsEdit').children().prop('selected', false);
+                
                 for (var i = 0; i < res.teachingLessonGroups.length; i++) {                
                     $('#teachingLessonGroupsEdit').find('option[value=' + res.teachingLessonGroups[i] + ']').attr('selected', 'selected');
-                }
+                }                
                 
                 $('#teachingLessonGroupsEdit').trigger('chosen:updated');
+                
+                $('#formEditTeaching input[name=teachingTitleEdit]').val(res.teachingTitle);
             }
 		});
     }
+    
+    $("#btnEditTeachingOk").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+                "teachingId": $("#formEditTeaching input[name=teachingEditId]").val(),
+                "teachingTitle": $("#formEditTeaching input[name=teachingTitleEdit]").val(),
+                "teachingLessonGroups": $("#formEditTeaching select[name=teachingLessonGroupsEdit]").val(),
+			},
+			url : "/teaching/update",
+			success : function (res) {                
+				$("#formEditTeaching").dialog('close');
+                				
+				oTeachingTable.fnDraw();
+			}
+		});
+	});
     
     //Media Group Item
 	var oMediaGroupItemTable = $('#mediagroupitem').dataTable({
