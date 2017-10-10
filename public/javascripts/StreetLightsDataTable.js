@@ -826,11 +826,13 @@ $(document).ready(function () {
 			success : function (res) {
                 $('#lessonPageItemsEdit').children().prop('selected', false);
                  
-                for (var i = 0; i < res.lessonPageMediaItems.length; i++) {                
-                    $('#lessonPageItemsEdit').find('option[value=' + res.lessonPageMediaItems[i] + ']').attr('selected', 'selected');
+                var lessonPageItemArray = new Array();
+                
+                for (var i = 0; i < res.lessonPageMediaItems.length; i++) {
+                    lessonPageItemArray.push(res.lessonPageMediaItems[i]); 
                 }
                 
-                $('#lessonPageItemsEdit').trigger('chosen:updated');
+                $('#lessonPageItemsEdit').setSelectionOrder(lessonPageItemArray, true);
             }
 		});
     };  
@@ -840,7 +842,7 @@ $(document).ready(function () {
 			type : "POST",
 			data : {
 				"lessonId" : $('#formAddLessonPage input[name=lessonId]').val(),
-                "lessonPageItems": $("#formAddLessonPage select[name=lessonPageItemsAdd]").val()
+                "lessonPageItems": $("#formAddLessonPage select[name=lessonPageItemsAdd]").getSelectionOrder()
 			},
 			url : "/lessonPage/add",
 			success : function () {
@@ -856,7 +858,7 @@ $(document).ready(function () {
 			type : "POST",
 			data : {
                 "lessonPageId": $("#formEditLessonPage input[name=lessonPageId]").val(),
-                "lessonPageItems": $("#lessonPageItemsEdit").val()
+                "lessonPageItems": $("#lessonPageItemsEdit").getSelectionOrder()
 			},
 			url : "/lessonpage/edit",
 			success : function (res) {
