@@ -1342,7 +1342,7 @@ $(document).ready(function () {
                 "lessonGroupId": $("#formEditLessonGroup input[name=lessonGroupId]").val(),
                 "lessonGroupTitle" : $("#formEditLessonGroup input[name=lessonGroupTitleEdit]").val(),
                 "lessonGroupImageURL" : $("#formEditLessonGroup input[name=lessonGroupImageURLEdit]").val(),
-                "lessonGroupLessonsEdit": $("#formEditLessonGroup select[name=lessonGroupLessonsEdit]").val()
+                "lessonGroupLessonsEdit": $("#formEditLessonGroup select[name=lessonGroupLessonsEdit]").getSelectionOrder()
 			},
 			url : "/lessongroup/update",
 			success : function (res) {
@@ -1408,12 +1408,14 @@ $(document).ready(function () {
 			url : "/lessongroup",
 			success : function (res) {
                 $('#lessonGroupLessonsEdit').children().prop('selected', false);
+                 
+                var lessonGroupLessonsArray = new Array();
                 
-                for (var i = 0; i < res.lessonGroupLessons.length; i++) {                
-                    $('#lessonGroupLessonsEdit').find('option[value=' + res.lessonGroupLessons[i] + ']').attr('selected', 'selected');
+                for (var i = 0; i < res.lessonGroupLessons.length; i++) {
+                    lessonGroupLessonsArray.push(res.lessonGroupLessons[i]); 
                 }
                 
-                $('#lessonGroupLessonsEdit').trigger('chosen:updated');
+                $('#lessonGroupLessonsEdit').setSelectionOrder(lessonGroupLessonsArray, true);
                 
                 $('#formEditLessonGroup input[name=lessonGroupTitleEdit]').val(res.lessonGroupTitle);
                 $('#formEditLessonGroup input[name=lessonGroupImageURLEdit]').val(res.lessonGroupURL);
@@ -1563,12 +1565,14 @@ $(document).ready(function () {
 			url : "/teaching",
 			success : function (res) {
                 $('#teachingLessonGroupsEdit').children().prop('selected', false);
+                 
+                var teachingLessonGroupsArray = new Array();
                 
-                for (var i = 0; i < res.teachingLessonGroups.length; i++) {                
-                    $('#teachingLessonGroupsEdit').find('option[value=' + res.teachingLessonGroups[i] + ']').attr('selected', 'selected');
-                }                
+                for (var i = 0; i < res.teachingLessonGroups.length; i++) {
+                    teachingLessonGroupsArray.push(res.teachingLessonGroups[i]); 
+                }
                 
-                $('#teachingLessonGroupsEdit').trigger('chosen:updated');
+                $('#teachingLessonGroupsEdit').setSelectionOrder(teachingLessonGroupsArray, true);
                 
                 $('#formEditTeaching input[name=teachingTitleEdit]').val(res.teachingTitle);
             }
@@ -1581,7 +1585,7 @@ $(document).ready(function () {
 			data : {
                 "teachingId": $("#formEditTeaching input[name=teachingEditId]").val(),
                 "teachingTitle": $("#formEditTeaching input[name=teachingTitleEdit]").val(),
-                "teachingLessonGroups": $("#formEditTeaching select[name=teachingLessonGroupsEdit]").val(),
+                "teachingLessonGroups": $("#formEditTeaching select[name=teachingLessonGroupsEdit]").getSelectionOrder(),
 			},
 			url : "/teaching/update",
 			success : function (res) {                
