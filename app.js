@@ -21,6 +21,7 @@ var lesson = require('./routes/lesson');
 var lessonpage = require('./routes/lessonpage');
 var lessongroup = require('./routes/lessongroup');
 var teaching = require('./routes/teaching');
+var copydata = require('./routes/copydata');
 
 var app = express();
 var router = express.Router();
@@ -119,6 +120,7 @@ app.use('/lesson', lesson);
 app.use('/lessonpage', lessonpage);
 app.use('/lessongroup', lessongroup);
 app.use('/teaching', teaching);
+app.use('/copydata', copydata);
 
 
 

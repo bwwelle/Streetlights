@@ -49,6 +49,7 @@ router.get('/', function (req, res) {
                     var mediaItemImageURL = '';
 					var mediaItemType = '';
 					var mediaItemText = '';
+                    var mediaItemDescription = '';
                     
                     if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
 						if (mediaItem.get("producers")[0] !== null && mediaItem.get("producers")[0] !== undefined)
@@ -76,7 +77,10 @@ router.get('/', function (req, res) {
 						mediaItemImageURL = mediaItem.get("imageURL");
 
 					if (mediaItem.get("text") !== null && mediaItem.get("text") !== undefined)
-						mediaItemText = mediaItem.get("text");                    
+						mediaItemText = mediaItem.get("text");             
+
+                    if (mediaItem.get("description") !== null && mediaItem.get("description") !== undefined)
+						mediaItemDescription = mediaItem.get("description");                                 
 
 					data[i] = {
 						name : mediaItemName,
@@ -87,6 +91,7 @@ router.get('/', function (req, res) {
                         producer : mediaItemProducer,
 						artist : mediaItemArtist,
 						text : mediaItemText,
+                        description: mediaItemDescription,
 						DT_RowId : mediaItem.id
 					};
 				}
@@ -154,6 +159,7 @@ router.get('/dropdown', urlencodedParser, function (req, res) {
                     var mediaItemImageURL = '';
 					var mediaItemType = '';
 					var mediaItemText = '';
+                    var mediaItemDescription = '';
                     
                     if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
 						if (mediaItem.get("producers")[0] !== null && mediaItem.get("producers")[0] !== undefined)
@@ -181,7 +187,10 @@ router.get('/dropdown', urlencodedParser, function (req, res) {
 						mediaItemImageURL = mediaItem.get("imageURL");	
 
 					if (mediaItem.get("text") !== null && mediaItem.get("text") !== undefined)
-						mediaItemText = mediaItem.get("text");	                    
+						mediaItemText = mediaItem.get("text");	 
+
+                    if (mediaItem.get("description") !== null && mediaItem.get("description") !== undefined)
+						mediaItemDescription = mediaItem.get("description");                                 
 					
 					data[i] = {
 						name : mediaItemName,
@@ -192,6 +201,7 @@ router.get('/dropdown', urlencodedParser, function (req, res) {
                         producer : mediaItemProducer,
 						artist : mediaItemArtist,
 						text : mediaItemText,
+                        description : mediaItemDescription,
 						DT_RowId : mediaItem.id
 					};
 				}
@@ -266,6 +276,7 @@ router.get('/edit', urlencodedParser, function (req, res) {
 	mediaItem.set("language","eng");
 	mediaItem.set("type", req.query["typeEdit"]);
 	mediaItem.set("text", req.query["textEdit"]);
+    mediaItem.set("description", req.query["descriptionEdit"]);    
 
 	var producerId = req.query["producerEdit"];
     var Producer = Parse.Object.extend("Credit");
@@ -308,6 +319,7 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaItem.set("contentURL", req.body.contentURL);
     mediaItem.set("imageURL", req.body.imageURL);
 	mediaItem.set("text", req.body.text);
+    mediaItem.set("description", req.body.description);
 	mediaItem.set("shareURL", req.body.contentURL);
 	mediaItem.set("type", req.body.mediaitemtype);
 	mediaItem.set("version", bible);

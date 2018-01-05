@@ -247,15 +247,17 @@ $(document).ready(function () {
 					var name = $('td:eq(0)', nRow).text();
 					var type = $('td:eq(1)', nRow).text();
 					var text = $('td:eq(2)', nRow).text();
-					var duration = $('td:eq(3)', nRow).text();
-					var contentURL = $('td:eq(4)', nRow).text();
-                    var imageURL = $('td:eq(5)', nRow).text();
-					var producer = $('td:eq(6)', nRow).text();
-					var artist = $('td:eq(7)', nRow).text();
+                    var description = $('td:eq(3)', nRow).text();
+					var duration = $('td:eq(4)', nRow).text();
+					var contentURL = $('td:eq(5)', nRow).text();
+                    var imageURL = $('td:eq(6)', nRow).text();
+					var producer = $('td:eq(7)', nRow).text();
+					var artist = $('td:eq(8)', nRow).text();
 
 					$('#mediaItemEditId').val(objectId);
 					$('#nameEdit').val(name);
 					$('#textEdit').val(text);
+                    $('#descriptionEdit').val(description);
 					$('#durationEdit').val(duration);
 					$('#contentURLEdit').val(contentURL);
                     $('#imageURLEdit').val(imageURL);
@@ -337,6 +339,8 @@ $(document).ready(function () {
 				}, {
 					"mDataProp" : "text"
 				}, {
+					"mDataProp" : "description"
+				},{
 					"mDataProp" : "duration"
 				}, {
 					"mDataProp" : "contentURL"
@@ -431,6 +435,9 @@ $(document).ready(function () {
                 },
                 {
                     placeholder : ""
+                },
+                {
+                    placeholder : ""
                 }
             ]
 		});    
@@ -457,11 +464,11 @@ $(document).ready(function () {
 					var title = $('td:eq(0)', nRow).text();
 					var imageURL = $('td:eq(1)', nRow).text();
 
-					$('#formEditLesson input[name=lessonId]').val(objectId);
+					$('#formEditLesson input[name=lessonIdEdit]').val(objectId);
 					$('#lessonTitleEdit').val(title);
 					$('#lessonImageURLEdit').val(imageURL);
-                    $('#formEditLessonPage input[name=lessonId]').val(objectId);
-                    $('#formAddLessonPage input[name=lessonId]').val(objectId);
+                    $('#formEditLessonPage input[name=lessonIdPageEdit]').val(objectId);
+                    $('#formAddLessonPage input[name=lessonIdPageAdd]').val(objectId);
                     
 					oLessonPageTable.fnDraw();
 				});
@@ -540,7 +547,7 @@ $(document).ready(function () {
     $("#saveLesson").on("click", function (e) {
 		var data = [];
 
-		if ($("#formEditLesson input[name=lessonId]").val() == "" || $("#formEditLesson input[name=lessonId]").val() == null) {
+		if ($("#formEditLesson input[name=lessonIdEdit]").val() == "" || $("#formEditLesson input[name=lessonIdEdit]").val() == null) {
 			data = {
 				title : $('#lessonTitleAdd').val(),
 				imageURL : $('#lessonImageURLAdd').val()
@@ -580,9 +587,9 @@ $(document).ready(function () {
                     $('#lessonTitleEdit').val(opts.title);
                     $('#lessonImageURLEdit').val(opts.imageURL);
 
-                    $("#formAddLessonPage input[name=lessonId]").val(res.LessonId);
-                    $("#formEditLesson input[name=lessonId]").val(res.LessonId);
-                    $("#formEditLessonPage input[name=lessonId]").val(res.LessonId);
+                    $("#formAddLessonPage input[name=lessonIdPageAdd]").val(res.LessonId);
+                    $("#formEditLesson input[name=lessonIdEdit]").val(res.LessonId);
+                    $("#formEditLessonPage input[name=lessonIdPageEdit]").val(res.LessonId);
                     
                     $("#formAddLesson").hide();
 
@@ -596,7 +603,7 @@ $(document).ready(function () {
 		$.ajax({
 			type : "POST",
 			data : {
-				"lessonId" : $("#formEditLesson input[name=lessonId]").val(),
+				"lessonId" : $("#formEditLesson input[name=lessonIdEdit]").val(),
 				"title" : opts.title,
 				"imageURL" : opts.imageURL
 			},
@@ -610,8 +617,8 @@ $(document).ready(function () {
 	};
     
     $("#cancelLesson").on("click", function (e) {
-		$("#formAddLessonPage input[name=lessonId]").val("");
-		$("#formEditLesson input[name=lessonId]").val("");
+		$("#formAddLessonPage input[name=lessonIdPageAdd]").val("");
+		$("#formEditLesson input[name=lessonIdEdit]").val("");
 		$("#lessoneditadddiv").hide();
 		$("#formEditLesson").hide();
 		$("#formAddLesson").hide();
@@ -637,7 +644,7 @@ $(document).ready(function () {
 	});
     
 	$("#btnAddLesson").on("click", function (e) {
-		$("#formAddLesson input[name=lessonId]").val("");
+		$("#formAddLesson input[name=lessonIdAdd]").val("");
 		$("#formAddLesson input[name=lessonTitleAdd]").val("");
 		$("#formAddLesson input[name=lessonImageURLAdd]").val("");
 
@@ -690,7 +697,7 @@ $(document).ready(function () {
             "fnServerParams" : function (aoData) {
 				aoData.push({
 					"name" : "lessonId",
-					"value" : $('#formEditLesson input[name=lessonId]').val()
+					"value" : $('#formEditLesson input[name=lessonIdEdit]').val()
 				});
 			},
 			"bFilter" : false,
@@ -759,7 +766,7 @@ $(document).ready(function () {
 			$.ajax({
 				type : "POST",
 				data : {
-					"lessonId" : $('#formEditLessonPage input[name=lessonId]').val(),
+					"lessonId" : $('#formEditLessonPage input[name=lessonIdPageEdit]').val(),
 					"lessonPageId" : $("#formEditLessonPage input[name=lessonPageId]").val()
 				},
 				url : "/lessonPage/delete",
@@ -804,7 +811,9 @@ $(document).ready(function () {
                 for (var i = 0; i < mediaItemData.length; i++) {
                     var mediaItemName = mediaItemData[i].name;
                     var mediaItemId = mediaItemData[i].DT_RowId;
-                    var optionText = "<option value='" + mediaItemId + "'>" + mediaItemName + "</option>"; ;
+                    var mediaItemDescription = mediaItemData[i].description;
+                    var mediaItemType = mediaItemData[i].type;
+                    var optionText = "<option value='" + mediaItemId + "'>" + mediaItemName + " | " + mediaItemType + " | " + mediaItemDescription + "</option>"
 
                     $("#lessonPageItemsEdit").append(optionText);       
                     $("#lessonPageItemsAdd").append(optionText);                        
@@ -841,7 +850,7 @@ $(document).ready(function () {
 		$.ajax({
 			type : "POST",
 			data : {
-				"lessonId" : $('#formAddLessonPage input[name=lessonId]').val(),
+				"lessonId" : $('#formAddLessonPage input[name=lessonIdPageAdd]').val(),
                 "lessonPageItems": $("#formAddLessonPage select[name=lessonPageItemsAdd]").getSelectionOrder()
 			},
 			url : "/lessonPage/add",
@@ -888,8 +897,7 @@ $(document).ready(function () {
 					var producer = $('td:eq(5)', nRow).text();
 					var artist = $('td:eq(6)', nRow).text();
 
-					$('#formEditMediaGroup input[name=mediaGroupId]').val(objectId);
-					$('#formAddMediaGroup input[name=mediaGroupId]').val(objectId);
+					$('#formEditMediaGroup input[name=mediaGroupIdEdit]').val(objectId);
 					$('#mediaGroupTitleEdit').val(title);
 					$('#mediaGroupIndexEdit').val(index);
 					$('#mediaGroupDetailEdit').val(detail);
@@ -1020,7 +1028,7 @@ $(document).ready(function () {
     $("#saveMediaGroup").on("click", function (e) {
 		var data = [];
 
-		if ($("#formEditMediaGroup input[name=mediaGroupId]").val() == "" || $("#formEditMediaGroup input[name=mediaGroupId]").val() == null) {
+		if ($("#formEditMediaGroup input[name=mediaGroupIdEdit]").val() == "" || $("#formEditMediaGroup input[name=mediaGroupIdEdit]").val() == null) {
 			data = {
 				title : $('#mediaGroupTitleAdd').val(),
 				type : $('#mediaGroupTypeAdd').val(),
@@ -1046,6 +1054,7 @@ $(document).ready(function () {
 			mediaGroupUpdateAjaxCall(data);
 		}
 	});
+    
         
     function mediaGroupAddAjaxCall(opts) {
 		$.ajax({
@@ -1075,8 +1084,8 @@ $(document).ready(function () {
 				$('#mediaGroupDetailEdit').val(opts.detail);
 				$('#mediaGroupImageURLEdit').val(opts.imageURL);
 
-				$("#formAddMediaGroupItem input[name=mediaGroupId]").val("");
-				$("#formEditMediaGroup input[name=mediaGroupId]").val(res);
+				$("#formAddMediaGroupItem input[name=mediaGroupIdItemAdd]").val("");
+				$("#formEditMediaGroup input[name=mediaGroupIdEdit]").val(res);
 
 				$("#formAddMediaGroup").hide();
 
@@ -1089,7 +1098,7 @@ $(document).ready(function () {
 		$.ajax({
 			type : "POST",
 			data : {
-				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val(),
+				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupIdEdit]").val(),
 				"title" : opts.title,
 				"type" : opts.type,
 				"index" : opts.index,
@@ -1114,8 +1123,8 @@ $(document).ready(function () {
 	});
     
 	$("#cancelMediaGroup").on("click", function (e) {
-		$("#formAddMediaGroupItem input[name=mediaGroupId]").val("");
-		$("#formEditMediaGroup input[name=mediaGroupId]").val("");
+		$("#formAddMediaGroupItem input[name=mediaGroupIdItemAdd]").val("");
+		$("#formEditMediaGroup input[name=mediaGroupIdEdit]").val("");
 		$("#mediagroupeditadddiv").hide();
 		$("#formEditMediaGroup").hide();
 		$("#formAddMediaGroup").hide();
@@ -1146,7 +1155,7 @@ $(document).ready(function () {
 		$.ajax({
 			type : "POST",
 			data : {
-				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val()
+				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupIdEdit]").val()
 			},
 			url : "/mediagroup/moveup",
 			success : function () {
@@ -1164,7 +1173,7 @@ $(document).ready(function () {
 		$.ajax({
 			type : "POST",
 			data : {
-				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupId]").val()
+				"mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupIdEdit]").val()
 			},
 			url : "/mediagroup/movedown",
 			success : function () {
@@ -1192,7 +1201,7 @@ $(document).ready(function () {
 	$("#btnAddMediaGroup").on("click", function (e) {
 		FillIndexTextBox();
 		
-		$("#formAddMediaGroup input[name=mediaGroupId]").val("");
+		$("#formAddMediaGroup input[name=mediaGroupIdEdit]").val("");
 		$("#formAddMediaGroup input[name=mediaGroupTitleAdd]").val("");
 		
 		$("#formAddMediaGroup input[name=mediaGroupDetailAdd]").val("");
@@ -1628,7 +1637,7 @@ $(document).ready(function () {
 			"fnServerParams" : function (aoData) {
 				aoData.push({
 					"name" : "mediaGroupId",
-					"value" : $('#mediaGroupId').val()
+					"value" : $('#mediaGroupIdItemAdd').val()
 				});
 			},
 			"sPaginationType" : "full_numbers",
@@ -1705,7 +1714,7 @@ $(document).ready(function () {
 			$.ajax({
 				type : "POST",
 				data : {
-					"mediaGroupId" : $('#formEditMediaGroup input[name=mediaGroupId]').val(),
+					"mediaGroupId" : $('#formEditMediaGroup input[name=mediaGroupIdEdit]').val(),
 					"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
 				},
 				url : "/mediagroupitem/delete",
@@ -1720,7 +1729,7 @@ $(document).ready(function () {
 		$.ajax({
 			type : "POST",
 			data : {
-				"mediaGroupId" : $('#formEditMediaGroup input[name=mediaGroupId]').val(),
+				"mediaGroupId" : $('#formEditMediaGroup input[name=mediaGroupIdEdit]').val(),
 				"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
 			},
 			url : "/mediagroupitem/add",
@@ -1899,9 +1908,17 @@ $(document).ready(function () {
         $("#mediaGroupItemContentHeader").hide();
         $("#lessonButtons").hide();
         $("#lessonPageContentHeader").hide();
+	});	
+    
+    $("#copyData").on("click", function (e) {
+		$.ajax({
+			type : "GET",
+			url : "/copydata/copydata",
+			success : function (res) {
+				alert("Successfully Coppied Data");
+			}
+		});
 	});
-
-	
 
 	function ConfirmDelete() {
 		return confirm("Are you sure that you want to delete this record?");
