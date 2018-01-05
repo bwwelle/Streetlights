@@ -1359,7 +1359,7 @@ $(document).ready(function () {
 			data : {
                 "title" : $("#formAddLessonGroup input[name=lessonGroupTitle]").val(),
                 "imageURL" : $("#formAddLessonGroup input[name=lessonGroupImageURL]").val(),
-                "lessons": $("#formAddLessonGroup select[name=lessonGroupLessonsAdd]").val()
+                "lessons": $("#formAddLessonGroup select[name=lessonGroupLessonsAdd]").getSelectionOrder()
 			},
 			url : "/lessonGroup/add",
 			success : function () {
