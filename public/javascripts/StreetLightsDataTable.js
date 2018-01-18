@@ -270,6 +270,8 @@ $(document).ready(function () {
                     $("#producerEdit").removeClass('required').addClass('input-disabled').prop('disabled', true);
                     $("#artistEdit").removeClass('required').addClass('input-disabled').prop('disabled', true);
                     
+                    $("#descriptionEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                    
                     switch (type){
                         case "lessonText":
                              $("#textEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
