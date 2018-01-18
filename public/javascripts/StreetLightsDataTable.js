@@ -878,7 +878,7 @@ $(document).ready(function () {
 		});
 	});
     
-    //Media Group
+    //MediaGroup
 	var oMediaGroupTable = $('#mediagroup')
 		.dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -950,7 +950,13 @@ $(document).ready(function () {
 			"sPaginationType" : "full_numbers",
 			"iDisplayLength" : 10,
 			"bFilter" : false,
-			"bStateSave": true
+			"bStateSave": true,
+            "fnServerParams" : function (aoData) {
+				aoData.push({
+					"name" : "mediaGroupId",
+					"value" : $('#formEditMediaGroup input[name=mediaGroupIdEdit]').val()
+				});
+			},
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
 				oMediaItemTable.fnDraw();
@@ -1596,7 +1602,7 @@ $(document).ready(function () {
 		});
 	});
     
-    //Media Group Item
+    //Mediagroupitem
 	var oMediaGroupItemTable = $('#mediagroupitem').dataTable({
 			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				if(selectedRowId == aData['DT_RowId']){
@@ -1641,7 +1647,7 @@ $(document).ready(function () {
 			"fnServerParams" : function (aoData) {
 				aoData.push({
 					"name" : "mediaGroupId",
-					"value" : $('#mediaGroupIdItemAdd').val()
+					"value" : $('#formEditMediaGroup input[name=mediaGroupIdEdit]').val()
 				});
 			},
 			"sPaginationType" : "full_numbers",
@@ -1669,7 +1675,21 @@ $(document).ready(function () {
 			sAddNewRowButtonId : "btnAddMediaGroupItem",
 			sAddNewRowOkButtonId : "btnAddMediaGroupItemOk",
 			sDeleteRowButtonId : "btnDeleteMediaGroupItem",
+            sMoveRowUpButtonId : "btnMoveMediaGroupItemUp",
+			sMoveRowDownButtonId : "btnMoveMediaGroupItemDown",
 			sSelectedRowClass : "row_selected",
+            oMoveRowUpButtonOptions : {
+				label : "Move Media Item Up",
+				icons : {
+					primary : 'ui-icon-arrowthick-1-n'
+				}
+			},
+			oMoveRowDownButtonOptions : {
+				label : "Move Media Item Down",
+				icons : {
+					primary : 'ui-icon-arrowthick-1-s'
+				}
+			},
 			oAddNewRowButtonOptions : {
 				label : "Add",
 				icons : {
@@ -1712,6 +1732,38 @@ $(document).ready(function () {
                 }
             ]
 		});
+        
+    $("#btnMoveMediaGroupItemUp").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
+			},
+			url : "/mediagroupitem/moveup",
+			success : function () {
+				var oSettings = oMediaGroupItemTable.fnSettings();				
+				oMediaGroupItemTable.fnDraw(oSettings);
+				
+				$("#btnMoveMediaGroupItemUp").removeClass('ui-state-focus');
+			}
+		});
+	});
+    
+    $("#btnMoveMediaGroupItemDown").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+				"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
+			},
+			url : "/mediagroupitem/movedown",
+			success : function () {
+				var oSettings = oMediaGroupItemTable.fnSettings();				
+				oMediaGroupItemTable.fnDraw(oSettings);
+				
+				$("#btnMoveMediaGroupItemDown").removeClass('ui-state-focus');
+			}
+		});
+	});	
         
     $("#btnDeleteMediaGroupItem").on("click", function (e) {
 		if (ConfirmDelete) {
