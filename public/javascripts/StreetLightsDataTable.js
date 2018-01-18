@@ -1737,7 +1737,8 @@ $(document).ready(function () {
 		$.ajax({
 			type : "POST",
 			data : {
-				"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
+				"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val(),
+                "mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupIdEdit]").val()
 			},
 			url : "/mediagroupitem/moveup",
 			success : function () {
@@ -1753,7 +1754,8 @@ $(document).ready(function () {
 		$.ajax({
 			type : "POST",
 			data : {
-				"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val()
+				"mediaGroupItemId" : $("#formAddMediaGroupItem input[name=mediaGroupItemId]").val(),
+                "mediaGroupId" : $("#formEditMediaGroup input[name=mediaGroupIdEdit]").val()
 			},
 			url : "/mediagroupitem/movedown",
 			success : function () {

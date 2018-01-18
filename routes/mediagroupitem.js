@@ -260,4 +260,99 @@ router.post('/delete', urlencodedParser, function (req, res) {
 	res.json("Successful Deletion");
 });
 
+router.post('/moveup', urlencodedParser, function (req, res) {
+	var MediaGroup = Parse.Object.extend("MediaGroup");
+	var query = new Parse.Query(MediaGroup);
+	var mediaGroupID = req.body.mediaGroupId;
+    query.include("MediaItem");
+    
+    var MediaItem = Parse.Object.extend("MediaItem");
+	var mediaItem = new MediaItem();
+	mediaItem.id = req.body.mediaGroupItemId;
+	
+	query.get(mediaGroupID, {
+		success : function (mediaGroup) {
+            var newArray = [];
+            
+            for (var i = mediaGroup.get("items").length - 1; i > 0; i--) {
+                if(mediaGroup.get("items")[i].id == mediaItem.id)
+                {
+                    var mediaItemToMoveUp = mediaGroup.get("items")[i];
+                    var mediaItemToMoveDown = mediaGroup.get("items")[i - 1];
+                    newArray.push(mediaItemToMoveDown);
+                    newArray.push(mediaItemToMoveUp);
+                    
+                    i -= 1;                    
+                }
+                else
+                {
+                    newArray.push(mediaGroup.get("items")[i]);
+                }   
+            }
+            
+            newArray.push(mediaGroup.get("items")[0]);
+            
+            newArray.reverse();
+            mediaGroup.unset("items");
+            
+            for (var z = 0; z < newArray.length; z++)
+            {
+                mediaGroup.addUnique("items", newArray[z]);
+                mediaGroup.save();
+            }  
+            
+            res.json("Move Up Successfull");
+		},
+		error : function (object, error) {
+			res.json("Move Up Error: " + error);
+		}
+	});
+});
+
+router.post('/movedown', urlencodedParser, function (req, res) {
+	var MediaGroup = Parse.Object.extend("MediaGroup");
+	var query = new Parse.Query(MediaGroup);
+	var mediaGroupID = req.body.mediaGroupId;
+    query.include("MediaItem");
+    
+    var MediaItem = Parse.Object.extend("MediaItem");
+	var mediaItem = new MediaItem();
+	mediaItem.id = req.body.mediaGroupItemId;
+	
+	query.get(mediaGroupID, {
+		success : function (mediaGroup) {
+            var newArray = [];
+            
+            for (var i = 0; i < mediaGroup.get("items").length - 1; i++) {
+                if(mediaGroup.get("items")[i].id == mediaItem.id)
+                {
+                    var mediaItemToMoveDown = mediaGroup.get("items")[i];
+                    var mediaItemToMoveUp = mediaGroup.get("items")[i + 1];
+                    newArray.push(mediaItemToMoveUp);
+                    newArray.push(mediaItemToMoveDown);                    
+                    
+                    i += 1;                    
+                }
+                else
+                {
+                    newArray.push(mediaGroup.get("items")[i]);
+                }   
+            }
+            newArray.push(mediaGroup.get("items")[mediaGroup.get("items").length - 1]);
+            mediaGroup.unset("items");
+            
+            for (var z = 0; z < newArray.length; z++)
+            {
+                mediaGroup.addUnique("items", newArray[z]);
+                mediaGroup.save();
+            }  
+            
+            res.json("Move Up Successfull");
+		},
+		error : function (object, error) {
+			res.json("Move Up Error: " + error);
+		}
+	});
+});
+
 module.exports = router;
