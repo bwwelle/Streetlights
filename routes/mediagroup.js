@@ -317,7 +317,7 @@ router.post('/moveup', urlencodedParser, function (req, res) {
 		success : function (mediaGroup) {
 			var findMediaGrouptoMoveDown = new Parse.Query(MediaGroup);
 			findMediaGrouptoMoveDown.equalTo("index",  mediaGroup.get("index") - 1);
-			findMediaGrouptoMoveUp.equalTo("type", mediaGroup.get("type"));
+			findMediaGrouptoMoveDown.equalTo("type", mediaGroup.get("type"));
 			
 			findMediaGrouptoMoveDown.find().then(
 				function (results) {
