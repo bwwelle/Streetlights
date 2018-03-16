@@ -16,16 +16,24 @@ var urlencodedParser = bodyParser.urlencoded({
         var displayLength = req.query.iDisplayLength;
         displayStart = req.query.iDisplayStart;
         echo = req.query.sEcho;
-		if (searchText != null && searchText != "") {}
 
 		var Credit = Parse.Object.extend("Credit");
 		var countQuery = new Parse.Query(Credit);
+        
+        if (searchText != null && searchText != "") {
+            countQuery.matches('name', searchText,'i');
+        }
 
 		countQuery.count({
 			success : function (count){                
                 var tableDataQuery = new Parse.Query(Credit);
+                
+                if (searchText != null && searchText != "") {
+                    tableDataQuery.matches('name', searchText,'i');
+                }
 				
                 tableDataQuery.ascending("name");
+                
 				tableDataQuery.limit(parseInt(displayLength));
                 
                 if(parseInt(displayStart) != 0)
@@ -40,18 +48,15 @@ var urlencodedParser = bodyParser.urlencoded({
 							var credit = credits[i];
                             var creditName = "";
                             
-                            if(credit.get("name") !== null && credit.get("name") !== undefined && credit.get("name") !== "")
-								creditName = credit.get("name");
+                            if(credit.get("name") !== null || credit.get("name") !== undefined)
+								creditName = credit.get("name");                              
 							
-							if (creditName !== "")
-							{
-								data[creditCount] = {                            
+							data[creditCount] = {                            
 								name : creditName,
 								DT_RowId : credit.id
 								};
 								
-								creditCount++;
-							}
+							creditCount++;
 						}
 						
 						data =  data.sort(function (a, b) {
