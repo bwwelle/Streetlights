@@ -15,14 +15,21 @@ var urlencodedParser = bodyParser.urlencoded({
 		var searchText = req.query.sSearch;
 		displayStart = req.query.iDisplayStart;
 		echo = req.query.sEcho;
-		if (searchText != null && searchText != "") {}
-
+		
 		var Lesson = Parse.Object.extend("Lesson");
 		var countQuery = new Parse.Query(Lesson);
+        
+        if (searchText != null && searchText != "") {
+            countQuery.matches('title', searchText,'i');
+        }
 
 		countQuery.count({
 			success : function (count) {
 				var tableDataQuery = new Parse.Query(Lesson);
+                
+                if (searchText != null && searchText != "") {
+                    tableDataQuery.matches('title', searchText,'i');
+                }
 
 				tableDataQuery.ascending("index");
 				tableDataQuery.limit(10);

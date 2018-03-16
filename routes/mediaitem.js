@@ -15,15 +15,22 @@ router.get('/', function (req, res) {
 	var searchText = req.query.sSearch;
 	displayStart = req.query.iDisplayStart;
 	var displayLength = req.query.iDisplayLength;
-	echo = req.query.sEcho;
-
-	if (searchText != null && searchText != "") {}
+	echo = req.query.sEcho;	
 
 	var MediaItem = Parse.Object.extend("MediaItem");
-	var countQuery = new Parse.Query(MediaItem);
-
+	var countQuery = new Parse.Query(MediaItem);    
+    
+    if (searchText != null && searchText != "") {
+        countQuery.matches('name', searchText,'i');
+    }
+    
 	countQuery.count().then(function (count) {
-		var tableDataQuery = new Parse.Query(MediaItem);
+		var tableDataQuery = new Parse.Query(MediaItem);        
+        
+        if (searchText != null && searchText != "") {
+            tableDataQuery.matches('name', searchText,'i');
+        }
+
         tableDataQuery.include("producers");
 		tableDataQuery.include("artists");
 

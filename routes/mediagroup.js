@@ -19,10 +19,18 @@ var urlencodedParser = bodyParser.urlencoded({
 
 		var MediaGroup = Parse.Object.extend("MediaGroup");
 		var countQuery = new Parse.Query(MediaGroup);
+        
+        if (searchText != null && searchText != "") {
+            countQuery.matches('title', searchText,'i');
+        }
 
 		countQuery.count({
 			success : function (count) {
 				var tableDataQuery = new Parse.Query(MediaGroup);
+                if (searchText != null && searchText != "") {
+                    tableDataQuery.matches('title', searchText,'i');
+                }
+                
 				tableDataQuery.include("producers");
 				tableDataQuery.include("artists");
 

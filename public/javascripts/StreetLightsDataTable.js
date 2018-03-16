@@ -30,7 +30,7 @@ $(document).ready(function () {
 			"sPaginationType" : "full_numbers",
 			"iDisplayLength" : 10,
 			"iDisplayStart" : 0,
-			"bFilter" : false,
+			"bFilter" : true,
 			"fnDrawCallback" : function (oSettings) {
 				IntializeCreditDropDownBoxes();
 			}
@@ -163,7 +163,7 @@ $(document).ready(function () {
 			"iDisplayLength" : 10,
 			"iDisplayStart" : 0,
 			"sPaginationType" : "full_numbers",
-			"bFilter" : false,
+			"bFilter" : true,
 			"deferLoading" : 10
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
@@ -357,7 +357,7 @@ $(document).ready(function () {
 			"iDisplayLength" : 10,
 			"iDisplayStart" : 0,
 			"sPaginationType" : "full_numbers",
-			"bFilter" : false,
+			"bFilter" : true,
 			"deferLoading" : 10
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
@@ -499,7 +499,7 @@ $(document).ready(function () {
 			],
 			"sPaginationType" : "full_numbers",
 			"iDisplayLength" : 10,
-			"bFilter" : false,
+			"bFilter" : true,
 			"bStateSave": true
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
@@ -951,7 +951,7 @@ $(document).ready(function () {
 			],
 			"sPaginationType" : "full_numbers",
 			"iDisplayLength" : 10,
-			"bFilter" : false,
+			"bFilter" : true,
 			"bStateSave": true,
             "fnServerParams" : function (aoData) {
 				aoData.push({
@@ -1278,7 +1278,7 @@ $(document).ready(function () {
 			},
 			"sPaginationType" : "full_numbers",
 			"iDisplayLength" : 10,
-			"bFilter" : false,
+			"bFilter" : true,
 			"bStateSave": true
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
@@ -1655,7 +1655,7 @@ $(document).ready(function () {
 			"sPaginationType" : "full_numbers",
 			"iDisplayLength" : 10,
 			"iDisplayStart" : 0,
-			"bFilter" : false,
+			"bFilter" : true,
 			"oLanguage" : {
 				"sEmptyTable" : "No media items(tracks) added to media group(album)",
 				"sZeroRecords" : "No media items(tracks) added to media group(album)"

@@ -13,6 +13,7 @@ var urlencodedParser = bodyParser.urlencoded({
 
 	router.get('/', urlencodedParser, function (req, res) {
 		echo = req.query.sEcho;
+        var searchText = req.query.sSearch;
 		var mediaGroupId = req.query["mediaGroupId"];
 		var mediaItemId = req.query["mediaItemId"];
 		var displayLength = req.query.iDisplayLength;
@@ -20,7 +21,8 @@ var urlencodedParser = bodyParser.urlencoded({
 
 		if (mediaGroupId !== undefined && mediaGroupId !== null && mediaGroupId !== "") {
 			var MediaGroup = Parse.Object.extend("MediaGroup");
-			var mediaGroupQuery = new Parse.Query(MediaGroup);
+			var mediaGroupQuery = new Parse.Query(MediaGroup);           
+            
 			mediaGroupQuery.include("items");
             mediaGroupQuery.include("items.producers");
 			mediaGroupQuery.include("items.artists");
@@ -42,43 +44,46 @@ var urlencodedParser = bodyParser.urlencoded({
                             var mediaItemImageURL = '';
 							var mediaItemType = '';
                             
-                            if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
-								if (mediaItem.get("producers")[0] !== null && mediaItem.get("producers")[0] !== undefined)
-									mediaItemProducer = mediaItem.get("producers")[0].get("name");
-							}
+                            if ((searchText != null && searchText != "" && mediaItem.get("name") !== null && mediaItem.get("name") !== undefined && mediaItem.get("name").toLowerCase().includes(searchText.toLowerCase())) || (searchText == null || searchText == "")) {
+                                if (mediaItem.get("producers") !== null && mediaItem.get("producers") !== undefined) {
+                                    if (mediaItem.get("producers")[0] !== null && mediaItem.get("producers")[0] !== undefined)
+                                        mediaItemProducer = mediaItem.get("producers")[0].get("name");
+                                }
 
-							if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined) {
-								if (mediaItem.get("artists")[0] !== null && mediaItem.get("artists")[0] !== undefined)
-									mediaItemArtist = mediaItem.get("artists")[0].get("name");
-							}
+                                if (mediaItem.get("artists") !== null && mediaItem.get("artists") !== undefined) {
+                                    if (mediaItem.get("artists")[0] !== null && mediaItem.get("artists")[0] !== undefined)
+                                        mediaItemArtist = mediaItem.get("artists")[0].get("name");
+                                }
 
-							if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
-								mediaItemName = mediaItem.get("name");
-							
-							if (mediaItem.get("type") !== null && mediaItem.get("type") !== undefined)
-								mediaItemType = mediaItem.get("type");
+                                if (mediaItem.get("name") !== null && mediaItem.get("name") !== undefined)
+                                    mediaItemName = mediaItem.get("name");
+                                
+                                if (mediaItem.get("type") !== null && mediaItem.get("type") !== undefined)
+                                    mediaItemType = mediaItem.get("type");
 
-							if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
-								mediaItemDuration = ConvertDurationTime(mediaItem.get("duration"));
+                                if (mediaItem.get("duration") !== null && mediaItem.get("duration") !== undefined)
+                                    mediaItemDuration = ConvertDurationTime(mediaItem.get("duration"));
 
-							if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
-								mediaItemContentURL = mediaItem.get("contentURL");
-                            
-                            if (mediaItem.get("imageURL") !== null && mediaItem.get("imageURL") !== undefined)
-								mediaItemImageURL = mediaItem.get("imageURL");
-
-							data[recordCount] = {
-								name : mediaItemName,
-								type : mediaItemType,
-								duration : mediaItemDuration,
-								contentURL : mediaItemContentURL,
-                                imageURL : mediaItemImageURL,
-                                producer: mediaItemProducer,
-								artist : mediaItemArtist,
-								DT_RowId : mediaItem.id
-							};
+                                if (mediaItem.get("contentURL") !== null && mediaItem.get("contentURL") !== undefined)
+                                    mediaItemContentURL = mediaItem.get("contentURL");
+                                
+                                if (mediaItem.get("imageURL") !== null && mediaItem.get("imageURL") !== undefined)
+                                    mediaItemImageURL = mediaItem.get("imageURL");
+                                
+                                data[recordCount] = {
+                                    name : mediaItemName,
+                                    type : mediaItemType,
+                                    duration : mediaItemDuration,
+                                    contentURL : mediaItemContentURL,
+                                    imageURL : mediaItemImageURL,
+                                    producer: mediaItemProducer,
+                                    artist : mediaItemArtist,
+                                    DT_RowId : mediaItem.id
+                                };
+                                
+                                recordCount++;
+                            }							
 						}
-						recordCount++;
 					}
 
 					res.json({

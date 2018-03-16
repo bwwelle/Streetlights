@@ -15,17 +15,25 @@ var urlencodedParser = bodyParser.urlencoded({
 		var searchText = req.query.sSearch;
 		displayStart = req.query.iDisplayStart;
 		echo = req.query.sEcho;
-		if (searchText != null && searchText != "") {}
-
+        
 		var LessonGroup = Parse.Object.extend("LessonGroup");
-		var countQuery = new Parse.Query(LessonGroup);
+		var countQuery = new Parse.Query(LessonGroup); 
         
         var lessonGroupId = req.query["lessonGroupId"];
 
         if(lessonGroupId == undefined || lessonGroupId == "" || lessonGroupId == null){
+            if (searchText != null && searchText != "") {
+                countQuery.matches('title', searchText,'i');
+            }
+            
             countQuery.count({
                 success : function (count) {
                     var tableDataQuery = new Parse.Query(LessonGroup);
+                    
+                    if (searchText != null && searchText != "") {
+                        tableDataQuery.matches('title', searchText,'i');
+                    }
+                    
                     tableDataQuery.include("lessons");
                     
                     tableDataQuery.limit(10);
@@ -81,6 +89,7 @@ var urlencodedParser = bodyParser.urlencoded({
         {
             var lessonGroup = Parse.Object.extend("LessonGroup");
 			var lessonGroupQuery = new Parse.Query(lessonGroup);
+            
 			lessonGroupQuery.include("lessons");
             
             lessonGroupQuery.get(lessonGroupId, {
