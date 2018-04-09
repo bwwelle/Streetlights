@@ -237,220 +237,7 @@ $(document).ready(function () {
 				$('#emailEdit').val(email);
 			}
 		});
-	});
-    
-    //Media Item
-	var oMediaItemTable = $('#mediaitem').dataTable({
-			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-				$(nRow).on('click', function () {
-					var objectId = $(nRow).attr("id");
-					var name = $('td:eq(0)', nRow).text();
-					var type = $('td:eq(1)', nRow).text();
-					var text = $('td:eq(2)', nRow).text();
-                    var description = $('td:eq(3)', nRow).text();
-					var duration = $('td:eq(4)', nRow).text();
-					var contentURL = $('td:eq(5)', nRow).text();
-                    var imageURL = $('td:eq(6)', nRow).text();
-					var producer = $('td:eq(7)', nRow).text();
-					var artist = $('td:eq(8)', nRow).text();
-
-					$('#mediaItemEditId').val(objectId);
-					$('#nameEdit').val(name);
-					$('#textEdit').val(text);
-                    $('#descriptionEdit').val(description);
-					$('#durationEdit').val(duration);
-					$('#contentURLEdit').val(contentURL);
-                    $('#imageURLEdit').val(imageURL);
-					$('#typeEdit').val(type);
-                    
-                    $("#imageURLEdit").removeClass('required').attr('readonly', true).addClass('input-disabled');
-                    $("#contentURLEdit").removeClass('required').attr('readonly', true).addClass('input-disabled');
-                    $("#durationEdit").removeClass('required').attr('readonly', true).addClass('input-disabled');
-                    $("#textEdit").removeClass('required').attr('readonly', true).addClass('input-disabled');
-                    $("#producerEdit").removeClass('required').addClass('input-disabled').prop('disabled', true);
-                    $("#artistEdit").removeClass('required').addClass('input-disabled').prop('disabled', true);
-                    
-                    $("#descriptionEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                    
-                    switch (type){
-                        case "lessonText":
-                             $("#textEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                            break;
-                        case "lessonAudio":
-                            $("#contentURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                            $("#durationEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                            break;
-                        case "lessonVideo":
-                            $("#imageURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                            $("#contentURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                            $("#durationEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                            break;
-                        case "lessonImage":
-                            $("#imageURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                            break;
-                        case "song":
-                            $("#contentURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                            $("#durationEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                            $("#producerEdit").addClass('required').removeClass('input-disabled').prop('disabled', false);
-                            $("#artistEdit").addClass('required').removeClass('input-disabled').prop('disabled', false);
-                            break;
-                        case "experience":
-                            $("#contentURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                            $("#durationEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                            $("#imageURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                            $("#producerEdit").addClass('required').removeClass('input-disabled').prop('disabled', false);
-                            $("#artistEdit").addClass('required').removeClass('input-disabled').prop('disabled', false);
-                            break;
-                    }
-                    
-					$('#durationEdit').mask("00:00:00", {
-						placeholder : "__:__:__"
-					});
-					
-					$("#formEditMediaItem select[name=typeEdit] option").filter(function () {
-						return $(this).text() == type;
-					}).prop('selected', true);
-
-					$("#formEditMediaItem select[name=producerEdit] option").filter(function () {
-						return $(this).text() == producer;
-					}).prop('selected', true);
-
-					$("#formEditMediaItem select[name=artistEdit] option").filter(function () {
-						return $(this).text() == artist;
-					}).prop('selected', true);
-				});
-			},
-			"bJQueryUI" : true,
-			"bScrollCollapse" : true,
-			"bProcessing" : true,
-			"bServerSide" : true,
-			"rowId" : "objectid",
-			"sAjaxSource" : "/mediaitem",
-			"bPaginate" : true,
-			"bSort" : true,
-			"aoColumnDefs" : [{
-					"mDataProp" : null,
-					"sDefaultContent" : "&nbsp",
-					"aTargets" : ['_all']
-				}
-			],
-			"aoColumns" : [{
-					"mDataProp" : "name"
-				}, {
-					"mDataProp" : "type"
-				}, {
-					"mDataProp" : "text"
-				}, {
-					"mDataProp" : "description"
-				},{
-					"mDataProp" : "duration"
-				}, {
-					"mDataProp" : "contentURL"
-				}, {
-					"mDataProp" : "imageURL"
-				}, {
-					"mDataProp" : "producer"
-				}, {
-					"mDataProp" : "artist"
-				}
-			],
-			"iDisplayLength" : 10,
-			"iDisplayStart" : 0,
-			"sPaginationType" : "full_numbers",
-			"bFilter" : true,
-			"deferLoading" : 10
-		}).makeEditable({
-			fnOnDeleted : function (value, settings) {
-				oMediaItemTable.fnDraw();
-				oMediaGroupTable.fnDraw();
-				oMediaGroupItemTable.fnDraw();
-			},
-			fnOnEdited : function (value, settings) {
-				oMediaItemTable.fnDraw();
-				oMediaGroupTable.fnDraw();
-				oMediaGroupItemTable.fnDraw();
-			},
-			sAddURL : "/mediaitem/add",
-			sAddHttpMethod : "POST",
-			sEditHttpMethod : "GET",
-			sDeleteHttpMethod : "POST",
-			sEditURL : "/mediaitem/edit",
-			sDeleteURL : "/mediaitem/delete",
-			sAddNewRowFormId : "formAddMediaItem",
-			sAddNewRowButtonId : "btnAddMediaItem",
-			sAddNewRowOkButtonId : "btnAddMediaItemOk",
-			sAddNewRowCancelButtonId : "btnAddMediaItemCancel",
-			sEditRowFormId : "formEditMediaItem",
-			sEditRowButtonId : "btnEditMediaItem",
-			sEditRowOkButtonId : "btnEditMediaItemOk",
-			sEditRowCancelButtonId : "btnEditMediaItemCancel",
-			sDeleteRowButtonId : "btnDeleteMediaItem",
-			oAddNewRowButtonOptions : {
-				label : "Add",
-				icons : {
-					primary : 'ui-icon-plus'
-				}
-			},
-			oEditRowButtonOptions : {
-				label : "Edit",
-				icons : {
-					primary : 'ui-icon-pencil'
-				}
-			},
-			oDeleteRowButtonOptions : {
-				label : "Remove",
-				icons : {
-					primary : 'ui-icon-trash'
-				}
-			},
-			oAddNewRowFormOptions : {
-				title : 'Add a new media item',
-				show : "blind",
-				hide : "explode",
-				modal : true
-			},
-			oEditRowFormOptions : {
-				title : 'Edit a media item',
-				show : "blind",
-				hide : "explode",
-				modal : true
-			},
-			sAddDeleteEditToolbarSelector : ".dataTables_length",
-            aoColumns: [
-                {
-                    placeholder : ""
-                },
-                {
-                    placeholder : ""
-                },
-                {
-                    placeholder : ""
-                },
-                {
-                    placeholder : ""
-                },
-                {
-                    placeholder : ""
-                },
-                {
-                    placeholder : ""
-                },
-                {
-                    placeholder : ""
-                },
-                {
-                    placeholder : ""
-                }
-            ]
-		});    
-    
-	$("#btnAddMediaItem").on("click", function (e) {
-		$('#duration').mask("00:00:00", {
-			placeholder : "__:__:__"
-		});
-        
-        $('#imageURL').removeClass('required');
-	});
+	});  
     
     //Lesson
     var oLessonTable = $('#lesson')
@@ -876,6 +663,269 @@ $(document).ready(function () {
 				$("#formEditLessonPage").dialog('close');
 
 				oLessonPageTable.fnDraw();
+			}
+		});
+	});
+    
+     //Media Item
+	var oMediaItemTable = $('#mediaitem').dataTable({
+			"fnRowCallback" : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				$(nRow).on('click', function () {
+					var objectId = $(nRow).attr("id");
+					var name = $('td:eq(0)', nRow).text();
+					var type = $('td:eq(1)', nRow).text();
+					var text = $('td:eq(2)', nRow).text();
+                    var description = $('td:eq(3)', nRow).text();
+					var duration = $('td:eq(4)', nRow).text();
+					var contentURL = $('td:eq(5)', nRow).text();
+                    var imageURL = $('td:eq(6)', nRow).text();
+					var producer = $('td:eq(7)', nRow).text();
+					var artist = $('td:eq(8)', nRow).text();
+
+					$('#mediaItemEditId').val(objectId);
+					$('#nameEdit').val(name);
+					$('#textEdit').val(text);
+                    $('#descriptionEdit').val(description);
+					$('#durationEdit').val(duration);
+					$('#contentURLEdit').val(contentURL);
+                    $('#imageURLEdit').val(imageURL);
+					$('#typeEdit').val(type);
+                    
+                    
+                    $("#imageURLEdit").removeClass('required').attr('readonly', true).addClass('input-disabled');
+                    $("#contentURLEdit").removeClass('required').attr('readonly', true).addClass('input-disabled');
+                    $("#durationEdit").removeClass('required').attr('readonly', true).addClass('input-disabled');
+                    $("#textEdit").removeClass('required').attr('readonly', true).addClass('input-disabled');
+                    $("#producerEdit").removeClass('required').addClass('input-disabled').prop('disabled', true);
+                    $("#artistEdit").removeClass('required').addClass('input-disabled').prop('disabled', true);
+                    
+                    $("#descriptionEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                    
+                    switch (type){
+                        case "lessonText":
+                             $("#textEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            break;
+                        case "lessonAudio":
+                            $("#contentURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#durationEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            break;
+                        case "lessonVideo":
+                            $("#imageURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#contentURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#durationEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            break;
+                        case "lessonImage":
+                            $("#imageURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            break;
+                        case "song":
+                            $("#contentURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#durationEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#producerEdit").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                            $("#artistEdit").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                            break;
+                        case "experience":
+                            $("#contentURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#durationEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#imageURLEdit").addClass('required').attr('readonly', false).removeClass('input-disabled');
+                            $("#producerEdit").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                            $("#artistEdit").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                            break;
+                    }
+                    
+					$('#durationEdit').mask("00:00:00", {
+						placeholder : "__:__:__"
+					});
+					
+					$("#formEditMediaItem select[name=typeEdit] option").filter(function () {
+						return $(this).text() == type;
+					}).prop('selected', true);
+
+					$("#formEditMediaItem select[name=producerEdit] option").filter(function () {
+						return $(this).text() == producer;
+					}).prop('selected', true);
+
+					$("#formEditMediaItem select[name=artistEdit] option").filter(function () {
+						return $(this).text() == artist;
+					}).prop('selected', true);
+				});
+			},
+			"bJQueryUI" : true,
+			"bScrollCollapse" : true,
+			"bProcessing" : true,
+			"bServerSide" : true,
+			"rowId" : "objectid",
+			"sAjaxSource" : "/mediaitem",
+			"bPaginate" : true,
+			"bSort" : true,
+			"aoColumnDefs" : [{
+					"mDataProp" : null,
+					"sDefaultContent" : "&nbsp",
+					"aTargets" : ['_all']
+				}
+			],
+			"aoColumns" : [{
+					"mDataProp" : "name"
+				}, {
+					"mDataProp" : "type"
+				}, {
+					"mDataProp" : "text"
+				}, {
+					"mDataProp" : "description"
+				},{
+					"mDataProp" : "duration"
+				}, {
+					"mDataProp" : "contentURL"
+				}, {
+					"mDataProp" : "imageURL"
+				}, {
+					"mDataProp" : "producer"
+				}, {
+					"mDataProp" : "artist"
+				}
+			],
+			"iDisplayLength" : 10,
+			"iDisplayStart" : 0,
+			"sPaginationType" : "full_numbers",
+			"bFilter" : true,
+			"deferLoading" : 10
+		}).makeEditable({
+			fnOnDeleted : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
+			fnOnEdited : function (value, settings) {
+				oMediaItemTable.fnDraw();
+				oMediaGroupTable.fnDraw();
+				oMediaGroupItemTable.fnDraw();
+			},
+			sAddURL : "/mediaitem/add",
+			sAddHttpMethod : "POST",
+			sDeleteHttpMethod : "POST",
+			sDeleteURL : "/mediaitem/delete",
+            sEditHttpMethod : "GET",
+            sEditURL : "/mediaitem",
+			sAddNewRowFormId : "formAddMediaItem",
+			sAddNewRowButtonId : "btnAddMediaItem",
+			sAddNewRowOkButtonId : "btnAddMediaItemOk",
+			sAddNewRowCancelButtonId : "btnAddMediaItemCancel",
+			sEditRowFormId : "formEditMediaItem",
+			sEditRowButtonId : "btnEditMediaItem",
+			sEditRowOkButtonId : "btnEditMediaItemOk",
+			sEditRowCancelButtonId : "btnEditMediaItemCancel",
+			sDeleteRowButtonId : "btnDeleteMediaItem",
+			oAddNewRowButtonOptions : {
+				label : "Add",
+				icons : {
+					primary : 'ui-icon-plus'
+				}
+			},
+			oEditRowButtonOptions : {
+				label : "Edit",
+				icons : {
+					primary : 'ui-icon-pencil'
+				}
+			},
+			oDeleteRowButtonOptions : {
+				label : "Remove",
+				icons : {
+					primary : 'ui-icon-trash'
+				}
+			},
+			oAddNewRowFormOptions : {
+				title : 'Add a new media item',
+				show : "blind",
+				hide : "explode",
+				modal : true
+			},
+			oEditRowFormOptions : {
+				title : 'Edit a media item',
+				show : "blind",
+				hide : "explode",
+				modal : true
+			},
+			sAddDeleteEditToolbarSelector : ".dataTables_length",
+            aoColumns: [
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                },
+                {
+                    placeholder : ""
+                }
+            ]
+		});    
+    
+	$("#btnAddMediaItem").on("click", function (e) {
+		$('#duration').mask("00:00:00", {
+			placeholder : "__:__:__"
+		});
+        
+        $('#imageURL').removeClass('required');
+	});
+    
+    $("#btnEditMediaItemOk").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+                "mediaItemId": $("#formEditMediaItem input[name=mediaItemEditId]").val(),
+                "name": $("#formEditMediaItem input[name=nameEdit]").val(),
+                "duration": $("#formEditMediaItem input[name=durationEdit").val(),
+                "contentURL": $("#formEditMediaItem input[name=contentURLEdit").val(),
+                "imageURL": $("#formEditMediaItem input[name=imageURLEdit").val(),
+                "shareURL": $("#formEditMediaItem input[name=contentURLEdit").val(),
+                "type": $("#formEditMediaItem select[name=typeEdit").val(),
+                "text": $("#formEditMediaItem input[name=textEdit").val(),
+                "description": $("#formEditMediaItem input[name=descriptionEdit").val(),
+                "producer": $("#formEditMediaItem select[name=producerEdit").val(),
+                "artist": $("#formEditMediaItem select[name=artistEdit").val()                
+			},
+			url : "/mediaitem/update",
+			success : function (res) {
+				$("#formEditMediaItem").dialog('close');
+
+				oMediaItemTable.fnDraw();
+			}
+		});
+	});
+    
+    $("#btnAddMediaItemOk").on("click", function (e) {
+		$.ajax({
+			type : "POST",
+			data : {
+                "name": $("#formAddMediaItem input[name=name]").val(),
+                "duration": $("#formAddMediaItem input[name=duration").val(),
+                "contentURL": $("#formAddMediaItem input[name=contentURL").val(),
+                "imageURL": $("#formAddMediaItem input[name=imageURL").val(),
+                "shareURL": $("#formAddMediaItem input[name=contentURL").val(),
+                "type": $("#formAddMediaItem select[name=mediaitemtype").val(),
+                "text": $("#formAddMediaItem input[name=text").val(),
+                "description": $("#formAddMediaItem input[name=description").val(),
+                "producer": $("#formAddMediaItem select[name=mediaitemproducer").val(),
+                "artist": $("#formAddMediaItem select[name=mediaitemartist").val()                 
+			},
+			url : "/mediaitem/add",
+			success : function () {
+				$("#formAddMediaItem").dialog('close');
+
+				oMediaItemTable.fnDraw();
 			}
 		});
 	});
@@ -1839,15 +1889,15 @@ $(document).ready(function () {
             case "song":
                 $("#contentURL").addClass('required').attr('readonly', false).removeClass('input-disabled');
                 $("#duration").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                $("#mediaitemproducer").addClass('required').removeClass('input-disabled').prop('disabled', false);
-                $("#mediaitemartist").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                $("#mediaitemproducer").addClass('required').removeClass('input-disabled').prop('disabled', true);
+                $("#mediaitemartist").addClass('required').removeClass('input-disabled').prop('disabled', true);
                 break;
             case "experience":
                 $("#contentURL").addClass('required').attr('readonly', false).removeClass('input-disabled');
                 $("#duration").addClass('required').attr('readonly', false).removeClass('input-disabled');
                 $("#imageURL").addClass('required').attr('readonly', false).removeClass('input-disabled');
-                $("#mediaitemproducer").addClass('required').removeClass('input-disabled').prop('disabled', false);
-                $("#mediaitemartist").addClass('required').removeClass('input-disabled').prop('disabled', false);
+                $("#mediaitemproducer").addClass('required').removeClass('input-disabled').prop('disabled', true);
+                $("#mediaitemartist").addClass('required').removeClass('input-disabled').prop('disabled', true);
                 break;
         }
 	});
