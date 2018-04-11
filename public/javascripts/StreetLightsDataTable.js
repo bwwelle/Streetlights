@@ -799,8 +799,8 @@ $(document).ready(function () {
 				oMediaGroupTable.fnDraw();
 				oMediaGroupItemTable.fnDraw();
 			},
-			sAddURL : "/mediaitem/add",
-			sAddHttpMethod : "POST",
+			sAddURL : "/mediaitem",
+			sAddHttpMethod : "GET",
 			sDeleteHttpMethod : "POST",
 			sDeleteURL : "/mediaitem/delete",
             sEditHttpMethod : "GET",
@@ -899,8 +899,6 @@ $(document).ready(function () {
 			},
 			url : "/mediaitem/update",
 			success : function (res) {
-				$("#formEditMediaItem").dialog('close');
-
 				oMediaItemTable.fnDraw();
 			}
 		});
@@ -923,8 +921,6 @@ $(document).ready(function () {
 			},
 			url : "/mediaitem/add",
 			success : function () {
-				$("#formAddMediaItem").dialog('close');
-
 				oMediaItemTable.fnDraw();
 			}
 		});

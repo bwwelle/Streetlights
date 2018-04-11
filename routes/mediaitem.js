@@ -325,7 +325,19 @@ router.post('/add', urlencodedParser, function (req, res) {
 	
 	var duration = req.body.duration.split(":");
 
-	var durationInSeconds = ConvertDurationForSave(duration[0], duration[1], duration[2]);
+	var durationInSeconds = ConvertDurationForSave(duration[0], duration[1], duration[2]);    
+    
+    var Producer = Parse.Object.extend("Credit");
+	var producer = new Producer();
+	producer.id = req.body.producer;
+	mediaItem.addUnique("producers", producer);
+    mediaItem.save();
+
+	var Artist = Parse.Object.extend("Credit");
+	var artist = new Artist();
+	artist.id = req.body.artist;
+	mediaItem.addUnique("artists", artist);
+    mediaItem.save();
 
 	mediaItem.set("name", req.body.name);
 	mediaItem.set("duration", parseInt(durationInSeconds));
@@ -338,17 +350,6 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaItem.set("version", bible);
 	mediaItem.set("language", "eng");
     
-    var Producer = Parse.Object.extend("Credit");
-	var producer = new Producer();
-	producer.id = req.body.mediaitemproducer;
-	mediaItem.addUnique("producers", producer);
-    mediaItem.save();
-
-	var Artist = Parse.Object.extend("Credit");
-	var artist = new Artist();
-	artist.id = req.body.mediaitemartist;
-	mediaItem.addUnique("artists", artist);
-    mediaItem.save();
 
 	mediaItem.save(null, {
 		success : function (mediaItem) {
