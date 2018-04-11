@@ -346,7 +346,7 @@ router.post('/add', urlencodedParser, function (req, res) {
 	mediaItem.set("text", req.body.text);
     mediaItem.set("description", req.body.description);
 	mediaItem.set("shareURL", req.body.contentURL);
-	mediaItem.set("type", req.body.mediaitemtype);
+	mediaItem.set("type", req.body.type);
 	mediaItem.set("version", bible);
 	mediaItem.set("language", "eng");
     
