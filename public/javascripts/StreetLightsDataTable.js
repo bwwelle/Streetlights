@@ -892,7 +892,7 @@ $(document).ready(function () {
                 "imageURL": $("#formEditMediaItem input[name=imageURLEdit").val(),
                 "shareURL": $("#formEditMediaItem input[name=contentURLEdit").val(),
                 "type": $("#formEditMediaItem select[name=typeEdit").val(),
-                "text": $("#formEditMediaItem input[name=textEdit").val(),
+                "text": $("#formEditMediaItem textarea[name=textEdit").val(),
                 "description": $("#formEditMediaItem input[name=descriptionEdit").val(),
                 "producer": $("#formEditMediaItem select[name=producerEdit").val(),
                 "artist": $("#formEditMediaItem select[name=artistEdit").val()                
@@ -914,7 +914,7 @@ $(document).ready(function () {
                 "imageURL": $("#formAddMediaItem input[name=imageURL").val(),
                 "shareURL": $("#formAddMediaItem input[name=contentURL").val(),
                 "type": $("#formAddMediaItem select[name=mediaitemtype").val(),
-                "text": $("#formAddMediaItem input[name=text").val(),
+                "text": $("#formAddMediaItem textarea[name=text").val(),
                 "description": $("#formAddMediaItem input[name=description").val(),
                 "producer": $("#formAddMediaItem select[name=mediaitemproducer").val(),
                 "artist": $("#formAddMediaItem select[name=mediaitemartist").val()                 
