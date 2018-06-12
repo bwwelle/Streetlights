@@ -31,6 +31,10 @@ router.get('/download', function (req, res, next) {
                         var userEmail = userEmails[i];
                         var email = "";
                         var age = "";
+						var city = "";
+						var name = "";
+						var purposeOfUse = "";
+						var churchOrganization = "";
                         var writeValue = "";
                         
                         if(userEmail.get("email") !== null && userEmail.get("email") !== undefined && userEmail.get("email") !== "")
@@ -38,22 +42,26 @@ router.get('/download', function (req, res, next) {
                         
                         if(userEmail.get("age") !== null && userEmail.get("age") !== undefined && userEmail.get("age") !== "")
                             age = userEmail.get("age");
+						
+						if(userEmail.get("city") !== null && userEmail.get("city") !== undefined && userEmail.get("city") !== "")
+                            city = userEmail.get("city");
+						
+						if(userEmail.get("name") !== null && userEmail.get("name") !== undefined && userEmail.get("name") !== "")
+                            name = userEmail.get("name");
+						
+						if(userEmail.get("purposeOfUse") !== null && userEmail.get("purposeOfUse") !== undefined && userEmail.get("purposeOfUse") !== "")
+                            purposeOfUse = userEmail.get("purposeOfUse");
+						
+						if(userEmail.get("churchOrganization") !== null && userEmail.get("churchOrganization") !== undefined && userEmail.get("churchOrganization") !== "")
+                            churchOrganization = userEmail.get("churchOrganization");
                         
                         if(writeHeader)
                         {
-                            writeValue = "Email" + "\t" + "Age" + "\n";
+                            writeValue = "Name" + "\t" + "Email" + "\t" + "Age" + "\t" + "PurposeOfUse" + "\t" + "ChurchOrganization" + "\t" + "City" + "\n";
                             writeHeader = false;
                         }
-                        
-                        if (email !== "")
-                        {
-                            writeValue = writeValue + email;									
-                        }
-                        
-                        if (age !== "")
-                        {
-                            writeValue = writeValue + "\t" + age;
-                        }
+						
+						writeValue = writeValue + name + "\t" + email + "\t" + age + "\t" + purposeOfUse + "\t" + churchOrganization + "\t" + city;	
                         
                         stream.write(writeValue + "\n");
                     }		
