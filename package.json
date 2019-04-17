@@ -16,5 +16,8 @@
     "parse": "*",
     "jquery": "*",
     "express-session": "~1.0.0"
+  },
+  "engines": {
+    "node": "6.1.0"
   }
 }
