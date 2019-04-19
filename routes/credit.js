@@ -22,58 +22,47 @@ var urlencodedParser = bodyParser.urlencoded({
         
         if (searchText != null && searchText != "") {
             countQuery.matches('name', searchText,'i');
-        }
+		}
+		
+		var tableDataQuery = new Parse.Query(Credit);
 
-		countQuery.count({
-			success : function (count){                
-                var tableDataQuery = new Parse.Query(Credit);
+		tableDataQuery.ascending("name");
                 
-                if (searchText != null && searchText != "") {
-                    tableDataQuery.matches('name', searchText,'i');
-                }
+		tableDataQuery.limit(parseInt(displayLength));
+		
+		if(parseInt(displayStart) != 0)
+			tableDataQuery.skip(parseInt(displayStart));
+			
+		tableDataQuery.find({
+			success : function (credits) {
+				var data = [];
+				var creditCount = 0;
 				
-                tableDataQuery.ascending("name");
-                
-				tableDataQuery.limit(parseInt(displayLength));
-                
-                if(parseInt(displayStart) != 0)
-                    tableDataQuery.skip(parseInt(displayStart));
-                    
-				tableDataQuery.find({
-					success : function (credits) {
-						var data = [];
-						var creditCount = 0;
-                        
-						for (var i = 0; i < credits.length; i++) {
-							var credit = credits[i];
-                            var creditName = "";
-                            
-                            if(credit.get("name") !== null || credit.get("name") !== undefined)
-								creditName = credit.get("name");                              
-							
-							data[creditCount] = {                            
-								name : creditName,
-								DT_RowId : credit.id
-								};
-								
-							creditCount++;
-						}
+				for (var i = 0; i < credits.length; i++) {
+					var credit = credits[i];
+					var creditName = "";
+					
+					if(credit.get("name") !== null || credit.get("name") !== undefined)
+						creditName = credit.get("name");                              
+					
+					data[creditCount] = {                            
+						name : creditName,
+						DT_RowId : credit.id
+						};
 						
-						data =  data.sort(function (a, b) {
-								return a["name"].toLowerCase().localeCompare(b["name"].toLowerCase());
-							});
-						
-						res.json({
-							aaData : data,
-							iTotalRecords : count,
-                            iTotalDisplayRecords : count,
-                            sEcho : echo
-						});
-					}
+					creditCount++;
+				}
+				
+				data =  data.sort(function (a, b) {
+						return a["name"].toLowerCase().localeCompare(b["name"].toLowerCase());
+					});
+				
+				res.json({
+					aaData : data,
+					iTotalRecords : 0,
+					iTotalDisplayRecords : 0,
+					sEcho : echo
 				});
-			},
-			error : function (error) {
-				// The request failed
 			}
 		});
 	});
