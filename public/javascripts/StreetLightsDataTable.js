@@ -32,7 +32,7 @@ $(document).ready(function () {
 			"iDisplayStart" : 0,
 			"bFilter" : true,
 			"fnDrawCallback" : function (oSettings) {
-				IntializeCreditDropDownBoxes();
+				//IntializeCreditDropDownBoxes();
 			}
 		}).makeEditable({
 			fnOnDeleted : function (value, settings) {
@@ -92,7 +92,7 @@ $(document).ready(function () {
 			sAddDeleteEditToolbarSelector : ".dataTables_length"
 		});
         
-    function IntializeCreditDropDownBoxes() {
+    /* function IntializeCreditDropDownBoxes() {
 		$.ajax({
 			url : "/credit/dropdown"
 		}).done(function (data) {
@@ -1947,7 +1947,7 @@ $(document).ready(function () {
 		});
 	}   
 
-	oMediaGroupItemTable.fnDraw();
+	// oMediaGroupItemTable.fnDraw();
 	oCreditTable.fnDraw();
 	oMediaGroupTable.fnDraw();
 	
@@ -1955,7 +1955,7 @@ $(document).ready(function () {
     
     oLessonPageTable.fnDraw();
     oLessonTable.fnDraw();
-    oLessonGroupTable.fnDraw();   
+    oLessonGroupTable.fnDraw();
    
 	
 	function FillIndexTextBox()
@@ -2028,5 +2028,5 @@ $(document).ready(function () {
 
 	function ConfirmDelete() {
 		return confirm("Are you sure that you want to delete this record?");
-	};
+	}; */
 });
