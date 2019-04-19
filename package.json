@@ -15,7 +15,7 @@
     "jquery": "*",
     "morgan": "^1.9.1",
     "node-env-file": "^0.1.8",
-    "parse": "*",
+    "parse": "1.11.1",
     "path": "^0.12.7",
     "uuid": "^3.3.2"
   },
